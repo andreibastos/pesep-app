@@ -1,3 +1,4 @@
+<!-- Barra Fixa -->
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
   <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">PESEP</a>
   <input class="form-control form-control-dark w-100" type="text" placeholder="Pesquisar" aria-label="Pesquisar">
@@ -8,11 +9,17 @@
   </ul>
 </nav>
 
+<!-- Corpo Principal -->
 <div class="container-fluid">
+
+  <!-- linha única -->
   <div class="row">
+
+    <!-- Barra da Esquerda -->
     <nav class="col-md-2 d-none d-md-block bg-light sidebar">
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
+          <!-- Projetos -->
           <li class="nav-item">
             <a class="nav-link active" href="#">
               <span data-feather="home"></span>
@@ -20,12 +27,16 @@
               <span class="sr-only"></span>
             </a>
           </li>
+
+          <!-- Testes Rápidos -->
           <li class="nav-item">
             <a class="nav-link" href="#">
               <span data-feather="file"></span>
               Testes Rápidos
             </a>
           </li>
+
+          <!-- Configurações -->
           <li class="nav-item">
             <a class="nav-link" href="#">
               <span data-feather="layers"></span>
@@ -34,12 +45,14 @@
           </li>
         </ul>
 
+        <!-- Últimos Projetos -->
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
           <span>Últimos Projetos</span>
           <a class="d-flex align-items-center text-muted" href="#">
             <span data-feather="plus-circle"></span>
           </a>
         </h6>
+        <!-- Lista dos ultimos Projetos -->
         <ul class="nav flex-column mb-2">
           <li class="nav-item">
             <a class="nav-link" href="#">
@@ -63,6 +76,8 @@
       </div>
     </nav>
 
+    <!-- Parte do meio
+    Ambiente à esquerda -->
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 
       <!-- Titulo da main -->
@@ -70,6 +85,7 @@
         <h1 class="h2">Meus Projetos</h1>       
       </div>
 
+      <!-- Gerenciador para Criar ou importar -->
       <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group mr-2">
           <button class="btn btn-sm btn-outline-secondary">Criar</button>
@@ -78,6 +94,7 @@
       </div>
       <br><br>
 
+      <!-- Primeira linha de projetos -->
       <div class="d-flex  justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
         <div class="card" style="width: 20em; ">
           <img class="card-img-top " style="height: 10em;" alt="Card image cap" src="assets/images/sep1.png">
@@ -118,6 +135,7 @@
         </div>
       </div>
 
+      <!-- Segunda linha de projetos -->      
       <div class="d-flex  justify-content-between flex-wrap flex-md-nowrap align-items-start pb-2 mb-3 border-bottom">
         <div class="card" style="width: 20em; ">
           <img class="card-img-top " style="height: 10em;" alt="Card image cap" src="assets/images/sep3.jpg">
@@ -132,8 +150,6 @@
           </div>
         </div>
       </div>
-
-
     </main>
   </div>
 </div>
