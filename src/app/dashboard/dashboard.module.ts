@@ -7,6 +7,6 @@ import { DashboardComponent } from './dashboard.component';
     CommonModule
   ],
   declarations: [DashboardComponent],
-  // exports:[ DashboardComponent]
+  exports:[ DashboardComponent]
 })
 export class DashboardModule { }
