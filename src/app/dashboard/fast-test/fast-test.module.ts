@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FastTestComponent } from './fast-test.component';
 import { BarComponent } from './bar/bar.component';
 import { LineComponent } from './line/line.component';
-import { ResultComponent } from './result/result.component';
+import { PowerFlowComponent } from './power-flow/power-flow.component';
 
 @NgModule({
   imports: [
     CommonModule
   ],
-  declarations: [FastTestComponent, BarComponent, LineComponent, ResultComponent]
+  declarations: [FastTestComponent, BarComponent, LineComponent, PowerFlowComponent]
 })
 export class FastTestModule { }

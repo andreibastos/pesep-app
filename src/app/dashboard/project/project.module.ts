@@ -6,6 +6,8 @@ import { ProjectComponent } from './project.component';
   imports: [
     CommonModule
   ],
-  declarations: [ProjectComponent]
+  declarations: [ProjectComponent],
+  exports: [ProjectComponent],
+  providers: []
 })
 export class ProjectModule { }
