@@ -1,1 +1,103 @@
-<app-dashboard></app-dashboard>
+<!-- Barra Fixa -->
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" routerLink="/dashboard" >PESEP</a>
+    
+    <input class="form-control form-control-dark w-100" type="text" placeholder="Pesquisar" aria-label="Pesquisar">
+    <ul class="navbar-nav px-3">
+      <li class="nav-item text-nowrap">
+        <a class="nav-link" routerLink="/">Sair</a>
+      </li>
+    </ul>
+  </nav>
+  
+  <!-- Corpo Principal -->
+  <div class="container-fluid">
+  
+    <!-- linha única -->
+    <div class="row">
+  
+      <!-- Barra da Esquerda -->
+      <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+        <div class="sidebar-sticky">
+          <ul class="nav flex-column">
+            <!-- Projetos -->
+            <li class="nav-item">
+              <a class="nav-link active" routerLinkActive routerLink="/dashboard/project">
+                <span data-feather="home"></span>
+                Meu Projetos
+                <span class="sr-only"></span>
+              </a>
+            </li>
+  
+            <!-- Testes Rápidos -->
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/dashboard/fast-test">
+                <span data-feather="file"></span>
+                Testes Rápidos
+              </a>
+            </li>
+  
+            <!-- Configurações -->
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/dashboard/config">
+                <span data-feather="layers"></span>
+                Configurações
+              </a>
+            </li>
+          </ul>
+  
+          <!-- Últimos Projetos -->
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Últimos Projetos</span>
+            <a class="d-flex align-items-center text-muted">
+              <span data-feather="plus-circle"></span>
+            </a>
+          </h6>
+          <!-- Lista dos ultimos Projetos -->
+          <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="">
+                <span data-feather="file-text"></span>
+                Projeto 6
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="">
+                <span data-feather="file-text"></span>
+                Projeto 5
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="">
+                <span data-feather="file-text"></span>
+                Projeto 4
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+  
+      <!-- Parte do meio Ambiente à direita -->
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+      
+        <router-outlet></router-outlet> 
+        <a href="http://www.facebook.com">facebook</a>
+      
+      </main>
+    </div>
+  </div>
+  
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+  <script src="./js/vendor/popper.min.js"></script>
+  <script src="./js/bootstrap.min.js"></script>
+  
+  <!-- Icons -->
+  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+  <script>
+    feather.replace()
+  </script>

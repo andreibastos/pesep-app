@@ -1,3 +1,5 @@
+import { DashboardRoutingModule } from './dashboard/dashboard-routing.module';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -5,15 +7,18 @@ import { PLATFORM_ID, APP_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './/app-routing.module';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'pesep-app' }),
-    DashboardModule
+    DashboardModule,
+    AppRoutingModule,
+    DashboardRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
