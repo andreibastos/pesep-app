@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Barra } from '../../models/barra';
 
 @Component({
   selector: 'app-barra-tabela',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BarraTabelaComponent implements OnInit {
 
-  constructor() { }
+  cabecalho: Array<string>;
+
+  barras: Array<Barra> = [];
+
+  constructor() {
+    this.cabecalho = Barra.cabecalho;
+   }
 
   ngOnInit() {
+    const barra: Barra = new Barra();
   }
 
 }

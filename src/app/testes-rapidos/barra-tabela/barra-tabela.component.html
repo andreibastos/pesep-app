@@ -1,3 +1,11 @@
-<p>
-  barra-tabela works!
-</p>
+<p>tabela de barra</p>
+
+<div class="row">
+    <table class="table col-9">
+      <thead class="text-center">
+        <tr>
+          <th *ngFor="let cabeca of cabecalho " scope="col" >{{cabeca}}</th>
+        </tr>
+      </thead>
+    </table>
+</div>
