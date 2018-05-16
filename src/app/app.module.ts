@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { QuemSomosComponent } from './quem-somos/quem-somos.component';
 import { ColaboreComponent } from './colabore/colabore.component';
+import { TestesRapidosModule } from './testes-rapidos/testes-rapidos.module';
+import { DiagramaModule } from './diagrama/diagrama.module';
+import { NaoEncontradaComponent } from './nao-encontrada/nao-encontrada.component';
 
 @NgModule({
   declarations: [
@@ -13,10 +16,13 @@ import { ColaboreComponent } from './colabore/colabore.component';
     HomeComponent,
     QuemSomosComponent,
     ColaboreComponent,
+    NaoEncontradaComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    TestesRapidosModule,
+    DiagramaModule
   ],
   providers: [],
   bootstrap: [AppComponent]
