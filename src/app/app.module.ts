@@ -9,6 +9,7 @@ import { ColaboreComponent } from './colabore/colabore.component';
 import { TestesRapidosModule } from './testes-rapidos/testes-rapidos.module';
 import { DiagramaModule } from './diagrama/diagrama.module';
 import { NaoEncontradaComponent } from './nao-encontrada/nao-encontrada.component';
+import { ExemplosComponent } from './exemplos/exemplos.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { NaoEncontradaComponent } from './nao-encontrada/nao-encontrada.componen
     QuemSomosComponent,
     ColaboreComponent,
     NaoEncontradaComponent,
+    ExemplosComponent,
   ],
   imports: [
     BrowserModule,
