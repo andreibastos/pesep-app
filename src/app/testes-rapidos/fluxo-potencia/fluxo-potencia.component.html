@@ -1,25 +1,27 @@
 <div class="container">
-  <div class="h3 row">
+  <div class="h3">
     <p>Cálculo do Fluxo de Potência</p>
   </div>
 
 
-  <form>
-    <div class="row">
-      <div class="form-group col-6">
-        <label class="h5 card-title" for="exampleFormControlFile1">Entre com o arquivo de linha</label>
-        <input type="file" class="form-control-file" id="exampleFormControlFile1">
-        <app-linha-tabela></app-linha-tabela>
+  <div class="row">
+    <form>
+      <div class="row">
+        <div class="form-group col-6">
+          <label class="h5 card-title" for="exampleFormControlFile1">Entre com o arquivo de linha</label>
+          <input type="file" class="form-control-file" id="exampleFormControlFile1">
+          <app-linha-tabela></app-linha-tabela>
+        </div>
+        <div class="form-group col-6">
+          <label class="h5 card-title" for="exampleFormControlFile1">Entre com o arquivo de barra</label>
+          <input type="file" class="form-control-file " id="exampleFormControlFile1">
+          <app-barra-tabela ></app-barra-tabela>
+        </div>
+        <!-- <button type="submit" class="btn btn-secondary align-content-end">Carregar Arquivos</button> -->
       </div>
-      <div class="form-group col-6">
-        <label class="h5 card-title" for="exampleFormControlFile1">Entre com o arquivo de barra</label>
-        <input type="file" class="form-control-file " id="exampleFormControlFile1">
-        <app-barra-tabela></app-barra-tabela>
-      </div>
+    </form>
     </div>
-    <!-- <button type="submit" class="btn btn-primary align-content-end">Carregar Arquivos</button> -->
-  </form>
 
-  <button type="submit" class="btn btn-primary align-content-end my-2">Calcular Fluxo de Potência</button>
+  <button type="submit" class="btn btn-secondary align-content-end my-2">Calcular Fluxo de Potência</button>
 
 </div>
