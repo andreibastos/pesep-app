@@ -16,7 +16,7 @@ const forceSSL = function() {
   // Instruct the app
   // to use the forceSSL
   // middleware
-  app.use(forceSSL());
+  // app.use(forceSSL());
 
 // Run the app by serving the static files
 // in the dist directory
@@ -26,5 +26,11 @@ app.use(express.static(__dirname + '/dist'));
 app.listen(process.env.PORT || 8080);
 
 app.get('/*', function(req, res) {
-    res.sendFile(path.join(__dirname + '/dist/index.html'));
+	var file = path.join(__dirname + '/dist/index.html')
+    res.sendFile(file);
+    console.log(file)
   });
+
+console.log("apps works!")
+
+// console.log("http://localhost:8080")
