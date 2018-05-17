@@ -27,6 +27,6 @@
     <!-- <button type="submit" class="btn btn-secondary align-content-end">Carregar Arquivos</button> -->
   </form>
 
-  <button type="submit" class="btn btn-secondary align-content-end my-2">Calcular Fluxo de Potência</button>
-
+  <button (click)="calcularFluxo()" class="btn btn-secondary align-content-end my-2">Calcular Fluxo de Potência</button>
+  <app-fluxo-tabela *ngIf="fluxoPotencia?.length>0"></app-fluxo-tabela>
 </div>

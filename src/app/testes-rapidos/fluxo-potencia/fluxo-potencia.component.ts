@@ -7,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FluxoPotenciaComponent implements OnInit {
 
+  fluxoPotencia: any[];
+
+
   constructor() { }
 
   ngOnInit() {
@@ -20,4 +23,8 @@ export class FluxoPotenciaComponent implements OnInit {
     console.log('Arquivo linha');
   }
 
+  calcularFluxo() {
+    this.fluxoPotencia = new Array();
+    this.fluxoPotencia.push('andrei');
+  }
 }

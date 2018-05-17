@@ -1,3 +1,29 @@
-<p>
-  fluxo-tabela works!
-</p>
+<div class="row">
+    <div class="col-12">
+      <table class="table text-center ">
+        <thead >
+          <tr>
+            <th *ngFor="let cabeca of cabecalho " scope="col">{{cabeca}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let fluxo of fluxoPotencia">
+            <td> {{ fluxo.item }}</td>
+            <td> {{ fluxo.tipo }}</td>
+            <td> {{ fluxo.nome }}</td>
+            <td> {{ fluxo.tensao_0 }}</td>
+            <td> {{ fluxo.angulo0 }}</td>
+            <td> {{ fluxo.pGerada }}</td>
+            <td> {{ fluxo.qGerada }}</td>
+            <td> {{ fluxo.qMinimo }}</td>
+            <td> {{ fluxo.qMaximo }}</td>
+            <td> {{ fluxo.pCarga }}</td>
+            <td> {{ fluxo.qCarga }}</td>
+            <td> {{ fluxo.pGeradamin }}</td>
+            <td> {{ fluxo.pGeradamax }}</td>
+            <td> {{ fluxo.qShunt }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
