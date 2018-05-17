@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Barra } from '../../models/barra';
 
 @Component({
@@ -10,7 +10,7 @@ export class BarraTabelaComponent implements OnInit {
 
   cabecalho: Array<string>;
 
-  barras: Array<Barra> = [];
+  @Input() barras: Array<Barra> = [];
 
   constructor() {
     this.cabecalho = Barra.cabecalho;
@@ -18,11 +18,9 @@ export class BarraTabelaComponent implements OnInit {
     const barra2: Barra = new Barra(2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2);
     this.barras.push(barra1);
     this.barras.push(barra2);
-    console.log(this.barras);
   }
 
   ngOnInit() {
-    console.log(this.barras);
 
   }
 

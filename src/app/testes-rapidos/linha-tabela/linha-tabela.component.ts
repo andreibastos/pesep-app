@@ -1,5 +1,5 @@
 import { Linha } from './../../models/linha';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-linha-tabela',
@@ -11,7 +11,7 @@ export class LinhaTabelaComponent implements OnInit {
 
   cabecalho: Array<string>;
 
-  linhas: Array<Linha> = [];
+  @Input() linhas: Array<Linha> = [];
 
   constructor() {
     this.cabecalho = Linha.cabecalho;
@@ -19,11 +19,9 @@ export class LinhaTabelaComponent implements OnInit {
     const linha2: Linha = new Linha(2, 2, 2, 0, 2, 2, 2);
     this.linhas.push(linha1);
     this.linhas.push(linha2);
-    console.log(this.linhas);
   }
 
   ngOnInit() {
-    console.log(this.linhas);
 
   }
 }
