@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Fluxo } from '../../models/fluxo';
 
 @Component({
   selector: 'app-fluxo-potencia',
@@ -8,6 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class FluxoPotenciaComponent implements OnInit {
 
   fluxoPotencia: any[];
+  cabecalho = Fluxo.cabecalho;
 
 
   constructor() { }

@@ -1,3 +1,4 @@
+import { Fluxo } from './../../models/fluxo';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./fluxo-tabela.component.css']
 })
 export class FluxoTabelaComponent implements OnInit {
+  fluxoPotencia: any[];
+  cabecalho = Fluxo.cabecalho;
 
   constructor() { }
 
