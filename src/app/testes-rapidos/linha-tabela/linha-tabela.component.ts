@@ -1,3 +1,4 @@
+import { Linha } from './../../models/linha';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +8,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LinhaTabelaComponent implements OnInit {
 
-  constructor() { }
 
-  ngOnInit() {
+  cabecalho: Array<string>;
+
+  linhas: Array<Linha> = [];
+
+  constructor() {
+    this.cabecalho = Linha.cabecalho;
+    const linha1: Linha = new Linha(1, 1, 1, 0, 1, 1, 1);
+    const linha2: Linha = new Linha(2, 2, 2, 0, 2, 2, 2);
+    this.linhas.push(linha1);
+    this.linhas.push(linha2);
+    console.log(this.linhas);
   }
 
+  ngOnInit() {
+    console.log(this.linhas);
+
+  }
 }

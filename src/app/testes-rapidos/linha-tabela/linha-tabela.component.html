@@ -1,3 +1,22 @@
-<p>
-  linha-tabela works!
-</p>
+<div class="row">
+    <div class="col-12">
+      <table class="table text-center ">
+        <thead >
+          <tr>
+            <th *ngFor="let cabeca of cabecalho " scope="col">{{cabeca}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let linha of linhas">
+              <td> {{ linha.item }}</td>
+              <td> {{ linha.fBus }}</td>
+              <td> {{ linha.tBus }}</td>
+              <td> {{ linha.r }}</td>
+              <td> {{ linha.x }}</td>
+              <td> {{ linha.tap }}</td>
+              <td> {{ linha.a }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
