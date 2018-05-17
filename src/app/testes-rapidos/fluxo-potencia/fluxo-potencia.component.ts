@@ -12,4 +12,12 @@ export class FluxoPotenciaComponent implements OnInit {
   ngOnInit() {
   }
 
+  lerArquivoBarra() {
+    console.log('Arquivo barra');
+  }
+
+  lerArquivoLinha() {
+    console.log('Arquivo linha');
+  }
+
 }

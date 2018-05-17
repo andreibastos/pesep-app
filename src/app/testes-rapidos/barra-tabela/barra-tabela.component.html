@@ -1,19 +1,23 @@
 <p>tabela de barra</p>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <table class="table ">
+        <thead class="text-center">
+          <tr>
+            <th *ngFor="let cabeca of cabecalho " scope="col">{{cabeca}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat-start="barra in barras">
+            <td></td>
+          </tr>
+          <tr ng-repeat-end>
 
-<div class="row" >
-  <table class="table ">
-    <thead class="text-center">
-      <tr>
-        <th *ngFor="let cabeca of cabecalho " scope="col">{{cabeca}}</th>
-      </tr>
-    </thead>
-    <tbody >
-      <tr ng-repeat-start="barra in barras" >
-        <td>{{ barra }}</td>
-      </tr >
-      <tr ng-repeat-end >
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-      </tr>
-    </tbody >
-  </table>
 </div>
