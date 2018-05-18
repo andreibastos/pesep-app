@@ -1,3 +1,4 @@
+import { FluxoPotenciaComponent } from './testes-rapidos/fluxo-potencia/fluxo-potencia.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -26,7 +27,7 @@ import { ExemplosComponent } from './exemplos/exemplos.component';
     TestesRapidosModule,
     DiagramaModule
   ],
-  providers: [],
+  providers: [FluxoPotenciaComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Fluxo } from '../../models/fluxo';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpModule, Http } from '@angular/http';
+
+
 
 @Component({
   selector: 'app-fluxo-potencia',
@@ -8,13 +12,23 @@ import { Fluxo } from '../../models/fluxo';
 })
 export class FluxoPotenciaComponent implements OnInit {
 
+  arquivoBarra: any;
   fluxoPotencia: any[];
   cabecalho = Fluxo.cabecalho;
 
 
-  constructor() { }
+  constructor(private http: Http) { }
 
   ngOnInit() {
+  }
+
+  lerArquivo(arquivo) {
+    // console.log(arquivo);
+
+    const value = arquivo.value;
+    console.log(value);
+    // this.http.post('http://localhost:8080/read_file', JSON.stringify(arquivo.value))
+    // .subscribe(dados => console.log(dados));
   }
 
   lerArquivoBarra() {
@@ -25,7 +39,9 @@ export class FluxoPotenciaComponent implements OnInit {
     console.log('Arquivo linha');
   }
 
-  calcularFluxo() {
+  calcularFluxo(form) {
+    console.log(form);
+    console.log(this.arquivoBarra);
     this.fluxoPotencia = new Array();
     this.fluxoPotencia.push('andrei');
   }

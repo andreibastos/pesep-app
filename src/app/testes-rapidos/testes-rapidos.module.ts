@@ -1,3 +1,5 @@
+import { HttpModule } from '@angular/http';
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TestesRapidosComponent } from './testes-rapidos.component';
@@ -9,8 +11,20 @@ import { FluxoTabelaComponent } from './fluxo-tabela/fluxo-tabela.component';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    HttpModule
   ],
-  declarations: [TestesRapidosComponent, FluxoPotenciaComponent, CurtoCircuitoComponent, LinhaTabelaComponent, BarraTabelaComponent, FluxoTabelaComponent]
+  declarations: [
+    TestesRapidosComponent,
+    FluxoPotenciaComponent,
+    CurtoCircuitoComponent,
+    LinhaTabelaComponent,
+    BarraTabelaComponent,
+    FluxoTabelaComponent
+  ]
+
+
+
 })
 export class TestesRapidosModule { }

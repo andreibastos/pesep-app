@@ -1,32 +1,30 @@
-<div class="container">
-  <div class="h3">
-    <p>Cálculo do Fluxo de Potência</p>
-  </div>
-
-
-  <form>
-    <div class="row">
-      <div class="col-6">
-        <div class="form-group">
-          <label class="h5 card-title" for="exampleFormControlFile1">Entre com o arquivo de linha</label>
-          <input type="file" class="form-control-file" id="exampleFormControlFile1">
-          <app-linha-tabela></app-linha-tabela>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-6">
-
-        <div class="form-group">
-          <label class="h5 card-title" for="exampleFormControlFile1">Entre com o arquivo de barra</label>
-          <input (click)="lerArquivoBarra()" type="file" class="form-control-file " id="exampleFormControlFile1">
-          <app-barra-tabela></app-barra-tabela>
-        </div>
-      </div>
-    </div>
-    <!-- <button type="submit" class="btn btn-secondary align-content-end">Carregar Arquivos</button> -->
-  </form>
-
-  <button (click)="calcularFluxo()" class="btn btn-secondary align-content-end my-2">Calcular Fluxo de Potência</button>
-  <app-fluxo-tabela *ngIf="fluxoPotencia?.length>0"></app-fluxo-tabela>
+<div class="h3">
+  <p>Cálculo do Fluxo de Potência</p>
 </div>
+
+
+<form #form="ngForm" (ngSubmit)="calcularFluxo(form)" [action]="lerArquivo(form)" >
+  <div class="row">
+    <div class="col-6">
+      <div class="form-group">
+        <label class="h5 card-title" for="exampleFormControlFile1">Entre com o arquivo de linha</label>
+        <input  (onchange)="this.forms.action"  accept=".csv" name="arquivoLinha" ngModel type="file" class="form-control-file" id="exampleFormControlFile1">
+        <app-linha-tabela></app-linha-tabela>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+
+      <div class="form-group">
+        <label class="h5 card-title" for="exampleFormControlFile1">Entre com o arquivo de barra</label>
+        <input (onchange)="this.forms.action"  #ArquivoBarra name="arquivoBarra" ngModel type="file"  accept=".csv" class="form-control-file " id="exampleFormControlFile1">
+        <app-barra-tabela></app-barra-tabela>
+      </div>
+    </div>
+  </div>
+  <!-- <button type="submit" class="btn btn-secondary align-content-end">Carregar Arquivos</button> -->
+  <button type="submit" data-toggle="tooltip" data-placement="bottom" title="Clique para Calcular o Fluxo de Potência" class="btn btn-secondary align-content-end my-2">Calcular Fluxo de Potência</button>
+</form>
+
+<app-fluxo-tabela ></app-fluxo-tabela>
