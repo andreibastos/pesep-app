@@ -14,7 +14,11 @@
   <div class="row">
     <div class="col-12">
       <div *ngIf="opcaoEscolhida=='arquivos'" class="border">
-        <app-fluxo-arquivos></app-fluxo-arquivos>
+        <app-fluxo-arquivos
+        (arquivosCarregados)="carregouArquivos($event)"
+
+        ></app-fluxo-arquivos>
+        <p>{{ andrei }}</p>
       </div>
 
       <div *ngIf="opcaoEscolhida=='manual'" class="border">

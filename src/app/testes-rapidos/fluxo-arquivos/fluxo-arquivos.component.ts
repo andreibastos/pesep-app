@@ -1,8 +1,8 @@
-import { Barra } from './../../models/barra';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { utils } from 'protractor';
 import { read } from 'fs';
 import { Linha } from '../../models/linha';
+import { Barra } from './../../models/barra';
 
 
 @Component({
@@ -15,26 +15,37 @@ export class FluxoArquivosComponent implements OnInit {
   dados_carregados = [];
   linhas: Array<Linha> = new Array();
   barras: Array<Barra> = new Array();
+  linhaSucesso = false;
+  barraSucesso = false;
+  @Output() arquivosCarregados = new EventEmitter();
 
-  static TextoParaLista(texto) {
+
+
+  static TextoParaLista(texto, tamanhoMinimo) {
     const dados = [];
     const delimitador = ',';
     const linhas = texto.split('\n');
 
     linhas.forEach(linha => {
       const colunas = linha.split(delimitador);
-      console.log(colunas);
-      if (colunas.length >= 7) {
+      if (colunas.length === tamanhoMinimo) {
         dados.push(colunas);
+        console.log(colunas);
       }
     });
     return dados;
   }
 
-
   constructor() { }
 
   ngOnInit() {
+  }
+
+  carregouNovoArquivo() {
+    if (this.linhaSucesso && this.barraSucesso) {
+      this.arquivosCarregados.emit({ linhas: this.linhas, barras: this.barras });
+      console.log('passou aqui');
+    }
   }
 
   getData(readFile, tipo) {
@@ -51,8 +62,8 @@ export class FluxoArquivosComponent implements OnInit {
     const self = this;
 
     reader.onload = function (evt) {
-      const dados = FluxoArquivosComponent.TextoParaLista(evt.target['result']);
       if (tipo === 'linha') {
+        const dados = FluxoArquivosComponent.TextoParaLista(evt.target['result'], 7);
         self.linhas = new Array();
         dados.forEach((dado, index) => {
           const linha = new Linha();
@@ -61,7 +72,10 @@ export class FluxoArquivosComponent implements OnInit {
             self.linhas.push(linha);
           }
         });
+        self.linhaSucesso = true;
       } else if (tipo === 'barra') {
+        const dados = FluxoArquivosComponent.TextoParaLista(evt.target['result'], 14);
+
         self.barras = new Array();
         dados.forEach((dado, index) => {
           const barra = new Barra();
@@ -70,8 +84,11 @@ export class FluxoArquivosComponent implements OnInit {
             self.barras.push(barra);
           }
         });
+        self.barraSucesso = true;
       }
+      self.carregouNovoArquivo();
     };
+
   }
 
   updateProgress(evt) {
@@ -86,13 +103,6 @@ export class FluxoArquivosComponent implements OnInit {
     }
   }
 
-  loaded(evt) {
-    let dados = [];
-    // Obtain the read file data
-    const texto = evt.target['result'];
-    dados = FluxoArquivosComponent.TextoParaLista(texto);
-    return dados;
-  }
 
   errorHandler(evt) {
     console.log(evt);

@@ -29,4 +29,10 @@ export class FluxoPotenciaComponent implements OnInit {
   escolherOpcao(opcao) {
     this.opcaoEscolhida = opcao;
   }
+
+  carregouArquivos(event) {
+    console.log(event);
+    this.linhaCompleta = event['linhas'].length > 0;
+    this.barraCompleta = event['barras'].length > 0;
+  }
 }

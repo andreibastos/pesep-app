@@ -54,20 +54,20 @@ export class Barra {
     }
 
     novaBarra(vetor) {
-        this.item = vetor[0];
-        this.tipo = vetor[1];
-        this.nome = vetor[2];
-        this.tensao_0 = vetor[3];
-        this.angulo0 = vetor[4];
-        this.pGerada = vetor[5];
-        this.qGerada = vetor[6];
-        this.qMinimo = vetor[7];
-        this.qMaximo = vetor[8];
-        this.pCarga = vetor[9];
-        this.qCarga = vetor[10];
-        this.pGeradamin = vetor[11];
-        this.pGeradamax = vetor[12];
-        this.qShunt = vetor[13];
+        this.item =  parseFloat(vetor[0]);
+        this.tipo =  parseFloat(vetor[1]);
+        this.nome =  vetor[2];
+        this.tensao_0 =  parseFloat(vetor[3]);
+        this.angulo0 =  parseFloat(vetor[4]);
+        this.pGerada =  parseFloat(vetor[5]);
+        this.qGerada =  parseFloat(vetor[6]);
+        this.qMinimo =  parseFloat(vetor[7]);
+        this.qMaximo =  parseFloat(vetor[8]);
+        this.pCarga =  parseFloat(vetor[9]);
+        this.qCarga =  parseFloat(vetor[10]);
+        this.pGeradamin =  parseFloat(vetor[11]);
+        this.pGeradamax =  parseFloat(vetor[12]);
+        this.qShunt =  parseFloat(vetor[13]);
     }
 
 
