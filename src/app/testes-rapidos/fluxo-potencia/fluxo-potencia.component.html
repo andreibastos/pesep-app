@@ -1,30 +1,41 @@
-<div class="h3">
-  <p>Cálculo do Fluxo de Potência</p>
+<p class="h3">Análise do Fluxo de Potência</p>
+
+<div *ngIf="opcaoEscolhida==''">
+  <div class="d-flex justify-content-center ">
+    <button (click)='escolherOpcao("arquivos")' class="btn btn-primary my-3 col-6" role="button">Envie Arquivos</button>
+  </div>
+  <div class="d-flex justify-content-center">
+    <button (click)='escolherOpcao("manual")' class="btn btn-primary my-3 col-6" role="button">Edite Manualmente</button>
+  </div>
 </div>
 
 
-<form #form="ngForm" (ngSubmit)="calcularFluxo(form)" [action]="lerArquivo(form)" >
+<div class="container">
   <div class="row">
-    <div class="col-6">
-      <div class="form-group">
-        <label class="h5 card-title" for="exampleFormControlFile1">Entre com o arquivo de linha</label>
-        <input   accept=".csv" name="arquivoLinha" ngModel type="file" class="form-control-file" id="exampleFormControlFile1">
-        <app-linha-tabela></app-linha-tabela>
+    <div class="col-12">
+      <div *ngIf="opcaoEscolhida=='arquivos'" class="border">
+        <app-fluxo-arquivos></app-fluxo-arquivos>
+      </div>
+
+      <div *ngIf="opcaoEscolhida=='manual'" class="border">
+        <app-fluxo-manual></app-fluxo-manual>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-6">
+</div>
 
-      <div class="form-group">
-        <label class="h5 card-title" for="exampleFormControlFile1">Entre com o arquivo de barra</label>
-        <input   #ArquivoBarra name="arquivoBarra" ngModel type="file"  accept=".csv" class="form-control-file " id="exampleFormControlFile1">
-        <app-barra-tabela></app-barra-tabela>
-      </div>
-    </div>
-  </div>
-  <!-- <button type="submit" class="btn btn-secondary align-content-end">Carregar Arquivos</button> -->
-  <button type="submit" data-toggle="tooltip" data-placement="bottom" title="Clique para Calcular o Fluxo de Potência" class="btn btn-secondary align-content-end my-2">Calcular Fluxo de Potência</button>
-</form>
+<!-- <div>
+  <p class="h3">Linha</p>
+  <p>Configure suas linhas.</p>
+</div>
 
-<app-fluxo-tabela ></app-fluxo-tabela>
+<div>
+  <p class="h3">Barra</p>
+  <p>Configure suas barras.</p>
+</div> -->
+
+
+
+
+<a *ngIf="linhaCompleta && barraCompleta" (click)="calcularFluxo()" class="btn btn-secondary mr-3" role="button">Calcular Fluxo de Potência</a>
+<app-fluxo-tabela *ngIf="fluxoCalculado"></app-fluxo-tabela>

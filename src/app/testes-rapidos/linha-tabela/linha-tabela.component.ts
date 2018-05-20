@@ -15,8 +15,6 @@ export class LinhaTabelaComponent implements OnInit {
 
   constructor() {
     this.cabecalho = Linha.cabecalho;
-    const linha1: Linha = new Linha(1, 1, 1, 0, 1, 1, 1);
-    this.linhas.push(linha1);
   }
 
   ngOnInit() {

@@ -32,22 +32,46 @@ export class Barra {
 
 
 
-    constructor(item, tipo, tensao_0, angulo0, pgerada, qGerada, qMinimo, qMaximo, pCarga, qCarga, pGeradaMin, pGeradaMax, qShunt) {
-        this.item = item;
-        this.tipo = tipo;
-        this.tensao_0 = tensao_0;
-        this.angulo0 = angulo0;
-        this.pGerada = pgerada;
-        this.qGerada = qGerada;
-        this.qMinimo = qMinimo;
-        this.qMaximo = qMaximo;
-        this.pCarga = pCarga;
-        this.qCarga = qCarga;
-        this.pGeradamin = pGeradaMin;
-        this.pGeradamax = pGeradaMax;
-        this.qShunt = qShunt;
-        this.nome = `Barra ${this.item}`;
+    // constructor(item, tipo, tensao_0, angulo0, pgerada, qGerada, qMinimo, qMaximo, pCarga, qCarga, pGeradaMin, pGeradaMax, qShunt) {
+    //     this.item = item;
+    //     this.tipo = tipo;
+    //     this.tensao_0 = tensao_0;
+    //     this.angulo0 = angulo0;
+    //     this.pGerada = pgerada;
+    //     this.qGerada = qGerada;
+    //     this.qMinimo = qMinimo;
+    //     this.qMaximo = qMaximo;
+    //     this.pCarga = pCarga;
+    //     this.qCarga = qCarga;
+    //     this.pGeradamin = pGeradaMin;
+    //     this.pGeradamax = pGeradaMax;
+    //     this.qShunt = qShunt;
+    //     this.nome = `Barra ${this.item}`;
+    // }
+
+    constructor() {
+
     }
+
+    novaBarra(vetor) {
+        this.item = vetor[0];
+        this.tipo = vetor[1];
+        this.nome = vetor[2];
+        this.tensao_0 = vetor[3];
+        this.angulo0 = vetor[4];
+        this.pGerada = vetor[5];
+        this.qGerada = vetor[6];
+        this.qMinimo = vetor[7];
+        this.qMaximo = vetor[8];
+        this.pCarga = vetor[9];
+        this.qCarga = vetor[10];
+        this.pGeradamin = vetor[11];
+        this.pGeradamax = vetor[12];
+        this.qShunt = vetor[13];
+    }
+
+
+
 
 
 
