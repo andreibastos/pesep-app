@@ -8,12 +8,16 @@ import { CurtoCircuitoComponent } from './curto-circuito/curto-circuito.componen
 import { LinhaTabelaComponent } from './linha-tabela/linha-tabela.component';
 import { BarraTabelaComponent } from './barra-tabela/barra-tabela.component';
 import { FluxoTabelaComponent } from './fluxo-tabela/fluxo-tabela.component';
+import { FluxoArquivosComponent } from './fluxo-arquivos/fluxo-arquivos.component';
+import { FluxoManualComponent } from './fluxo-manual/fluxo-manual.component';
+import { TestesRapidosRoutingModule } from './testes-rapidos.routing.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    TestesRapidosRoutingModule
   ],
   declarations: [
     TestesRapidosComponent,
@@ -21,7 +25,9 @@ import { FluxoTabelaComponent } from './fluxo-tabela/fluxo-tabela.component';
     CurtoCircuitoComponent,
     LinhaTabelaComponent,
     BarraTabelaComponent,
-    FluxoTabelaComponent
+    FluxoTabelaComponent,
+    FluxoArquivosComponent,
+    FluxoManualComponent
   ]
 
 

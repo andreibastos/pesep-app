@@ -10,7 +10,6 @@ import { ExemplosComponent } from './exemplos/exemplos.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'diagrama', pathMatch: 'full' },
-  // { path: 'home', component: HomeComponent },
   { path: 'quem-somos', component: QuemSomosComponent },
   { path: 'colabore', component: ColaboreComponent },
   { path: 'exemplos', component: ExemplosComponent },
