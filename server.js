@@ -3,22 +3,22 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const path = require('path');
 
-const app = express();
+const  app = express();
 
-const forceSSL = function() {
-    return function (req, res, next) {
-      if (req.headers['x-forwarded-proto'] !== 'https') {
-        return res.redirect(
-         ['https://', req.get('Host'), req.url].join('')
-        );
-      }
-      next();
+const forceSSL = function () {
+  return function (req, res, next) {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(
+        ['https://', req.get('Host'), req.url].join('')
+      );
     }
+    next();
   }
-  // Instruct the app
-  // to use the forceSSL
-  // middleware
-  // app.use(forceSSL());
+}
+// Instruct the app
+// to use the forceSSL
+// middleware
+// app.use(forceSSL());
 
 // Run the app by serving the static files
 // in the dist directory
@@ -30,17 +30,12 @@ app.listen(process.env.PORT || 8080);
 
 //servidor
 // default options
-app.use(fileUpload());
-app.post('/read_file', function(req, res) {
-  if (!req.files)
-    return res.status(400).send('No files were uploaded.');
- 
-  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-  console.log( req.files);
-  res.send({"files":req.files})
-  
+app.use(express.json());
+app.post('/read_file', function (req, res) {
 
- 
+  console.log(req.body);
+  res.send(req.body);
+
 });
 
 app.get('/*', function(req, res) {

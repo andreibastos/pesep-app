@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Fluxo } from '../../models/fluxo';
+import { TestesRapidosService } from './../testes-rapidos.service';
 
 @Component({
   selector: 'app-fluxo-potencia',
@@ -14,15 +15,18 @@ export class FluxoPotenciaComponent implements OnInit {
   linhaCompleta = false;
   barraCompleta = false;
 
+  sistema: any;
 
 
-  constructor() { }
+  constructor(private testesRapidosService: TestesRapidosService) { }
 
   ngOnInit() {
   }
 
 
   calcularFluxo() {
+
+    this.testesRapidosService.calcularFluxoPotencia(this.sistema);
     console.log('Calculado');
   }
 
@@ -32,6 +36,7 @@ export class FluxoPotenciaComponent implements OnInit {
 
   carregouArquivos(event) {
     console.log(event);
+    this.sistema = event;
     this.linhaCompleta = event['linhas'].length > 0;
     this.barraCompleta = event['barras'].length > 0;
   }
