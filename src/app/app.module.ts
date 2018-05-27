@@ -11,6 +11,7 @@ import { TestesRapidosModule } from './testes-rapidos/testes-rapidos.module';
 import { DiagramaModule } from './diagrama/diagrama.module';
 import { NaoEncontradaComponent } from './nao-encontrada/nao-encontrada.component';
 import { ExemplosComponent } from './exemplos/exemplos.component';
+import { ExemplosModalComponent } from './exemplos/exemplos-modal/exemplos-modal.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { ExemplosComponent } from './exemplos/exemplos.component';
     ColaboreComponent,
     NaoEncontradaComponent,
     ExemplosComponent,
+    ExemplosModalComponent,
   ],
   imports: [
     BrowserModule,
