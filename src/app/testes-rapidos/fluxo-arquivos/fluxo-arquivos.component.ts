@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { utils } from 'protractor';
+import { utils, element } from 'protractor';
 import { read } from 'fs';
 import { Linha } from '../../models/linha';
 import { Barra } from './../../models/barra';
@@ -58,6 +58,20 @@ export class FluxoArquivosComponent implements OnInit {
     }
   }
 
+  clean_lines_file(data, index) {
+    for (let i = 0; i < data.length; i++) {
+      data[i] = data[i].replace('\n', '').replace('\r', '');
+      if (index > 1) {
+
+        const temp_data = parseFloat(data[i]);
+        if (!isNaN(temp_data)) {
+          data[i] = temp_data;
+        }
+      }
+    }
+    return data;
+  }
+
   getData(arquivoLido, tipo) {
     const fileReader = new FileReader();
 
@@ -73,6 +87,8 @@ export class FluxoArquivosComponent implements OnInit {
     // instância de si próprio.
     const self = this;
 
+
+
     fileReader.onload = function (evt) {
       if (tipo === 'linha') {
         self.arquivoLinha = [];
@@ -80,9 +96,10 @@ export class FluxoArquivosComponent implements OnInit {
         const dados = FluxoArquivosComponent.TextoParaLista(evt.target['result'], 7);
         self.linhas = new Array();
         dados.forEach((dado, index) => {
+          dado = self.clean_lines_file(dado, index);
           self.arquivoLinha.push(dado);
           const linha = new Linha();
-          if (index > 1) {
+          if (index > 0) {
             linha.novaLinha(dado);
             self.linhas.push(linha);
           }
@@ -95,9 +112,10 @@ export class FluxoArquivosComponent implements OnInit {
 
         self.barras = new Array();
         dados.forEach((dado, index) => {
+          dado = self.clean_lines_file(dado, index);
           self.arquivoBarra.push(dado);
           const barra = new Barra();
-          if (index > 1) {
+          if (index > 0) {
             barra.novaBarra(dado);
             self.barras.push(barra);
           }
@@ -122,7 +140,6 @@ export class FluxoArquivosComponent implements OnInit {
   }
 
   errorHandler(evt) {
-    console.log(evt);
     if (evt.target.error.name === 'NotReadableError') {
       // The file could not be read
     }

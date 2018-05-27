@@ -13,33 +13,20 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <div *ngIf="opcaoEscolhida=='arquivos'" class="border">
+      <div *ngIf="opcaoEscolhida=='arquivos'" class="my-1">
         <app-fluxo-arquivos
         (arquivosCarregados)="carregouArquivos($event)"
 
         ></app-fluxo-arquivos>
-        <p>{{ andrei }}</p>
       </div>
 
-      <div *ngIf="opcaoEscolhida=='manual'" class="border">
+      <div *ngIf="opcaoEscolhida=='manual'" class="my-1">
         <app-fluxo-manual></app-fluxo-manual>
       </div>
     </div>
   </div>
 </div>
 
-<!-- <div>
-  <p class="h3">Linha</p>
-  <p>Configure suas linhas.</p>
-</div>
 
-<div>
-  <p class="h3">Barra</p>
-  <p>Configure suas barras.</p>
-</div> -->
-
-
-
-
-<button *ngIf="linhaCompleta && barraCompleta" (click)="calcularFluxo()" class="btn btn-secondary mr-3" role="button">Calcular Fluxo de Potência</button>
-<app-fluxo-tabela *ngIf="fluxoCalculado"></app-fluxo-tabela>
+<button  *ngIf="linhaCompleta && barraCompleta" (click)="calcularFluxo()" class="btn btn-secondary mb-3" role="button">Calcular Fluxo de Potência</button>
+<app-fluxo-tabela  *ngIf="fluxo.length > 0 " [fluxoPotencia]="fluxo" ></app-fluxo-tabela>

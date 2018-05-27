@@ -1,13 +1,14 @@
 <div class="row">
-    <div class="col-12">
-      <table class="table text-center ">
-        <thead >
+  <div class="col-12">
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered text-center  table-sm">
+        <thead>
           <tr>
             <th *ngFor="let cabeca of cabecalho " scope="col">{{cabeca}}</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let fluxo of fluxoPotencia">
+          <!-- <tr *ngFor="let fluxo of fluxoPotencia">
             <td> {{ fluxo.item }}</td>
             <td> {{ fluxo.tipo }}</td>
             <td> {{ fluxo.nome }}</td>
@@ -22,8 +23,22 @@
             <td> {{ fluxo.pGeradamin }}</td>
             <td> {{ fluxo.pGeradamax }}</td>
             <td> {{ fluxo.qShunt }}</td>
+          </tr> -->
+          <tr *ngFor="let fluxo of fluxoPotencia | slice:1:-1"  >
+            <td> {{ fluxo[0] }}</td>
+            <td> {{ fluxo[1] }}</td>
+            <td> {{ fluxo[2] | number}}</td>
+            <td> {{ fluxo[3] | number}}</td>
+            <td> {{ fluxo[4] | number}}</td>
+            <td> {{ fluxo[5] | number}}</td>
+            <td> {{ fluxo[6] | number}}</td>
+            <td> {{ fluxo[7] | number}}</td>
+            <td> {{ fluxo[8]| number }}</td>
+            <td> {{ fluxo[9] | number }}</td>
+            <td> {{ fluxo[10] | number}}</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
+</div>
