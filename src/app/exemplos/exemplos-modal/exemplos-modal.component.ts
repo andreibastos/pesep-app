@@ -9,10 +9,11 @@ import { ActivatedRoute } from '@angular/router';
 export class ExemplosModalComponent implements OnInit {
 
   id = 5;
+  title = 'Exemplo n';
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
-    
+
   }
 
 }
