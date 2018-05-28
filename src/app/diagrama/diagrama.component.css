@@ -108,6 +108,10 @@ body {
 
 
   #draw {
-    height: calc(100vh - 60px);
+    height: calc(100vh - 120px);
     box-sizing: border-box;
+}
+
+.menu {
+  height: 50px;
 }

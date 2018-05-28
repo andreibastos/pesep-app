@@ -49,11 +49,18 @@
 
 
     <div id="draw" class="col-md-9 mt-5 mb-1 pt-2 pb-1">
+      <div class="row menu bg-white border  mb-1 align-items-center p-0 m-0">
+        <div class="col-1">
+          <div class="input-group-prepend ">
+            <input type="checkbox" aria-label="Checkbox for following text input">
+          </div>
+        </div>
+        <div class="col-6 justify-content-end">
+          <button name="" id="" class="btn btn-primary " (click)="calcularFluxo()" role="button"> Calcular Fluxo de Potência</button>
+        </div>
+      </div>
       <div id="draw_inside" class="h-100 shadow border  bg-white rounded ">
-          <div id="canvas_container"></div>
-        <!-- <div class="m-auto" style="width:200px">
-          <img src="../../assets/images/sep.png" alt="">
-        </div> -->
+        <div id="canvas_container"></div>
       </div>
     </div>
   </div>

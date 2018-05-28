@@ -31,46 +31,45 @@ export class DiagramaComponent implements OnInit {
   drawSEP(diagrama: DiagramaSEP, x, y) {
     console.log(diagrama);
 
+    Raphael.st.draggable = function () {
+      let lx, ly, ox = 0, oy = 0;
+      const me = this,
+        moveFnc = function (dx, dy) {
+          lx = dx + ox;  // add the new change in x to the drag origin
+          ly = dy + oy;  // do the same for y
+          me.transform('t' + lx + ',' + ly);
+
+        },
+        startFnc = function () {
+          me.animate({ 'opacity': 1, 'stroke-width': 2 }, 500);
+
+        },
+        endFnc = function () {
+          ox = lx;
+          oy = ly;
+          me.animate({ 'opacity': 1, 'stroke-width': 1 }, 200);
+        };
+
+      this.drag(moveFnc, startFnc, endFnc);
+
+    };
+
 
     this.paper = Raphael(document.getElementById('canvas_container'), x, y);
     const st = this.paper.set();
     st.push(
-      this.paper.circle(x / 2, y / 2, 50),
-      this.paper.circle(x / 2, y / 2, 75).attr('fill', 'red'),
-      this.paper.circle(x / 2, y / 2, 100),
-      this.paper.circle(x / 2, y / 2, 150)
+      this.paper.circle(x / 2, y / 2, 150).attr('fill', 'white')
     );
 
+    st.attr('cursor', 'move');
+
+    st.draggable();
 
 
-    // diagrama.nodes.forEach(node => {
+  }
 
-
-    // });
-
-    const inicio = function dragStart(dragC) {
-      console.log(dragC);
-      // Get original position of element, and set as properties .ox and .oy
-      dragC.ox = dragC.attr('cx');
-      dragC.oy = dragC.attr('cy');
-      dragC.animate({ 'transform': 's2', 'fill': 'pink', 'opacity': 0.9 }, 200);
-    };
-
-    const move = function dragMove(dx, dy, dragC) {
-      console.log(dragC);
-      dragC.attr({ 'transform': 's1.6', 'fill': 'pink', 'opacity': 0.8, 'cx': dragC.ox + dx, 'cy': dragC.oy + dy });
-    };
-
-    const fim = function dragEnd(dragC) {
-      console.log(dragC);
-      dragC.animate({ 'transform': 's1', 'fill': 'white', 'opacity': 1 }, 500);
-    };
-
-    st.drag(move, inicio, fim);
-
-
-
-
+  calcularFluxo() {
+    alert('fluxo calculado');
   }
 
 
