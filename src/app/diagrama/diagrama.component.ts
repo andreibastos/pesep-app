@@ -10,33 +10,48 @@ import { DiagramaSEP } from '../models/diagramaSEP';
 })
 export class DiagramaComponent implements OnInit {
 
-  paper: any;
+  y_draw;
+  x_draw;
+
+  y_components;
+  x_components;
+
+  paper_draw: any;
+  paper_components: any;
 
   diagrama: DiagramaSEP;
 
   constructor() { }
 
   ngOnInit() {
-    const y = $('#draw_inside').height();
-    const x = $('#draw_inside').width();
-    console.log(x, y);
+
+
+    const y_draw = $('#draw_inside').height();
+    const x_draw = $('#draw_inside').width();
+
+    const x_components = $('#draw_components').width();
+    const y_components = $('#draw_components').height();
+
+
+    console.log(x_draw, y_draw);
+    console.log(x_components, x_components);
 
 
     this.diagrama = new DiagramaSEP();
 
-    this.drawSEP(this.diagrama, x, y);
+    this.drawSEP(this.diagrama, x_draw, y_draw);
 
   }
 
-  drawSEP(diagrama: DiagramaSEP, x, y) {
+  drawSEP(diagrama: DiagramaSEP, x_draw, y_draw) {
     console.log(diagrama);
 
     Raphael.st.draggable = function () {
       let lx, ly, ox = 0, oy = 0;
       const me = this,
         moveFnc = function (dx, dy) {
-          lx = dx + ox;  // add the new change in x to the drag origin
-          ly = dy + oy;  // do the same for y
+          lx = dx + ox;  // add the new change in x_draw to the drag origin
+          ly = dy + oy;  // do the same for y_draw
           me.transform('t' + lx + ',' + ly);
 
         },
@@ -55,16 +70,26 @@ export class DiagramaComponent implements OnInit {
     };
 
 
-    this.paper = Raphael(document.getElementById('canvas_container'), x, y);
-    const st = this.paper.set();
+    this.paper_draw = Raphael('canvas_draw', x_draw, y_draw);
+
+    const st = this.paper_draw.set();
     st.push(
-      this.paper.circle(x / 2, y / 2, 150).attr('fill', 'white')
+      this.paper_draw.circle(x_draw / 2, y_draw / 2, 150).attr('fill', 'white')
     );
 
     st.attr('cursor', 'move');
 
     st.draggable();
 
+    this.paper_components = Raphael('canvas_components', this.x_components, this.y_components);
+    const st2 = this.paper_components.set();
+    st2.push(
+      this.paper_components.circle(this.x_components / 2, this.y_components / 2, 20).attr('fill', 'white')
+    );
+    st2.attr('cursor', 'move');
+
+    st2.draggable();
+    console.log(st2);
 
   }
 
