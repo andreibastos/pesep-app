@@ -63,6 +63,7 @@ export class DiagramaComponent implements OnInit {
           ox = lx;
           oy = ly;
           me.animate({ 'opacity': 1, 'stroke-width': 1 }, 200);
+          console.log(me);
         };
 
       this.drag(moveFnc, startFnc, endFnc);
@@ -81,20 +82,46 @@ export class DiagramaComponent implements OnInit {
 
     st.draggable();
 
-    this.paper_components = Raphael('canvas_components', this.x_components, this.y_components);
-    const st2 = this.paper_components.set();
-    st2.push(
-      this.paper_components.circle(this.x_components / 2, this.y_components / 2, 20).attr('fill', 'white')
-    );
-    st2.attr('cursor', 'move');
+    // this.paper_components = Raphael('canvas_components', this.x_components, this.y_components);
+    // const st2 = this.paper_components.set();
+    // st2.push(
+    //   this.paper_components.circle(this.x_components / 2, this.y_components / 2, 20).attr('fill', 'white')
+    // );
+    // st2.attr('cursor', 'move');
 
-    st2.draggable();
-    console.log(st2);
+    // st2.draggable();
+    // console.log(st2);
 
   }
 
   calcularFluxo() {
     alert('fluxo calculado');
+  }
+
+
+  allowDrop(ev) {
+    // console.log('allow', ev);
+    ev.preventDefault();
+  }
+
+  drag(ev) {
+    // console.log('drag', ev);
+    ev.dataTransfer.setData('text', ev.target.id);
+  }
+
+  drop(ev) {
+    console.log('drop', ev);
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData('text');
+    const st = this.paper_draw.set();
+    st.push(
+      this.paper_draw.rect(ev['x'], ev['y'], 150, 20).attr('fill', 'black ')
+    );
+
+    st.attr('cursor', 'move');
+
+    st.draggable();
+
   }
 
 

@@ -1,13 +1,54 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-3 mt-5 mb-1 pt-2 pb-1">
-      <div id="draw_components" class="h-100 shadow border  bg-white rounded ">
-        <div id="canvas_components"></div>
-      </div>
+    <div class="col-3">
+      <nav class="col-md-3 bg-light sidebar">
+        <p class="text-center">Componentes</p>
+        <input class="form-control form-control p-2 mb-3 text-center" type="text" placeholder="Filtrar Componente" aria-label="Search">
+        <div class="row">
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-6 col-md-4 col-xl-3 mb-3 mx-auto my-2" draggable="true" (dragstart)="drag($event)">
+            <img class="img-thumbnail mb-3" src="../../assets/images/supply.png" alt="Gerador Elétrico">
+            <h5 class="mb-1">Gerador</h5>
+          </div>
+          <div class="col-sm-6 col-md-4 col-xl-3 mb-3 mx-auto my-2">
+            <img class="img-thumbnail mb-3" src="../../assets/images/resistor (1).png" alt="Gerador Elétrico">
+            <h5 class="mb-1">Resistor</h5>
+          </div>
+          <div class="col-sm-6 col-md-4 col-xl-3 mb-3 mx-auto my-2">
+            <img class="img-thumbnail mb-3" src="../../assets/images/inductor.png" alt="Gerador Elétrico">
+            <h5 class="mb-1">Indutor</h5>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-sm-6 col-md-4 col-xl-3 mb-3 mx-auto my-2">
+            <img class="img-thumbnail mb-3" src="../../assets/images/capacitor.png" alt="Gerador Elétrico">
+            <h5 class="mb-1">Capacitor</h5>
+          </div>
+          <div class="col-sm-6 col-md-4 col-xl-3 mb-3 mx-auto my-2">
+            <img class="img-thumbnail mb-3" src="../../assets/images/transformer.png" alt="Gerador Elétrico">
+            <h5 class="mb-1">Transformador</h5>
+          </div>
+          <div class="col-sm-6 col-md-4 col-xl-3 mb-3 mx-auto my-2">
+            <img class="img-thumbnail mb-3" src="../../assets/images/left-arrow.png" alt="Gerador Elétrico">
+            <h5 class="mb-1">Carga</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 col-md-4 col-xl-3 mb-3 mx-auto my-2">
+            <img class="img-thumbnail mb-3" src="../../assets/images/minus.png" alt="Gerador Elétrico">
+            <h5 class="mb-1">Barra</h5>
+          </div>
+
+        </div>
+      </nav>
     </div>
 
 
-    <div class="col-md-9 mt-5 mb-1 pt-2 pb-1 area-draw">
+    <div id="draw" class="col-md-9 mt-5 mb-1 pt-2 pb-1">
       <div class="row menu bg-white border  mb-1 align-items-center p-0 m-0">
         <div class="col-1">
           <div class="input-group-prepend ">
@@ -18,8 +59,8 @@
           <button name="" id="" class="btn btn-primary " (click)="calcularFluxo()" role="button"> Calcular Fluxo de Potência</button>
         </div>
       </div>
-      <div id="draw_inside" class="h-100 shadow border  bg-white rounded ">
-        <div id="canvas_draw"></div>
+      <div id="draw_inside"  (drop)="drop($event)" (dragover)="allowDrop($event)"  class="shadow border  bg-white rounded area-draw">
+        <div id="canvas_draw"  ></div>
       </div>
     </div>
   </div>
