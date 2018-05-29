@@ -9,11 +9,11 @@
         </div>
         <div class="row">
 
-          <div class="col-sm-6 col-md-4 col-xl-3 mb-3 mx-auto my-2" draggable="true" (dragstart)="drag($event)">
+          <div id="yes-drop" class="col-sm-6 col-md-4 col-xl-3 mb-3 mx-auto my-2 draggable drag-drop" draggable="true" (dragstart)="drag($event)">
             <img class="img-thumbnail mb-3" src="../../assets/images/supply.png" alt="Gerador Elétrico">
             <h5 class="mb-1">Gerador</h5>
           </div>
-          <div class="col-sm-6 col-md-4 col-xl-3 mb-3 mx-auto my-2">
+          <div id="yes-drop" class="col-sm-6 col-md-4 col-xl-3 mb-3 mx-auto my-2 draggable drag-drop">
             <img class="img-thumbnail mb-3" src="../../assets/images/resistor (1).png" alt="Gerador Elétrico">
             <h5 class="mb-1">Resistor</h5>
           </div>
@@ -44,8 +44,16 @@
           </div>
 
         </div>
+
+        <div class="row">
+          <div class="col-6 m-auto">
+            <p>{{recebido| json}}</p>
+          </div>
+        </div>
       </nav>
     </div>
+
+
 
 
     <div id="draw" class="col-md-9 mt-5 mb-1 pt-2 pb-1">
@@ -54,13 +62,15 @@
           <div class="input-group-prepend ">
             <input type="checkbox" aria-label="Checkbox for following text input">
           </div>
+
         </div>
         <div class="col-6 justify-content-end">
+          
           <button name="" id="" class="btn btn-primary " (click)="calcularFluxo()" role="button"> Calcular Fluxo de Potência</button>
         </div>
       </div>
-      <div id="draw_inside"  (drop)="drop($event)" (dragover)="allowDrop($event)"  class="shadow border  bg-white rounded area-draw">
-        <div id="canvas_draw"  ></div>
+      <div id="draw_inside" (drop)="drop($event)" (dragover)="allowDrop($event)" class="shadow border  bg-white rounded area-draw dropzone ">
+        <div id="canvas_draw"></div>
       </div>
     </div>
   </div>

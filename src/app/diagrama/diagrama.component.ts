@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as Raphael from 'raphael';
 import * as $ from 'jquery';
+import * as interact from 'interactjs';
 
 import { DiagramaSEP } from '../models/diagramaSEP';
 @Component({
@@ -9,6 +10,8 @@ import { DiagramaSEP } from '../models/diagramaSEP';
   styleUrls: ['./diagrama.component.css']
 })
 export class DiagramaComponent implements OnInit {
+
+  recebido = '';
 
   y_draw;
   x_draw;
@@ -21,10 +24,81 @@ export class DiagramaComponent implements OnInit {
 
   diagrama: DiagramaSEP;
 
+
   constructor() { }
 
   ngOnInit() {
+    const transformProp = '';
+    let clone = '';
 
+    // setup draggable elements.
+    interact('.draggable')
+      .draggable({
+        max: Infinity,
+        snap: {
+          relativePoints: [{ x: 0.5, y: 0.5 }],
+        },
+      })
+      .on('dragstart', function (event) {
+        clone = event.currentTarget.cloneNode(true);
+        event.interaction.x = parseInt(event.target.getAttribute('data-x'), 10) || 0;
+        event.interaction.y = parseInt(event.target.getAttribute('data-y'), 10) || 0;
+      })
+      .on('dragmove', function (event) {
+        event.interaction.x += event.dx;
+        event.interaction.y += event.dy;
+
+        if (transformProp) {
+          event.target.style[transformProp] =
+            'translate(' + event.interaction.x + 'px, ' + event.interaction.y + 'px)';
+        } else {
+          event.target.style.left = event.interaction.x + 'px';
+          event.target.style.top = event.interaction.y + 'px';
+        }
+      })
+      .on('dragend', function (event) {
+        event.target.setAttribute('data-x', event.interaction.x);
+        event.target.setAttribute('data-y', event.interaction.y);
+      });
+
+
+
+    // enable draggables to be dropped into this
+    const a = interact('.dropzone').dropzone({
+      // only accept elements matching this CSS selector
+      accept: '#yes-drop',
+      // Require a 75% element overlap for a drop to be possible
+      overlap: 0.75,
+
+      // listen for drop related events:
+
+      ondropactivate: function (event) {
+        // add active dropzone feedback
+        event.target.classList.add('drop-active');
+      },
+      ondragenter: function (event) {
+        const draggableElement = event.relatedTarget,
+          dropzoneElement = event.target;
+
+        // feedback the possibility of a drop
+        dropzoneElement.classList.add('drop-target');
+        draggableElement.classList.add('can-drop');
+      },
+      ondragleave: function (event) {
+        // remove the drop feedback style
+        event.target.classList.remove('drop-target');
+        event.relatedTarget.classList.remove('can-drop');
+      },
+      ondrop: function (event) {
+      },
+      ondropdeactivate: function (event) {
+        // remove active dropzone feedback
+        event.target.classList.remove('drop-active');
+        event.target.classList.remove('drop-target');
+      }
+    });
+
+    console.log(a);
 
     const y_draw = $('#draw_inside').height();
     const x_draw = $('#draw_inside').width();
@@ -111,6 +185,7 @@ export class DiagramaComponent implements OnInit {
 
   drop(ev) {
     console.log('drop', ev);
+    this.recebido = JSON.stringify(ev);
     ev.preventDefault();
     const data = ev.dataTransfer.getData('text');
     const st = this.paper_draw.set();
