@@ -11,6 +11,10 @@ import { DiagramaSEP } from '../models/diagramaSEP';
 })
 export class DiagramaComponent implements OnInit {
 
+  icons: any[] = [
+    { name: '' }
+  ];
+
   recebido = '';
 
   y_draw;
@@ -29,14 +33,16 @@ export class DiagramaComponent implements OnInit {
 
   ngOnInit() {
     const transformProp = '';
-    let clone = '';
-
+    let clone = document.createElement('div');
+    const pixelSize = 10;
     // setup draggable elements.
     interact('.draggable')
       .draggable({
         max: Infinity,
         snap: {
-          relativePoints: [{ x: 0.5, y: 0.5 }],
+          targets: [interact['createSnapGrid']({
+            x: pixelSize, y: pixelSize
+          })]
         },
       })
       .on('dragstart', function (event) {
@@ -155,16 +161,6 @@ export class DiagramaComponent implements OnInit {
     st.attr('cursor', 'move');
 
     st.draggable();
-
-    // this.paper_components = Raphael('canvas_components', this.x_components, this.y_components);
-    // const st2 = this.paper_components.set();
-    // st2.push(
-    //   this.paper_components.circle(this.x_components / 2, this.y_components / 2, 20).attr('fill', 'white')
-    // );
-    // st2.attr('cursor', 'move');
-
-    // st2.draggable();
-    // console.log(st2);
 
   }
 
