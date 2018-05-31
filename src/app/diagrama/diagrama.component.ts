@@ -31,46 +31,86 @@ export class DiagramaComponent implements OnInit {
 
   constructor() { }
 
+  dragmove(event) {
+
+    const target = event.target,
+      // keep the dragged position in the data-x/data-y attributes
+      x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+      y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+    // translate the element
+    target.style.webkitTransform =
+      target.style.transform =
+      'translate(' + x + 'px, ' + y + 'px)';
+
+    // update the posiion attributes
+    target.setAttribute('data-x', x);
+    target.setAttribute('data-y', y);
+  }
+
   ngOnInit() {
     const transformProp = '';
     let clone = document.createElement('div');
     const pixelSize = 10;
-    // setup draggable elements.
-    interact('.draggable')
+    // configuração dos componentes do siderbar
+    const component_fixed = interact('.component-fixed')
       .draggable({
-        max: Infinity,
-        snap: {
-          targets: [interact['createSnapGrid']({
-            x: pixelSize, y: pixelSize
-          })]
-        },
+        // enable inertial throwing
+        inertia: true,
+        // // keep the element within the area of it's parent
+        // restrict: {
+        //   restriction: '.dropzone',
+        //   endOnly: true,
+        //   elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+        // },
+        // enable autoScroll
+        autoScroll: true,
+
+        // snap: {
+        //   targets: [interact['createSnapGrid']({
+        //     x: pixelSize, y: pixelSize
+        //   })]
+        // },
       })
       .on('dragstart', function (event) {
         clone = event.currentTarget.cloneNode(true);
         event.interaction.x = parseInt(event.target.getAttribute('data-x'), 10) || 0;
         event.interaction.y = parseInt(event.target.getAttribute('data-y'), 10) || 0;
       })
-      .on('dragmove', function (event) {
-        event.interaction.x += event.dx;
-        event.interaction.y += event.dy;
-
-        if (transformProp) {
-          event.target.style[transformProp] =
-            'translate(' + event.interaction.x + 'px, ' + event.interaction.y + 'px)';
-        } else {
-          event.target.style.left = event.interaction.x + 'px';
-          event.target.style.top = event.interaction.y + 'px';
-        }
-      })
+      .on('dragmove', this.dragmove)
       .on('dragend', function (event) {
-        event.target.setAttribute('data-x', event.interaction.x);
-        event.target.setAttribute('data-y', event.interaction.y);
+        // event.target.setAttribute('data-x', event.interaction.x);
+        // event.target.setAttribute('data-y', event.interaction.y);
       });
 
+    const component_diagram = interact('.component-diagram')
+      .draggable({
+        // keep the element within the area of it's parent
+        restrict: {
+          restriction: document.getElementById('canvas_draw'),
+          endOnly: false,
+          elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+        },
+        // enable autoScroll
+        autoScroll: true,
+
+        // snap: {
+        //   targets: [interact['createSnapGrid']({
+        //     x: pixelSize, y: pixelSize
+        //   })]
+      })
+      .on('dragstart', function (event) {
+
+      })
+      .on('dragmove', this.dragmove)
+      .on('dragend', function (event) {
+
+      })
+      ;
 
 
     // enable draggables to be dropped into this
-    const a = interact('.dropzone').dropzone({
+    const a = interact('.dropzone-diagram').dropzone({
       // only accept elements matching this CSS selector
       accept: '#yes-drop',
       // Require a 75% element overlap for a drop to be possible
@@ -96,6 +136,9 @@ export class DiagramaComponent implements OnInit {
         event.relatedTarget.classList.remove('can-drop');
       },
       ondrop: function (event) {
+        event.relatedTarget.classList.remove('component-fixed');
+        event.relatedTarget.classList.add('component-diagram');
+        // console.log(event);
       },
       ondropdeactivate: function (event) {
         // remove active dropzone feedback
@@ -104,7 +147,6 @@ export class DiagramaComponent implements OnInit {
       }
     });
 
-    console.log(a);
 
     const y_draw = $('#draw_inside').height();
     const x_draw = $('#draw_inside').width();
@@ -113,18 +155,17 @@ export class DiagramaComponent implements OnInit {
     const y_components = $('#draw_components').height();
 
 
-    console.log(x_draw, y_draw);
-    console.log(x_components, x_components);
 
 
     this.diagrama = new DiagramaSEP();
 
     this.drawSEP(this.diagrama, x_draw, y_draw);
 
+
+
   }
 
   drawSEP(diagrama: DiagramaSEP, x_draw, y_draw) {
-    console.log(diagrama);
 
     Raphael.st.draggable = function () {
       let lx, ly, ox = 0, oy = 0;
@@ -143,7 +184,6 @@ export class DiagramaComponent implements OnInit {
           ox = lx;
           oy = ly;
           me.animate({ 'opacity': 1, 'stroke-width': 1 }, 200);
-          console.log(me);
         };
 
       this.drag(moveFnc, startFnc, endFnc);
@@ -180,7 +220,7 @@ export class DiagramaComponent implements OnInit {
   }
 
   drop(ev) {
-    console.log('drop', ev);
+    // console.log('drop', ev);
     this.recebido = JSON.stringify(ev);
     ev.preventDefault();
     const data = ev.dataTransfer.getData('text');

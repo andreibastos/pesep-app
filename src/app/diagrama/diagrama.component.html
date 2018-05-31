@@ -1,34 +1,28 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-3">
-      <nav class="col-md-3 bg-light sidebar">
-        <p class="text-center">Componentes</p>
-        <input class="form-control form-control p-2 mb-3 text-center" type="text" placeholder="Filtrar Componente" aria-label="Search">
-        <div class="row">
+    <div class="col-2 p-0" style="min-width: 330px;">
+      <div class="sidebar bg-light dropzone dropzone-components">
+        <input class="form-control p-2 my-3 text-left" type="text" placeholder="Filtrar Componente" aria-label="Search">
+        <div class="row sidebar-row border ml-1">
+            <div class="componente mx-1 border"> <p>1</p> </div>
+            <div class="componente mx-1 border"> <p>1</p> </div>
+            <div class="componente mx-1 border"> <p>1</p> </div>
 
         </div>
-        <div class="row">
-          <div id="yes-drop" class="col-sm-6 col-md-4 col-xl-3 mb-3 mx-auto my-2 draggable drag-drop"  (dragstart)="drag($event)">
+          <div id="yes-drop" class="component-fixed drag-drop"  (dragstart)="drag($event)">
             <img class="img-thumbnail mb-3" src="../../assets/images/supply.png" alt="Gerador Elétrico">
             <h5 class="mb-1">Gerador</h5>
           </div>
 
 
 
-          <object id="yes-drop" class="col-3 draggable drag-drop" data="../../assets/icons/gen.svg" type="image/svg+xml">
-          </object>
 
 
-        </div>
-
-      </nav>
+      </div>
     </div>
 
-
-
-
-    <div id="draw" class="col-md-9 mt-5 mb-1 pt-2 pb-1">
-      <div class="row menu bg-white border  mb-1 align-items-center p-0 m-0">
+    <div class="col-md-9 mt-5 mb-1 pt-2 pb-1">
+      <div class="row menu-superior bg-white border  mb-1 align-items-center p-0 m-0">
         <div class="col-1">
           <div class="input-group-prepend ">
             <input type="checkbox" aria-label="Checkbox for following text input">
@@ -40,9 +34,13 @@
           <button name="" id="" class="btn btn-primary " (click)="calcularFluxo()" role="button"> Calcular Fluxo de Potência</button>
         </div>
       </div>
-      <div id="draw_inside" (drop)="drop($event)" (dragover)="allowDrop($event)" class="shadow border  bg-white rounded area-draw dropzone ">
+      <div id="draw_inside" class="shadow border  bg-white rounded area-draw dropzone-diagram  ">
         <div id="canvas_draw"></div>
       </div>
+    </div>
+
+    <div class="col-2 bg-danger">
+
     </div>
   </div>
 </div>
