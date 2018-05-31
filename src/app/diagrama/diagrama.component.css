@@ -14,14 +14,12 @@
   padding: 48px 0 0;
   /* Height of navbar */
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-
 }
 
 .sidebar-row {
   width: 330px;
   height: 100px;
 }
-
 
 /* Zonas  */
 
@@ -30,14 +28,13 @@
 }
 
 .dropzone-components {
-  background-color: aqua;
+  /* background-color: aqua; */
 }
 
 .dropzone-diagram {
-  background-color: aqua;
-  
+  /* background-color: aqua; */
+  border: 1px steelblue;
 }
-
 
 /* Diagrama */
 
@@ -50,13 +47,15 @@
   height: 50px;
 }
 
-
-.drop-active {}
+.drop-active {
+  border-style: dashed;
+}
 
 .drop-target {
-  background-color: #29e;
-  border-color: #fff;
+  /* background-color: #29e; */
+  /* border-color: rgba(123, 134, 236, 0.322); */
   border-style: solid;
+  box-shadow: #29e;
 }
 
 .drag-drop {
@@ -72,7 +71,7 @@
 }
 
 .drag-drop.can-drop {
-  color: #000;
+  /* color: #000; */
   /* background-color: #4e4; */
 }
 
@@ -83,4 +82,3 @@
   height: 100px;
   min-width: 100px;
 }
-

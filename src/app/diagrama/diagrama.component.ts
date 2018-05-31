@@ -58,11 +58,11 @@ export class DiagramaComponent implements OnInit {
         // enable inertial throwing
         inertia: true,
         // // keep the element within the area of it's parent
-        // restrict: {
-        //   restriction: '.dropzone',
-        //   endOnly: true,
-        //   elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
-        // },
+        restrict: {
+          // restriction: [document.getElementById('canvas_draw')],
+          endOnly: true,
+          elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+        },
         // enable autoScroll
         autoScroll: true,
 
@@ -87,17 +87,18 @@ export class DiagramaComponent implements OnInit {
       .draggable({
         // keep the element within the area of it's parent
         restrict: {
-          restriction: document.getElementById('canvas_draw'),
+          restriction: document.getElementById('draw_inside'),
           endOnly: false,
           elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
         },
         // enable autoScroll
         autoScroll: true,
 
-        // snap: {
-        //   targets: [interact['createSnapGrid']({
-        //     x: pixelSize, y: pixelSize
-        //   })]
+        snap: {
+          targets: [interact['createSnapGrid']({
+            x: pixelSize, y: pixelSize
+          })]
+        }
       })
       .on('dragstart', function (event) {
 
@@ -138,7 +139,7 @@ export class DiagramaComponent implements OnInit {
       ondrop: function (event) {
         event.relatedTarget.classList.remove('component-fixed');
         event.relatedTarget.classList.add('component-diagram');
-        // console.log(event);
+        console.log(clone);
       },
       ondropdeactivate: function (event) {
         // remove active dropzone feedback
@@ -159,7 +160,7 @@ export class DiagramaComponent implements OnInit {
 
     this.diagrama = new DiagramaSEP();
 
-    this.drawSEP(this.diagrama, x_draw, y_draw);
+    // this.drawSEP(this.diagrama, x_draw, y_draw);
 
 
 
