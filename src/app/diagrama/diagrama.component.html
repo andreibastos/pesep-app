@@ -2,25 +2,37 @@
   <!-- Linha Principal -->
   <div class="row mt-5">
     <!-- Componentes  -->
-    <div class="col-2 p-0 m-0 border ">
-      <div id="component-sidebar" class="sidebar bg-info dropzone dropzone-components">
+    <div class="col-1 p-0 m-0 border ">
+      <div id="component-sidebar" class="sidebar dropzone dropzone-components mx-auto pt-3">
         <p class="h4">Componentes</p>
-
-        <input class="form-control p-2 my-3 text-left" type="text" placeholder="Filtrar Componente" aria-label="Search">
-        <div class="row sidebar-row ml-1 p-0">
+        <!-- Barra PV -->
+        <div class="row sidebar-row mx-auto p-3">
           <a id="bus_pv" class="component component-fixed  mt-1 p-0 drag-drop">
           </a>
+        </div>
+        <!-- /Barra PV -->
+
+        <!-- Barra VT -->
+        <div class="row sidebar-row mx-auto p-3">
           <a id="bus_vt" class="component component-fixed  mt-1 mx-1 p-0 drag-drop">
           </a>
+        </div>
+        <!-- /Barra VT -->
+
+
+        <!-- Barra PQ -->
+        <div class="row sidebar-row mx-auto p-3">
           <a id="bus_pq" class="component component-fixed  mt-1 p-0 drag-drop">
           </a>
         </div>
+        <!-- /Barra PQ -->
+
       </div>
     </div>
     <!-- /Componentes  -->
 
     <!-- Diagrama -->
-    <div class="col-8 mt-2 mb-0 ">
+    <div class="col-10 mt-2 mb-0 ">
       <!-- Menu Superior -->
       <div class="row menu-superior bg-white border  mb-2 align-items-center p-0 m-0">
 
@@ -40,16 +52,19 @@
         </div>
         <!-- /Ações de movimento  -->
 
-        <!-- Ações de Copiar/Recortar/Colar -->
+        <!-- Ações de Copiar/Recortar/Colar/Excluir -->
         <div class="btn-group mr-3 " role="group">
           <button type="button" class="btn btn-outline-secondary">
-            <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png" alt="Resistor">
+            <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png" alt="Copiar">
           </button>
           <button type="button" class="btn btn-outline-secondary">
-            <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png" alt="Resistor">
+            <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png" alt="Recortar">
           </button>
           <button type="button" class="btn btn-outline-secondary">
-            <img src="../../assets/icons/menu-acoes/icons8-colar-32.png" alt="Resistor">
+            <img src="../../assets/icons/menu-acoes/icons8-colar-32.png" alt="Colar">
+          </button>
+          <button type="button" class="btn btn-outline-secondary">
+            <img src="../../assets/icons/menu-acoes/icons8-lixo-32.png" alt="Excluir">
           </button>
         </div>
         <!-- /Ações de Copiar/Recortar/Colar -->
@@ -66,10 +81,10 @@
 
       <!-- Área de Desenho -->
       <div id="draw_inside" class="shadow-lg bg-white rounded area-draw dropzone-diagram  ">
-        <button type="button" class="btn btn-light border  float-right align-self-lg-end  shadow shadow-lg" style="z-index: 200;"
+        <button type="button" class="btn btn-light border float-right align-self-lg-end  shadow shadow-lg" style="z-index: 200;"
           (click)="calcularFluxo()">
           <img src="../../assets/icons/menu-acoes/icons8-processo-32.png" alt="Calcular Fluxo de Potência">
-          
+
         </button>
       </div>
       <!-- /Área de Desenho -->
@@ -77,17 +92,29 @@
     <!-- /Diagrama -->
 
     <!-- Propriedades -->
-    <div class="col-2 p-0 border">
-      <div class="propriety bg-info">
-        <div class="align-items-center">
-          <p class="h4"> Propriedades</p>
+    <div class="col-1 p-0 border">
+      <div class="propriety">
+        <div class="justify-content-center">
+          <p class="h4 "> Propriedades</p>
         </div>
-        <div *ngIf="showProprietiesDiagram" class="row p-0 m-0">
-          <div class="col-1 border">
-            <div class="input-group-prepend ">
-              <input type="checkbox" aria-label="Checkbox for following text input">
+        <div *ngIf="showProprieties.diagram">
+          <div class="row p-0 m-0 border">
+            <div class="m-2 custom-control custom-checkbox">
+              <input type="checkbox" (change)="proprieties.view_grid = $event.target.checked; proprietiesChange($event); " [checked]="proprieties.view_grid" class="custom-control-input"
+                id="view_grid">
+              <label class="custom-control-label" for="view_grid">Exibir Grade</label>
             </div>
           </div>
+          <div class="row p-0 m-0 border">
+            <div class="m-2 custom-control custom-checkbox">
+              <input type="checkbox" (change)="proprieties.snap_grid = $event.target.checked; proprietiesChange($event); " [checked]="proprieties.snap_grid"  class="custom-control-input"
+                id="snap_grid">
+              <label class="custom-control-label" for="snap_grid">Ajustar a Grade</label>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="showProprieties.bus_PV" class="row p-0 m-0">
+
         </div>
 
       </div>

@@ -14,42 +14,59 @@ import { DiagramaSEP } from '../models/diagramaSEP';
 })
 export class DiagramaComponent implements OnInit {
 
+  // Configurações de Drag and Drop
+  component_fixed; // interact with component fixed
+  component_diagram; // interact with component fixed
+
+  // Configuraçes de Zonas
+  dropozone_diagram; // interact with zones
+
+  // Itens Selecionados
   selecteds: any[] = new Array();
-  showProprietiesDiagram = true;
 
-  proprieties = { 'view_grid': true, 'snap_grid': true };
+  // Propriedades do Diagrama
+  proprieties = { view_grid: true, snap_grid: true }; // Propriedades do diagrama
+  showProprieties = { diagram: true, bus_PV: false, bus_PQ: false, bus_VT: false }; // Qual Propriedade Exibir
 
-  // tamanho da grade
-  grid_x = 10;
-  grid_y = 10;
+  // Tamanho da grade
+  grid_x = 25;
+  grid_y = 25;
 
-
-
-
-  diagrama: DiagramaSEP; // objeto que ficará as barras e as linhas
+  diagrama: DiagramaSEP; // objetos que ficarão as barras e as linhas
 
   constructor() {
 
-
   }
+
+  // Criação dos icones dos componentes fixos
+  createIconsSiderBar() {
+    SVGIcone.createBus('bus_pv', 'PV');
+    SVGIcone.createBus('bus_vt', 'VT');
+    SVGIcone.createBus('bus_pq', 'PQ');
+  }
+
 
   calcularFluxo() {
     console.log(this.diagrama);
   }
 
-  changeProperties() {
-    if (this.selecteds.length === 0) {
-      this.showProprietiesDiagram = true;
-    } else {
-      this.showProprietiesDiagram = false;
-
-    }
+  proprietiesChange(event) {
+    console.log(event);
+    this.changeSnap();
   }
 
-  createIconsSiderBar() {
-    SVGIcone.createBus('bus_pv', 'PV');
-    SVGIcone.createBus('bus_vt', 'VT');
-    SVGIcone.createBus('bus_pq', 'PQ');
+  changeProperties() {
+  }
+
+  changeSnap() {
+    // Configuração do Snap
+    let targets = [];
+    if (this.proprieties.snap_grid) {
+      targets = [interact['createSnapGrid']({
+        x: this.grid_x, y: this.grid_y
+      })];
+    }
+    this.component_diagram.options.drag.snap.targets = targets;
   }
 
   // evento comum de mover elementos do pacote interact.js
@@ -70,8 +87,10 @@ export class DiagramaComponent implements OnInit {
     target.setAttribute('data-y', y);
   }
 
-  // quando o seletor do diagrama é criado
+  // Quando o seletor é criado (similar ao document.ready)
   ngOnInit() {
+
+    this.diagrama = new DiagramaSEP();
 
     const selector = this;
 
@@ -81,7 +100,7 @@ export class DiagramaComponent implements OnInit {
     let clone = document.createElement('div');
 
     // configuração dos componentes do siderbar
-    const component_fixed = interact('.component-fixed')
+    this.component_fixed = interact('.component-fixed')
       .draggable({
         // enable inertial throwing
         inertia: true,
@@ -106,7 +125,7 @@ export class DiagramaComponent implements OnInit {
       });
 
     // configuração dos componentes do diagrama
-    const component_diagram = interact('.component-diagram')
+    this.component_diagram = interact('.component-diagram')
       .draggable({
         inertia: true,
         // keep the element within the area of it's parent
@@ -116,7 +135,7 @@ export class DiagramaComponent implements OnInit {
           elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
         },
         // enable autoScroll
-        autoScroll: true,
+        autoScroll: false,
 
         snap: {
           targets: [interact['createSnapGrid']({
@@ -142,7 +161,7 @@ export class DiagramaComponent implements OnInit {
 
 
     // configuração da zona do diagrama
-    const dropozone_diagram = interact('.dropzone-diagram').dropzone({
+    this.dropozone_diagram = interact('.dropzone-diagram').dropzone({
       // only accept elements matching this CSS selector
       accept: '#bus_pv, #bus_vt, #bus_pq',
       // Require a 75% element overlap for a drop to be possible
