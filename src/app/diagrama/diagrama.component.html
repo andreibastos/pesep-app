@@ -1,8 +1,10 @@
 <div class="container-fluid">
+  <!-- Linha Principal -->
   <div class="row mt-5">
+    <!-- Componentes  -->
     <div class="col-2 p-0 m-0 border ">
       <div id="component-sidebar" class="sidebar bg-info dropzone dropzone-components">
-        <p>Componentes</p>
+        <p class="h4">Componentes</p>
 
         <input class="form-control p-2 my-3 text-left" type="text" placeholder="Filtrar Componente" aria-label="Search">
         <div class="row sidebar-row ml-1 p-0">
@@ -15,24 +17,72 @@
         </div>
       </div>
     </div>
+    <!-- /Componentes  -->
 
-    <!-- <div class="col-8 mt-5 mx-0 px-0 mb-1 pt-2 pb-1 border" style="height: 100px"> -->
+    <!-- Diagrama -->
     <div class="col-8 mt-2 mb-0 ">
+      <!-- Menu Superior -->
       <div class="row menu-superior bg-white border  mb-2 align-items-center p-0 m-0">
 
-        <div class="col-6 justify-content-end">
+        <!-- Ações de movimento  -->
+        <div class="btn-group mr-3" role="group">
 
-          <button name="" id="" class="btn btn-primary " (click)="calcularFluxo()" role="button"> Calcular Fluxo de Potência</button>
+          <button type="button" class="btn btn-outline-secondary">
+            <img src="../../assets/icons/menu-acoes/icons8-cursor-32.png" alt="Selecionar">
+          </button>
+          <button type="button" class="btn btn-outline-secondary">
+            <img src="../../assets/icons/menu-acoes/icons8-mover-32.png" alt="Selecionar">
+          </button>
+
+
+
+
         </div>
-      </div>
-      <div id="draw_inside" class="shadow-lg bg-white rounded area-draw dropzone-diagram  ">
-      </div>
-    </div>
+        <!-- /Ações de movimento  -->
 
+        <!-- Ações de Copiar/Recortar/Colar -->
+        <div class="btn-group mr-3 " role="group">
+          <button type="button" class="btn btn-outline-secondary">
+            <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png" alt="Resistor">
+          </button>
+          <button type="button" class="btn btn-outline-secondary">
+            <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png" alt="Resistor">
+          </button>
+          <button type="button" class="btn btn-outline-secondary">
+            <img src="../../assets/icons/menu-acoes/icons8-colar-32.png" alt="Resistor">
+          </button>
+        </div>
+        <!-- /Ações de Copiar/Recortar/Colar -->
+
+        <!-- Inserir Linha -->
+        <div class="btn-group mr-3 " role="group">
+          <button type="button" class="btn btn-outline-secondary">
+            <img src="../../assets/icons/menu-acoes/resistor.png" alt="Resistor">
+          </button>
+        </div>
+        <!-- /Inserir Linha -->
+      </div>
+      <!-- /Menu Superior -->
+
+      <!-- Área de Desenho -->
+      <div id="draw_inside" class="shadow-lg bg-white rounded area-draw dropzone-diagram  ">
+        <button type="button" class="btn btn-light border  float-right align-self-lg-end  shadow shadow-lg" style="z-index: 200;"
+          (click)="calcularFluxo()">
+          <img src="../../assets/icons/menu-acoes/icons8-processo-32.png" alt="Calcular Fluxo de Potência">
+          
+        </button>
+      </div>
+      <!-- /Área de Desenho -->
+    </div>
+    <!-- /Diagrama -->
+
+    <!-- Propriedades -->
     <div class="col-2 p-0 border">
       <div class="propriety bg-info">
-        <p class="align-items-center"> Propriedades</p>
-        <div class="row p-0 m-0">
+        <div class="align-items-center">
+          <p class="h4"> Propriedades</p>
+        </div>
+        <div *ngIf="showProprietiesDiagram" class="row p-0 m-0">
           <div class="col-1 border">
             <div class="input-group-prepend ">
               <input type="checkbox" aria-label="Checkbox for following text input">
@@ -42,5 +92,8 @@
 
       </div>
     </div>
+    <!-- /Propriedades -->
+
   </div>
+  <!-- /Linha Principal -->
 </div>

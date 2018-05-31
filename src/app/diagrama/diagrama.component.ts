@@ -15,10 +15,14 @@ import { DiagramaSEP } from '../models/diagramaSEP';
 export class DiagramaComponent implements OnInit {
 
   selecteds: any[] = new Array();
+  showProprietiesDiagram = true;
+
+  proprieties = { 'view_grid': true, 'snap_grid': true };
 
   // tamanho da grade
   grid_x = 10;
   grid_y = 10;
+
 
 
 
@@ -27,6 +31,19 @@ export class DiagramaComponent implements OnInit {
   constructor() {
 
 
+  }
+
+  calcularFluxo() {
+    console.log(this.diagrama);
+  }
+
+  changeProperties() {
+    if (this.selecteds.length === 0) {
+      this.showProprietiesDiagram = true;
+    } else {
+      this.showProprietiesDiagram = false;
+
+    }
   }
 
   createIconsSiderBar() {
@@ -56,7 +73,10 @@ export class DiagramaComponent implements OnInit {
   // quando o seletor do diagrama é criado
   ngOnInit() {
 
+    const selector = this;
+
     this.createIconsSiderBar();
+    this.changeProperties();
 
     let clone = document.createElement('div');
 
@@ -113,6 +133,8 @@ export class DiagramaComponent implements OnInit {
       }).on('tap', function (event) {
         event.currentTarget.classList.toggle('component-selected');
         event.preventDefault();
+        selector.selecteds.push(event.currentTarget);
+        selector.changeProperties();
       })
       ;
 
