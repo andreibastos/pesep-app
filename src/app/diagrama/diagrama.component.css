@@ -3,25 +3,26 @@
    */
 
 .sidebar {
-  min-width: 330px;
-  width: 330px;
-  position: fixed;
+  /* min-width: 330px;
+  width: 330px; */
   top: 0;
   bottom: 0;
   left: 0;
   z-index: 100;
+  height: calc(100vh - 50px);
   /* Behind the navbar */
-  padding: 48px 0 0;
+  /* padding: 48px 0 0; */
   /* Height of navbar */
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
 
 .sidebar-row {
-  width: 330px;
   height: 100px;
 }
 
-/* Zonas  */
+/* 
+  * Zonas 
+  */
 
 .dropzone {
   transition: background-color 0.3s;
@@ -33,14 +34,17 @@
 
 .dropzone-diagram {
   /* background-color: aqua; */
-  border: 1px steelblue;
+  border: 1px green;
 }
 
-/* Diagrama */
+/* 
+  * Diagrama
+  */
 
 .area-draw {
   height: calc(100vh - 120px);
   box-sizing: border-box;
+  z-index: 0;
 }
 
 .menu-superior {
@@ -75,10 +79,26 @@
   /* background-color: #4e4; */
 }
 
-/* Componentes */
+/*
+  * Componentes
+  */
 
 .component {
   width: 100px;
   height: 100px;
   min-width: 100px;
+  z-index: 100;
+}
+
+.component-selected {
+  border: 1px solid #0c80f5!important;
+}
+
+/* 
+  * Propriedades
+  */
+
+.propriety {
+  
+  height: calc(100vh - 50px);
 }

@@ -14,9 +14,13 @@ import { DiagramaSEP } from '../models/diagramaSEP';
 })
 export class DiagramaComponent implements OnInit {
 
+  selecteds: any[] = new Array();
+
   // tamanho da grade
   grid_x = 10;
   grid_y = 10;
+
+
 
   diagrama: DiagramaSEP; // objeto que ficará as barras e as linhas
 
@@ -77,7 +81,6 @@ export class DiagramaComponent implements OnInit {
       })
       .on('dragmove', this.dragmove)
       .on('dragend', function (event) {
-        console.log(event);
         // event.target.setAttribute('data-x', event.interaction.x);
         // event.target.setAttribute('data-y', event.interaction.y);
       });
@@ -107,6 +110,9 @@ export class DiagramaComponent implements OnInit {
       .on('dragmove', this.dragmove)
       .on('dragend', function (event) {
 
+      }).on('tap', function (event) {
+        event.currentTarget.classList.toggle('component-selected');
+        event.preventDefault();
       })
       ;
 
@@ -132,17 +138,16 @@ export class DiagramaComponent implements OnInit {
 
         // feedback the possibility of a drop
         dropzoneElement.classList.add('drop-target');
-        draggableElement.classList.add('can-drop');
+        // draggableElement.classList.add('can-drop');
       },
       ondragleave: function (event) {
         // remove the drop feedback style
         event.target.classList.remove('drop-target');
-        event.relatedTarget.classList.remove('can-drop');
+        // event.relatedTarget.classList.remove('can-drop');
       },
       ondrop: function (event) {
         event.relatedTarget.classList.remove('component-fixed');
         event.relatedTarget.classList.add('component-diagram');
-        console.log(clone);
       },
       ondropdeactivate: function (event) {
         // remove active dropzone feedback
