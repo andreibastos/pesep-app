@@ -2,6 +2,9 @@ import { element } from 'protractor';
 import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
 import * as interact from 'interactjs';
+import * as SVG from 'svg.js';
+import { SVGIcone } from './svg-icones';
+
 
 import { DiagramaSEP } from '../models/diagramaSEP';
 @Component({
@@ -17,7 +20,16 @@ export class DiagramaComponent implements OnInit {
 
   diagrama: DiagramaSEP; // objeto que ficará as barras e as linhas
 
-  constructor() { }
+  constructor() {
+
+
+  }
+
+  createIconsSiderBar() {
+    SVGIcone.createBus('bus_pv', 'PV');
+    SVGIcone.createBus('bus_vt', 'VT');
+    SVGIcone.createBus('bus_pq', 'PQ');
+  }
 
   // evento comum de mover elementos do pacote interact.js
   dragmove(event) {
@@ -39,6 +51,9 @@ export class DiagramaComponent implements OnInit {
 
   // quando o seletor do diagrama é criado
   ngOnInit() {
+
+    this.createIconsSiderBar();
+
     let clone = document.createElement('div');
 
     // configuração dos componentes do siderbar
@@ -70,6 +85,7 @@ export class DiagramaComponent implements OnInit {
     // configuração dos componentes do diagrama
     const component_diagram = interact('.component-diagram')
       .draggable({
+        inertia: true,
         // keep the element within the area of it's parent
         restrict: {
           restriction: document.getElementById('draw_inside'),
@@ -100,9 +116,9 @@ export class DiagramaComponent implements OnInit {
     // configuração da zona do diagrama
     const dropozone_diagram = interact('.dropzone-diagram').dropzone({
       // only accept elements matching this CSS selector
-      accept: '#yes-drop, #component-sidebar',
+      accept: '#bus_pv, #bus_vt, #bus_pq',
       // Require a 75% element overlap for a drop to be possible
-      overlap: 0.75,
+      overlap: 0.1,
 
       // listen for drop related events:
 
