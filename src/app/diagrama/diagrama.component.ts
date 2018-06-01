@@ -29,8 +29,11 @@ export class DiagramaComponent implements OnInit {
   showProprieties = { diagram: true, bus_PV: false, bus_PQ: false, bus_VT: false }; // Qual Propriedade Exibir
 
   // Tamanho da grade
-  grid_x = 25;
-  grid_y = 25;
+  grid_lines = 50;
+  grid_coluns = 50;
+  grid_x;
+  grid_y;
+  grid_svg;
 
   diagrama: DiagramaSEP; // objetos que ficarão as barras e as linhas
 
@@ -51,11 +54,55 @@ export class DiagramaComponent implements OnInit {
   }
 
   proprietiesChange(event) {
-    console.log(event);
     this.changeSnap();
+    this.changeGrid();
+  }
+
+  changeGrid() {
+
+    if (this.grid_svg.style.display === 'none') {
+      this.grid_svg.style.display = 'block';
+    } else {
+      this.grid_svg.style.display = 'none';
+    }
   }
 
   changeProperties() {
+  }
+
+  makeGrid() {
+    const height = document.getElementById('draw_inside').clientHeight;
+    const width = document.getElementById('draw_inside').clientWidth;
+    const draw_inside = SVG('draw_inside').size(width, height);
+
+    draw_inside.id('grid_svg');
+
+    console.log(draw_inside);
+    const grid = draw_inside.set();
+    console.log(draw_inside.height());
+    for (let linha = 0; linha <= draw_inside.height() / this.grid_y; linha++) {
+      const line = draw_inside.line(0, linha * this.grid_y, draw_inside.width(), linha * this.grid_y);
+      if ((linha) % 5 !== 0) {
+        line.stroke('#b3b3b3d6');
+      } else {
+        line.stroke('#292929');
+      }
+      grid.add(line);
+    }
+
+    for (let coluna = 0; coluna < draw_inside.width() / this.grid_y; coluna++) {
+      const line = draw_inside.line(coluna * this.grid_x, 0, coluna * this.grid_x, draw_inside.height());
+      if ((coluna) % 5 !== 0) {
+        line.stroke('#b3b3b3d6');
+      } else {
+        line.stroke('#292929');
+      }
+      grid.add(line);
+    }
+    console.log(grid);
+
+    this.grid_svg = document.getElementById('grid_svg');
+
   }
 
   changeSnap() {
@@ -89,6 +136,12 @@ export class DiagramaComponent implements OnInit {
 
   // Quando o seletor é criado (similar ao document.ready)
   ngOnInit() {
+
+    const height = document.getElementById('draw_inside').clientHeight;
+    const width = document.getElementById('draw_inside').clientWidth;
+
+    this.grid_y = height / this.grid_lines;
+    this.grid_x = width / this.grid_coluns;
 
     this.diagrama = new DiagramaSEP();
 
@@ -138,9 +191,14 @@ export class DiagramaComponent implements OnInit {
         autoScroll: false,
 
         snap: {
-          targets: [interact['createSnapGrid']({
-            x: this.grid_x, y: this.grid_y
-          })]
+          relativePoints: [{ x: 0, y: 0 }],
+          range: 10,
+          targets: [
+            interact['createSnapGrid']({
+              x: this.grid_x, y: this.grid_y, range: 50
+            })
+          ],
+
         }
       })
       .on('dragstart', function (event) {
@@ -189,6 +247,7 @@ export class DiagramaComponent implements OnInit {
       ondrop: function (event) {
         event.relatedTarget.classList.remove('component-fixed');
         event.relatedTarget.classList.add('component-diagram');
+        console.log(event.relatedTarget);
       },
       ondropdeactivate: function (event) {
         // remove active dropzone feedback
@@ -196,6 +255,8 @@ export class DiagramaComponent implements OnInit {
         event.target.classList.remove('drop-target');
       }
     });
+
+    this.makeGrid();
   }
 
 }
