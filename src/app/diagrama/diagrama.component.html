@@ -6,14 +6,14 @@
       <div id="component-sidebar" class="sidebar dropzone dropzone-components mx-auto pt-3">
         <p class="h4">Componentes</p>
         <!-- Barra PV -->
-        <div class="row sidebar-row mx-auto p-3">
+        <div class="row sidebar-row mx-auto p-3" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra VT">
           <a id="bus_pv" class="component component-fixed  mt-1 p-0 drag-drop">
           </a>
         </div>
         <!-- /Barra PV -->
 
         <!-- Barra VT -->
-        <div class="row sidebar-row mx-auto p-3">
+        <div class="row sidebar-row mx-auto p-3" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra PV">
           <a id="bus_vt" class="component component-fixed  mt-1 mx-1 p-0 drag-drop">
           </a>
         </div>
@@ -22,7 +22,7 @@
 
         <!-- Barra PQ -->
         <div class="row sidebar-row mx-auto p-3">
-          <a id="bus_pq" class="component component-fixed  mt-1 p-0 drag-drop">
+          <a id="bus_pq" class="component component-fixed  mt-1 p-0 drag-drop" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra PQ">
           </a>
         </div>
         <!-- /Barra PQ -->
@@ -39,11 +39,11 @@
         <!-- Ações de movimento  -->
         <div class="btn-group mr-3" role="group">
 
-          <button type="button" class="btn btn-outline-secondary">
-            <img src="../../assets/icons/menu-acoes/icons8-cursor-32.png" alt="Selecionar">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Selecionar">
+            <img src="../../assets/icons/menu-acoes/icons8-cursor-32.png" >
           </button>
-          <button type="button" class="btn btn-outline-secondary">
-            <img src="../../assets/icons/menu-acoes/icons8-mover-32.png" alt="Selecionar">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Mover">
+            <img src="../../assets/icons/menu-acoes/icons8-mover-32.png" >
           </button>
 
 
@@ -54,25 +54,25 @@
 
         <!-- Ações de Copiar/Recortar/Colar/Excluir -->
         <div class="btn-group mr-3 " role="group">
-          <button type="button" class="btn btn-outline-secondary">
-            <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png" alt="Copiar">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Copiar">
+            <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png" >
           </button>
-          <button type="button" class="btn btn-outline-secondary">
-            <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png" alt="Recortar">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Recortar">
+            <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png" >
           </button>
-          <button type="button" class="btn btn-outline-secondary">
-            <img src="../../assets/icons/menu-acoes/icons8-colar-32.png" alt="Colar">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Colar">
+            <img src="../../assets/icons/menu-acoes/icons8-colar-32.png" >
           </button>
-          <button type="button" class="btn btn-outline-secondary">
-            <img src="../../assets/icons/menu-acoes/icons8-lixo-32.png" alt="Excluir">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Excluir">
+            <img src="../../assets/icons/menu-acoes/icons8-lixo-32.png" >
           </button>
         </div>
         <!-- /Ações de Copiar/Recortar/Colar -->
 
         <!-- Inserir Linha -->
         <div class="btn-group mr-3 " role="group">
-          <button type="button" class="btn btn-outline-secondary">
-            <img src="../../assets/icons/menu-acoes/resistor.png" alt="Resistor">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Linha">
+            <img src="../../assets/icons/menu-acoes/resistor.png" >
           </button>
         </div>
         <!-- /Inserir Linha -->
@@ -100,15 +100,15 @@
         <div *ngIf="showProprieties.diagram">
           <div class="row p-0 m-0 border">
             <div class="m-2 custom-control custom-checkbox">
-              <input type="checkbox" (change)="proprieties.view_grid = $event.target.checked; proprietiesChange($event); " [checked]="proprieties.view_grid" class="custom-control-input"
-                id="view_grid">
+              <input type="checkbox" (change)="proprieties.view_grid = $event.target.checked; proprietiesChange($event); " [checked]="proprieties.view_grid"
+                class="custom-control-input" id="view_grid">
               <label class="custom-control-label" for="view_grid">Exibir Grade</label>
             </div>
           </div>
           <div class="row p-0 m-0 border">
             <div class="m-2 custom-control custom-checkbox">
-              <input type="checkbox" (change)="proprieties.snap_grid = $event.target.checked; proprietiesChange($event); " [checked]="proprieties.snap_grid"  class="custom-control-input"
-                id="snap_grid">
+              <input type="checkbox" (change)="proprieties.snap_grid = $event.target.checked; proprietiesChange($event); " [checked]="proprieties.snap_grid"
+                class="custom-control-input" id="snap_grid">
               <label class="custom-control-label" for="snap_grid">Ajustar a Grade</label>
             </div>
           </div>

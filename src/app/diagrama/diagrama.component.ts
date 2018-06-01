@@ -85,7 +85,7 @@ export class DiagramaComponent implements OnInit {
       if ((linha) % 5 !== 0) {
         line.stroke('#b3b3b3d6');
       } else {
-        line.stroke('#292929');
+        line.stroke('#787979');
       }
       grid.add(line);
     }
@@ -95,7 +95,7 @@ export class DiagramaComponent implements OnInit {
       if ((coluna) % 5 !== 0) {
         line.stroke('#b3b3b3d6');
       } else {
-        line.stroke('#292929');
+        line.stroke('#787979');
       }
       grid.add(line);
     }
