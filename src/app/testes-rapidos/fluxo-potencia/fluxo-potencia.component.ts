@@ -24,7 +24,7 @@ export class FluxoPotenciaComponent implements OnInit {
   }
 
 
-  calcularFluxo() {
+  CalculePowerFlow() {
 
     this.testesRapidosService.calcular(this.sistema).then(
       fluxo => {

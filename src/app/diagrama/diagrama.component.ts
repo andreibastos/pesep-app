@@ -1,18 +1,18 @@
-import { element } from 'protractor';
 import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
 import * as interact from 'interactjs';
 import * as SVG from 'svg.js';
+
 import { SVGIcone } from './svg-icones';
-
-
 import { DiagramaSEP } from '../models/diagramaSEP';
+
 @Component({
   selector: 'app-diagrama',
   templateUrl: './diagrama.component.html',
   styleUrls: ['./diagrama.component.css']
 })
 export class DiagramaComponent implements OnInit {
+
 
   // Configurações de Drag and Drop
   component_fixed; // interact with component fixed
@@ -25,98 +25,104 @@ export class DiagramaComponent implements OnInit {
   selecteds: any[] = new Array();
 
   // Propriedades do Diagrama
-  proprieties = { view_grid: true, snap_grid: true }; // Propriedades do diagrama
-  showProprieties = { diagram: true, bus_PV: false, bus_PQ: false, bus_VT: false }; // Qual Propriedade Exibir
+  proprieties = { view_grid: true, snap_grid: false }; // Propriedades do diagrama
+  show_proprieties = { diagram: true, bus_PV: false, bus_PQ: false, bus_VT: false }; // Qual Propriedade Exibir
 
-  // Tamanho da grade
-  grid_lines = 50;
-  grid_coluns = 50;
-  grid_x;
-  grid_y;
-  grid_svg;
+  // Ajustes da grade
+  grid_size_lines = 50; // Número de linhas
+  grid_size_coluns = 50; // Número de colunas
+  grid_dx; // Espaçamento em x
+  grid_dy; // Espaçamento em y
+  grid_svg; // Elemento DOM contendo a grade em SVG
 
-  diagrama: DiagramaSEP; // objetos que ficarão as barras e as linhas
+  diagram: DiagramaSEP; // objetos que ficarão as barras e as linhas
 
-  constructor() {
+  constructor() { }
 
-  }
+  // ** Functions of Creation **
 
   // Criação dos icones dos componentes fixos
-  createIconsSiderBar() {
+  CreateIconsSiderBar() {
     SVGIcone.createBus('bus_pv', 'PV');
     SVGIcone.createBus('bus_vt', 'VT');
     SVGIcone.createBus('bus_pq', 'PQ');
   }
 
+  // Criação da grade de linhas
+  CreateGridLines() {
+    // Obtém as medidas da tela
+    const height = document.getElementById('draw_inside').clientHeight;
+    const width = document.getElementById('draw_inside').clientWidth;
 
-  calcularFluxo() {
-    console.log(this.diagrama);
+    this.grid_dy = height / this.grid_size_lines;
+    this.grid_dx = width / this.grid_size_coluns;
+
+    // Cria o SVG em cima do elemento onde fica o desenho
+    const draw_inside = SVG('draw_inside').size(width, height);
+    draw_inside.id('grid_svg'); // Adiciona um ID
+    const grid = draw_inside.set(); // Cria um grupo de grid
+
+    const lines = draw_inside.set(); // Cria um grupo de lines
+    const columns = draw_inside.set(); // Cria um grupo de columns
+
+    // Varre o número de linhas, prédeterminado no ínício
+    for (let line = 0; line <= this.grid_size_lines; line++) {
+      const line_draw = draw_inside.line(0, line * this.grid_dy, draw_inside.width(), line * this.grid_dy);
+      if ((line) % 5 !== 0) { // Linhas escuras a cada 5 linhas
+        line_draw.stroke('#b3b3b3d6');
+      } else {
+        line_draw.stroke('#787979');
+      }
+      lines.add(line_draw); // Adiona no grupo de linhas
+    }
+
+    // Varre o número de colunas, prédeterminado no ínício
+    for (let column = 0; column <= this.grid_size_coluns; column++) {
+      const line_draw = draw_inside.line(column * this.grid_dx, 0, column * this.grid_dx, draw_inside.height());
+      if ((column) % 5 !== 0) { // Colunas escuras a cada 5 linhas
+        line_draw.stroke('#b3b3b3d6');
+      } else {
+        line_draw.stroke('#787979');
+      }
+      columns.add(line_draw); // Adiciona no grupo de colunas
+    }
+    // grid.add(columns);
+    this.grid_svg = document.getElementById('grid_svg'); // atualiza o grid DOM
   }
 
-  proprietiesChange(event) {
-    this.changeSnap();
-    this.changeGrid();
+  // ** Functions of Changes **
+
+  // Habilitar ou desabilitar grudar os componentes no grid
+  ChangeSnapGrid() {
+    // Configuração do Snap
+    let targets = [];
+    if (this.proprieties.snap_grid) {
+      targets = [interact['createSnapGrid']({
+        x: this.grid_dx, y: this.grid_dy
+      })];
+    }
+    console.log(this.proprieties.snap_grid);
+    this.component_diagram.options.drag.snap.targets = targets;
   }
 
-  changeGrid() {
-
+  // Mudança de visibilidade do grid
+  ChangeVisibilityGrid() {
+    // if (this.proprieties.view_grid) {
     if (this.grid_svg.style.display === 'none') {
       this.grid_svg.style.display = 'block';
     } else {
       this.grid_svg.style.display = 'none';
     }
+    // }
   }
 
-  changeProperties() {
+  // ** Function of Update **
+  UpdateGridLines() {
   }
 
-  makeGrid() {
-    const height = document.getElementById('draw_inside').clientHeight;
-    const width = document.getElementById('draw_inside').clientWidth;
-    const draw_inside = SVG('draw_inside').size(width, height);
+  // Functions of interaction
 
-    draw_inside.id('grid_svg');
-
-    console.log(draw_inside);
-    const grid = draw_inside.set();
-    console.log(draw_inside.height());
-    for (let linha = 0; linha <= draw_inside.height() / this.grid_y; linha++) {
-      const line = draw_inside.line(0, linha * this.grid_y, draw_inside.width(), linha * this.grid_y);
-      if ((linha) % 5 !== 0) {
-        line.stroke('#b3b3b3d6');
-      } else {
-        line.stroke('#787979');
-      }
-      grid.add(line);
-    }
-
-    for (let coluna = 0; coluna < draw_inside.width() / this.grid_y; coluna++) {
-      const line = draw_inside.line(coluna * this.grid_x, 0, coluna * this.grid_x, draw_inside.height());
-      if ((coluna) % 5 !== 0) {
-        line.stroke('#b3b3b3d6');
-      } else {
-        line.stroke('#787979');
-      }
-      grid.add(line);
-    }
-    console.log(grid);
-
-    this.grid_svg = document.getElementById('grid_svg');
-
-  }
-
-  changeSnap() {
-    // Configuração do Snap
-    let targets = [];
-    if (this.proprieties.snap_grid) {
-      targets = [interact['createSnapGrid']({
-        x: this.grid_x, y: this.grid_y
-      })];
-    }
-    this.component_diagram.options.drag.snap.targets = targets;
-  }
-
-  // evento comum de mover elementos do pacote interact.js
+  // Mover componentes na tela do pacote interact.js
   dragmove(event) {
 
     const target = event.target,
@@ -134,37 +140,20 @@ export class DiagramaComponent implements OnInit {
     target.setAttribute('data-y', y);
   }
 
-  // Quando o seletor é criado (similar ao document.ready)
-  ngOnInit() {
+  // Configura as interações iniciais
+  ConfigueInteractionInit() {
 
-    const height = document.getElementById('draw_inside').clientHeight;
-    const width = document.getElementById('draw_inside').clientWidth;
+    // Copiar o próprio seletor para passagem de parâmetro para outras funções
+    const self = this;
 
-    this.grid_y = height / this.grid_lines;
-    this.grid_x = width / this.grid_coluns;
-
-    this.diagrama = new DiagramaSEP();
-
-    const selector = this;
-
-    this.createIconsSiderBar();
-    this.changeProperties();
-
+    // Cria um clone, para copiar o componente a ser copiado
     let clone = document.createElement('div');
 
-    // configuração dos componentes do siderbar
+    // Configuração dos componentes do siderbar
     this.component_fixed = interact('.component-fixed')
       .draggable({
-        // enable inertial throwing
-        inertia: true,
-        // // keep the element within the area of it's parent
-        // restrict: {
-        //   restriction: document.getElementById('component-sidebar'),
-        //   endOnly: true,
-        //   elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
-        // },
-        // enable autoScroll
-        autoScroll: true
+        inertia: true, // enable inertial throwing
+        autoScroll: true // enable autoScroll
       })
       .on('dragstart', function (event) {
         clone = event.currentTarget.cloneNode(true);
@@ -172,46 +161,37 @@ export class DiagramaComponent implements OnInit {
         event.interaction.y = parseInt(event.target.getAttribute('data-y'), 10) || 0;
       })
       .on('dragmove', this.dragmove)
-      .on('dragend', function (event) {
-        // event.target.setAttribute('data-x', event.interaction.x);
-        // event.target.setAttribute('data-y', event.interaction.y);
-      });
+      .on('dragend', function (event) { });
 
     // configuração dos componentes do diagrama
     this.component_diagram = interact('.component-diagram')
       .draggable({
         inertia: true,
-        // keep the element within the area of it's parent
+        // keep the element within the area of draw_inside
         restrict: {
           restriction: document.getElementById('draw_inside'),
-          endOnly: false,
+          endOnly: true,
           elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
         },
-        // enable autoScroll
-        autoScroll: false,
-
+        autoScroll: false, // enable autoScroll
+        // snap
         snap: {
           relativePoints: [{ x: 0, y: 0 }],
-          range: 10,
+          // range: 10,
           targets: [
             interact['createSnapGrid']({
-              x: this.grid_x, y: this.grid_y, range: 50
+              x: this.grid_dx, y: this.grid_dy
             })
           ],
-
         }
       })
-      .on('dragstart', function (event) {
-
-      })
+      .on('dragstart', function (event) { })
       .on('dragmove', this.dragmove)
-      .on('dragend', function (event) {
-
-      }).on('tap', function (event) {
+      .on('dragend', function (event) { })
+      .on('tap', function (event) {
         event.currentTarget.classList.toggle('component-selected');
         event.preventDefault();
-        selector.selecteds.push(event.currentTarget);
-        selector.changeProperties();
+        self.selecteds.push(event.currentTarget);
       })
       ;
 
@@ -255,8 +235,29 @@ export class DiagramaComponent implements OnInit {
         event.target.classList.remove('drop-target');
       }
     });
+    this.ChangeSnapGrid();
+  }
 
-    this.makeGrid();
+  // ** Lifecycle Hooks **
+
+  // Quando o seletor é criado (similar ao document.ready)
+  ngOnInit() {
+    // criar um novo diagrama
+    this.diagram = new DiagramaSEP();
+
+    // Cria os icones da barra esquerdas, componentes fixos
+    this.CreateIconsSiderBar();
+
+    // Configuração das interações inicias
+    this.ConfigueInteractionInit();
+
+    // Criação das grade de linha
+    this.CreateGridLines();
+  }
+
+  // ** Services **
+  CalculePowerFlow() {
+    console.log(this.diagram);
   }
 
 }

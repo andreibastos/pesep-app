@@ -28,5 +28,5 @@
 </div>
 
 
-<button  *ngIf="linhaCompleta && barraCompleta" (click)="calcularFluxo()" class="btn btn-secondary mb-3" role="button">Calcular Fluxo de Potência</button>
+<button  *ngIf="linhaCompleta && barraCompleta" (click)="CalculePowerFlow()" class="btn btn-secondary mb-3" role="button">Calcular Fluxo de Potência</button>
 <app-fluxo-tabela  *ngIf="fluxo.length > 0 " [fluxoPotencia]="fluxo" ></app-fluxo-tabela>
