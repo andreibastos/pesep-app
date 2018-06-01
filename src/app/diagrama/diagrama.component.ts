@@ -28,6 +28,9 @@ export class DiagramaComponent implements OnInit {
   proprieties = { view_grid: true, snap_grid: false }; // Propriedades do diagrama
   show_proprieties = { diagram: true, bus_PV: false, bus_PQ: false, bus_VT: false }; // Qual Propriedade Exibir
 
+  // Ferramenta selecionada
+  tool_selected = { selected: true, move: false };
+
   // Ajustes da grade
   grid_size_lines = 50; // Número de linhas
   grid_size_coluns = 50; // Número de colunas
@@ -114,6 +117,16 @@ export class DiagramaComponent implements OnInit {
       this.grid_svg.style.display = 'none';
     }
     // }
+  }
+
+  ChangeToolSelected(name) {
+    if (name === 'selected') {
+      this.tool_selected[name] = true;
+      this.tool_selected['move'] = false;
+    } else {
+      this.tool_selected[name] = true;
+      this.tool_selected['selected'] = false;
+    }
   }
 
   // ** Function of Update **

@@ -39,10 +39,10 @@
         <!-- Ações de movimento  -->
         <div class="btn-group mr-3" role="group">
 
-          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Selecionar">
+          <button type="button" (click)="ChangeToolSelected('selected')" [class.active]="tool_selected.selected" class="btn btn-outline-secondary"  data-toggle="tooltip" data-html="true" data-placement="top" title="Selecionar">
             <img src="../../assets/icons/menu-acoes/icons8-cursor-32.png" >
           </button>
-          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Mover">
+          <button type="button" (click)="ChangeToolSelected('move')" [class.active]="tool_selected.move" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Mover">
             <img src="../../assets/icons/menu-acoes/icons8-mover-32.png" >
           </button>
 
@@ -54,16 +54,16 @@
 
         <!-- Ações de Copiar/Recortar/Colar/Excluir -->
         <div class="btn-group mr-3 " role="group">
-          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Copiar">
+          <button type="button" class="btn btn-outline-secondary"  disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Copiar">
             <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png" >
           </button>
-          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Recortar">
+          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Recortar">
             <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png" >
           </button>
-          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Colar">
+          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Colar">
             <img src="../../assets/icons/menu-acoes/icons8-colar-32.png" >
           </button>
-          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Excluir">
+          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Excluir">
             <img src="../../assets/icons/menu-acoes/icons8-lixo-32.png" >
           </button>
         </div>
