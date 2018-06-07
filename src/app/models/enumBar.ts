@@ -1,5 +1,5 @@
 export enum EnumBar {
-    'PV',
+    'VT',
     'Slack',
     'PQ'
 }

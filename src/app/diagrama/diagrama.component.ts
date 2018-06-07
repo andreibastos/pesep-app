@@ -5,6 +5,9 @@ import * as SVG from 'svg.js';
 
 import { SVGIcone } from './svg-icones';
 import { DiagramaSEP } from '../models/diagramaSEP';
+import { Fonte } from '../models/fonte';
+import { Carga } from '../models/carga';
+import { Gerador } from '../models/gerador';
 
 @Component({
   selector: 'app-diagrama',
@@ -135,6 +138,10 @@ export class DiagramaComponent implements OnInit {
 
   // Functions of interaction
 
+  addNewComponent(event) {
+    console.log(event);
+  }
+
   // Mover componentes na tela do pacote interact.js
   dragmove(event) {
 
@@ -174,7 +181,8 @@ export class DiagramaComponent implements OnInit {
         event.interaction.y = parseInt(event.target.getAttribute('data-y'), 10) || 0;
       })
       .on('dragmove', this.dragmove)
-      .on('dragend', function (event) { });
+      .on('dragend', function (event) {
+      });
 
     // configuração dos componentes do diagrama
     this.component_diagram = interact('.component-diagram')
@@ -219,7 +227,6 @@ export class DiagramaComponent implements OnInit {
       overlap: 0.1,
 
       // listen for drop related events:
-
       ondropactivate: function (event) {
         // add active dropzone feedback
         event.target.classList.add('drop-active');
@@ -230,17 +237,23 @@ export class DiagramaComponent implements OnInit {
 
         // feedback the possibility of a drop
         dropzoneElement.classList.add('drop-target');
-        // draggableElement.classList.add('can-drop');
       },
       ondragleave: function (event) {
         // remove the drop feedback style
         event.target.classList.remove('drop-target');
-        // event.relatedTarget.classList.remove('can-drop');
       },
       ondrop: function (event) {
-        event.relatedTarget.classList.remove('component-fixed');
-        event.relatedTarget.classList.add('component-diagram');
-        console.log(event.relatedTarget);
+        const component = event.relatedTarget;
+
+        if (self.isBusNew(component)) {
+          const bus = self.getNewBus(component);
+          self.diagram.add(bus);
+          console.log(self.diagram.getNodes());
+          event.relatedTarget.classList.remove('component-fixed');
+          event.relatedTarget.classList.add('component-diagram');
+        }
+
+
       },
       ondropdeactivate: function (event) {
         // remove active dropzone feedback
@@ -249,6 +262,24 @@ export class DiagramaComponent implements OnInit {
       }
     });
     this.ChangeSnapGrid();
+  }
+
+  isBusNew(component): boolean {
+    if (component.classList.value.indexOf('component-fixed') !== -1) { return true; }
+    return false;
+  }
+
+  getNewBus(component) {
+    if (component.id === 'bus_pv') {
+      // return new Modes
+      return new Gerador();
+    }
+    if (component.id === 'bus_pq') {
+      return new Carga();
+    }
+    if (component.id === 'bus_vt') {
+      return new Fonte();
+    }
   }
 
   // ** Lifecycle Hooks **

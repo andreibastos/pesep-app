@@ -1,25 +1,40 @@
-import { Componente } from './componente';
+import { EnumBar } from './enumBar';
 import { Gerador } from './gerador';
+import { IComponente } from './componente';
 
 export class DiagramaSEP {
-    nodes: Array<Componente> = new Array();
+    private _nodes: Array<IComponente> = new Array();
     links = [];
+    count = 0;
+
+    private _count_components = {};
 
     constructor() {
-        const gerador1 = new Gerador();
-        gerador1.x = 10;
-        gerador1.y = 50;
-        const gerador2 = new Gerador();
-        gerador1.x = 50;
-        gerador1.y = 80;
-        this.nodes.push(gerador1);
-        this.nodes.push(gerador2);
+        this._count_components[EnumBar.VT] = 0;
+        this._count_components[EnumBar.PQ] = 0;
+        this._count_components[EnumBar.Slack] = 0;
+    }
+
+    get count_components() {
+        return this._count_components;
+    }
+
+    add(newComponent: IComponente) {
+
+        this._count_components[newComponent.type]++;
+        newComponent.id = this.count;
+        newComponent.name += ' ' + this._count_components[newComponent.type];
+        this._nodes.push(newComponent);
+        this.count++;
+
+
+    }
+
+    getNodes(): Array<IComponente> {
+        return this._nodes;
     }
 
 
-
-
-
-
-
 }
+
+
