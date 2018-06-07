@@ -66,10 +66,10 @@ export class DiagramaComponent implements OnInit {
     // Cria o SVG em cima do elemento onde fica o desenho
     const draw_inside = SVG('draw_inside').size(width, height);
     draw_inside.id('grid_svg'); // Adiciona um ID
-    const grid = draw_inside.set(); // Cria um grupo de grid
+    const grid = draw_inside.group().id('grid') ; // Cria um grupo de grid
 
-    const lines = draw_inside.set(); // Cria um grupo de lines
-    const columns = draw_inside.set(); // Cria um grupo de columns
+    const lines = draw_inside.group().id('lines'); // Cria um grupo de lines
+    const columns = draw_inside.group().id('coluns'); // Cria um grupo de columns
 
     // Varre o número de linhas, prédeterminado no ínício
     for (let line = 0; line <= this.grid_size_lines; line++) {
@@ -81,6 +81,8 @@ export class DiagramaComponent implements OnInit {
       }
       lines.add(line_draw); // Adiona no grupo de linhas
     }
+    grid.add(lines);
+
 
     // Varre o número de colunas, prédeterminado no ínício
     for (let column = 0; column <= this.grid_size_coluns; column++) {
@@ -92,7 +94,8 @@ export class DiagramaComponent implements OnInit {
       }
       columns.add(line_draw); // Adiciona no grupo de colunas
     }
-    // grid.add(columns);
+    grid.add(columns);
+
     this.grid_svg = document.getElementById('grid_svg'); // atualiza o grid DOM
   }
 
