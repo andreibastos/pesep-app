@@ -222,7 +222,7 @@ export class DiagramaComponent implements OnInit {
     // configuração da zona do diagrama
     this.dropozone_diagram = interact('.dropzone-diagram').dropzone({
       // only accept elements matching this CSS selector
-      accept: '#bus_pv, #bus_vt, #bus_pq',
+      // accept: '#bus_pv, #bus_vt, #bus_pq',
       // Require a 75% element overlap for a drop to be possible
       overlap: 0.1,
 
@@ -247,11 +247,22 @@ export class DiagramaComponent implements OnInit {
 
         if (self.isBusNew(component)) {
           const bus = self.getNewBus(component);
-          self.diagram.add(bus);
-          console.log(self.diagram.getNodes());
-          event.relatedTarget.classList.remove('component-fixed');
-          event.relatedTarget.classList.add('component-diagram');
+          bus.x = component.getAttribute('data-x');
+          bus.y = component.getAttribute('data-y');
+          const newId = self.diagram.add(bus);
+
+
+          component.classList.remove('component-fixed');
+          component.classList.add('component-diagram');
+          component.setAttribute('id', newId);
+        } else {
+          const bus = self.diagram.getNode(parseInt(component.id, 0));
+          bus.x = component.getAttribute('data-x');
+          bus.y = component.getAttribute('data-y');
+          self.diagram.update(bus);
         }
+
+        console.log(self.diagram.getNodes());
 
 
       },
