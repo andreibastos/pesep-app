@@ -39,7 +39,7 @@ export class DiagramaComponent implements OnInit {
   grid_size_coluns = 50; // Número de colunas
   grid_dx; // Espaçamento em x
   grid_dy; // Espaçamento em y
-  grid_svg; // Elemento DOM contendo a grade em SVG
+  svg_draw: SVG.Doc; // Elemento DOM contendo a grade em SVG
 
   diagram: DiagramaSEP; // objetos que ficarão as barras e as linhas
 
@@ -65,8 +65,8 @@ export class DiagramaComponent implements OnInit {
 
     // Cria o SVG em cima do elemento onde fica o desenho
     const draw_inside = SVG('draw_inside').size(width, height);
-    draw_inside.id('grid_svg'); // Adiciona um ID
-    const grid = draw_inside.group().id('grid') ; // Cria um grupo de grid
+    draw_inside.id('svg_draw'); // Adiciona um ID
+    const grid = draw_inside.group().id('grid'); // Cria um grupo de grid
 
     const lines = draw_inside.group().id('lines'); // Cria um grupo de lines
     const columns = draw_inside.group().id('coluns'); // Cria um grupo de columns
@@ -96,8 +96,12 @@ export class DiagramaComponent implements OnInit {
     }
     grid.add(columns);
 
-    this.grid_svg = document.getElementById('grid_svg'); // atualiza o grid DOM
+    // this.svg_draw = document.getElementById('svg_draw'); // atualiza o grid DOM
+    this.svg_draw = draw_inside;
+
   }
+
+
 
   // ** Functions of Changes **
 
@@ -116,13 +120,12 @@ export class DiagramaComponent implements OnInit {
 
   // Mudança de visibilidade do grid
   ChangeVisibilityGrid() {
-    // if (this.proprieties.view_grid) {
-    if (this.grid_svg.style.display === 'none') {
-      this.grid_svg.style.display = 'block';
+    // console.log(this.svg_draw.element('grid'))  ;
+    if (this.proprieties.view_grid) {
+      SVG.get('grid').style('display', 'block');
     } else {
-      this.grid_svg.style.display = 'none';
+      SVG.get('grid').style('display', 'none');
     }
-    // }
   }
 
   ChangeToolSelected(name) {
@@ -311,6 +314,8 @@ export class DiagramaComponent implements OnInit {
 
     // Criação das grade de linha
     this.CreateGridLines();
+
+    console.log(this.svg_draw);
   }
 
   // ** Services **
