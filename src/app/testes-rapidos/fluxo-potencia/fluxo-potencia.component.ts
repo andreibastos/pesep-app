@@ -32,10 +32,9 @@ export class FluxoPotenciaComponent implements OnInit {
         this.fluxoCalculado = true;
       }
     );
-
-    // this.testesRapidosService.calcularFluxoPotencia(this.sistema);
-    // console.log('Calculado');
   }
+
+  ExportFlow() { }
 
   escolherOpcao(opcao) {
     this.opcaoEscolhida = opcao;
