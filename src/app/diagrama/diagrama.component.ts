@@ -129,6 +129,9 @@ export class DiagramaComponent implements OnInit {
   }
 
   ChangeToolSelected(name) {
+    const bus = SVGIcone.createBus('bus_pv', 'PV').addClass('component-diagram');
+
+    this.svg_draw.add(bus);
     if (name === 'selected') {
       this.tool_selected[name] = true;
       this.tool_selected['move'] = false;
