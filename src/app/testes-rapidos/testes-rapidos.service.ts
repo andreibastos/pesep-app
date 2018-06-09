@@ -22,13 +22,6 @@ export class TestesRapidosService {
     return this.url + method;
   }
 
-  calcularFluxoPotencia(sistema) {
-    this.http.post(this.getUrl('power_flow'), sistema).subscribe(
-      (data) => {
-        console.log(data['body']);
-      }
-    );
-  }
 
   calcular(sistema): Promise<any> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -41,11 +34,7 @@ export class TestesRapidosService {
   private extractData(res: Response) {
     const body = res.json();
     console.log(body);
-    return body || {};
-  }
-  private handleErrorObservable(error: Response | any) {
-    console.error(error.message || error);
-    return Observable.throw(error.message || error);
+    return body || [];
   }
 
   private handleErrorPromise(error: Response | any) {
