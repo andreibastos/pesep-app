@@ -11,7 +11,7 @@ import { Fluxo } from './../models/fluxo';
 })
 export class TestesRapidosService {
 
-  url = 'http://35.237.16.77:5000/calcule/';
+  url = 'http://0.0.0.0:5000/calcule/';
 
 
   body: any[];

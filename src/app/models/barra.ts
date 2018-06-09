@@ -12,7 +12,9 @@ export class Barra {
         'Potência Reativa Carga (Q)',
         'Potência Ativa Gerada Mínima (P)',
         'Potência Ativa Gerada Máxima (P)',
-        'Potência Reativa Shunt (Q)'];
+        'Potência Reativa Shunt (Q)',
+        'Reatância Interna (x)'
+    ];
 
 
     item: number;
@@ -29,6 +31,7 @@ export class Barra {
     pGeradamin: number;
     pGeradamax: number;
     qShunt: number;
+    x: number;
 
 
 
@@ -68,6 +71,7 @@ export class Barra {
         this.pGeradamin =  parseFloat(vetor[11]);
         this.pGeradamax =  parseFloat(vetor[12]);
         this.qShunt =  parseFloat(vetor[13]);
+        this.x =  parseFloat(vetor[14]);
     }
 
 
