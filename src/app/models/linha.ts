@@ -9,15 +9,6 @@ export class Linha {
     tap: number;
     a: number;
 
-    // constructor(item, fbus, tbus, r, x, tap, a) {
-    //     this.item = item;
-    //     this.fBus = fbus;
-    //     this.tBus = tbus;
-    //     this.r = r;
-    //     this.x = x;
-    //     this.tap = tap;
-    //     this.a = a;
-    // }
     constructor() {
 
     }

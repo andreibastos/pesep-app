@@ -10,15 +10,17 @@ import { TestesRapidosService } from './../testes-rapidos.service';
 export class FluxoPotenciaComponent implements OnInit {
 
   fluxo: Array<any> = new Array();
+  result: {};
   opcaoEscolhida = '';
   fluxoCalculado = false;
   linhaCompleta = false;
   barraCompleta = false;
 
-  sistema: any;
+  system: any;
 
 
-  constructor(private testesRapidosService: TestesRapidosService) { }
+  constructor(private testesRapidosService: TestesRapidosService) {
+  }
 
   ngOnInit() {
   }
@@ -26,15 +28,40 @@ export class FluxoPotenciaComponent implements OnInit {
 
   CalculePowerFlow() {
 
-    this.testesRapidosService.calcular(this.sistema).then(
-      fluxo => {
-        this.fluxo = fluxo;
+    this.testesRapidosService.calcular(this.system, 'power_flow').then(
+      result => {
+        this.fluxo = result['power_flow'];
+        this.result = result;
         this.fluxoCalculado = true;
       }
     );
+  }
 
-    // this.testesRapidosService.calcularFluxoPotencia(this.sistema);
-    // console.log('Calculado');
+  Export(file) {
+    let data;
+    switch (file) {
+      case 'fluxo.csv':
+        data = this.arrayToTxt(this.result['power_flow']);
+        break;
+      case 'susceptancia.txt':
+        data = this.arrayToTxt(this.result['susceptance']);
+        break;
+      case 'linhas.txt':
+        data = this.arrayToTxt(this.result['lines']);
+        break;
+      case 'colunas.txt':
+        data = this.arrayToTxt(this.result['columns']);
+        break;
+    }
+    const a = document.createElement('a');
+    a.setAttribute('style', 'display:none;');
+    document.body.appendChild(a);
+    const blob = new Blob([data], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    a.href = url;
+    a.download = `${file}`; /* your file name*/
+    a.click();
+    return 'success';
   }
 
   escolherOpcao(opcao) {
@@ -42,12 +69,24 @@ export class FluxoPotenciaComponent implements OnInit {
   }
 
   carregouArquivos(event) {
-    this.sistema = event;
+    this.system = event;
     this.linhaCompleta = event['linhas'].length > 0;
     this.barraCompleta = event['barras'].length > 0;
   }
 
   calculouFluxo(event) {
 
+  }
+
+  arrayToTxt(array) {
+    let str = '';
+    array.forEach(row => {
+      row.forEach(column => {
+        str += column + ',';
+      });
+      str = str.slice(0, -1);
+      str += '\n';
+    });
+    return str;
   }
 }

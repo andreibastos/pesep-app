@@ -11,7 +11,7 @@ import { Fluxo } from './../models/fluxo';
 })
 export class TestesRapidosService {
 
-  url = 'http://35.237.16.77:5000/calcule/';
+  url = 'http://0.0.0.0:5000/calcule/';
 
 
   body: any[];
@@ -22,30 +22,19 @@ export class TestesRapidosService {
     return this.url + method;
   }
 
-  calcularFluxoPotencia(sistema) {
-    this.http.post(this.getUrl('power_flow'), sistema).subscribe(
-      (data) => {
-        console.log(data['body']);
-      }
-    );
-  }
 
-  calcular(sistema): Promise<any> {
+  calcular(system, method): Promise<any> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
     const options = new RequestOptions({ headers: headers });
-    return this.http.post(this.getUrl('power_flow'), sistema, options).toPromise()
+    return this.http.post(this.getUrl(method), system, options).toPromise()
       .then(this.extractData)
       .catch(this.handleErrorPromise);
   }
 
   private extractData(res: Response) {
     const body = res.json();
-    console.log(body);
-    return body || {};
-  }
-  private handleErrorObservable(error: Response | any) {
-    console.error(error.message || error);
-    return Observable.throw(error.message || error);
+    // console.log(body, 'body');
+    return body || [];
   }
 
   private handleErrorPromise(error: Response | any) {

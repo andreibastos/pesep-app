@@ -108,7 +108,7 @@ export class FluxoArquivosComponent implements OnInit {
       } else if (tipo === 'barra') {
         self.arquivoBarra = [];
 
-        const dados = FluxoArquivosComponent.TextoParaLista(evt.target['result'], 14);
+        const dados = FluxoArquivosComponent.TextoParaLista(evt.target['result'], 15);
 
         self.barras = new Array();
         dados.forEach((dado, index) => {
