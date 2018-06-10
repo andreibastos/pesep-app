@@ -4,7 +4,7 @@
     <!-- Componentes  -->
     <div class="col-1 p-0 m-0 border ">
       <div id="component-sidebar" class="sidebar dropzone dropzone-components mx-auto pt-3">
-        <p class="h4">Componentes</p>
+        <p class="h5">Componentes</p>
         <!-- Barra VT -->
         <div class="row sidebar-row mx-auto p-3" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra Vθ">
           <a id="bus_vt" class="component component-fixed  mt-1 p-0 drag-drop">
@@ -22,7 +22,8 @@
 
         <!-- Barra PQ -->
         <div class="row sidebar-row mx-auto p-3">
-          <a id="bus_pq" class="component component-fixed  mt-1 p-0 drag-drop" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra PQ">
+          <a id="bus_pq" class="component component-fixed  mt-1 p-0 drag-drop" data-toggle="tooltip" data-html="true" data-placement="right"
+            title="Barra PQ">
           </a>
         </div>
         <!-- /Barra PQ -->
@@ -39,11 +40,13 @@
         <!-- Ações de movimento  -->
         <div class="btn-group mr-3" role="group">
 
-          <button type="button" (click)="ChangeToolSelected('selected')" [class.active]="tool_selected.selected" class="btn btn-outline-secondary"  data-toggle="tooltip" data-html="true" data-placement="top" title="Selecionar">
-            <img src="../../assets/icons/menu-acoes/icons8-cursor-32.png" >
+          <button type="button" (click)="ChangeToolSelected('selected')" [class.active]="tool_selected.selected" class="btn btn-outline-secondary"
+            data-toggle="tooltip" data-html="true" data-placement="top" title="Selecionar">
+            <img src="../../assets/icons/menu-acoes/icons8-cursor-32.png">
           </button>
-          <button type="button" (click)="ChangeToolSelected('move')" [class.active]="tool_selected.move" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Mover">
-            <img src="../../assets/icons/menu-acoes/icons8-mover-32.png" >
+          <button type="button" (click)="ChangeToolSelected('move')" [class.active]="tool_selected.move" class="btn btn-outline-secondary"
+            data-toggle="tooltip" data-html="true" data-placement="top" title="Mover">
+            <img src="../../assets/icons/menu-acoes/icons8-mover-32.png">
           </button>
 
 
@@ -54,17 +57,21 @@
 
         <!-- Ações de Copiar/Recortar/Colar/Excluir -->
         <div class="btn-group mr-3 " role="group">
-          <button type="button" class="btn btn-outline-secondary"  disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Copiar">
-            <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png" >
+          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
+            title="Copiar">
+            <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png">
           </button>
-          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Recortar">
-            <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png" >
+          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
+            title="Recortar">
+            <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png">
           </button>
-          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Colar">
-            <img src="../../assets/icons/menu-acoes/icons8-colar-32.png" >
+          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
+            title="Colar">
+            <img src="../../assets/icons/menu-acoes/icons8-colar-32.png">
           </button>
-          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Excluir">
-            <img src="../../assets/icons/menu-acoes/icons8-lixo-32.png" >
+          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
+            title="Excluir">
+            <img src="../../assets/icons/menu-acoes/icons8-lixo-32.png">
           </button>
         </div>
         <!-- /Ações de Copiar/Recortar/Colar -->
@@ -72,7 +79,7 @@
         <!-- Inserir Linha -->
         <div class="btn-group mr-3 " role="group">
           <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Linha">
-            <img src="../../assets/icons/menu-acoes/resistor.png" >
+            <img src="../../assets/icons/menu-acoes/resistor.png">
           </button>
         </div>
         <!-- /Inserir Linha -->
@@ -80,13 +87,7 @@
       <!-- /Menu Superior -->
 
       <!-- Área de Desenho -->
-      <div id="draw_inside" class="shadow-lg bg-white rounded area-draw dropzone-diagram  ">
-        <!-- <button type="button" class="btn btn-light border float-right align-self-lg-end  shadow shadow-lg" style="z-index: 200;"
-          (click)="CalculePowerFlow()">
-          <img src="../../assets/icons/menu-acoes/icons8-processo-32.png" alt="Calcular Fluxo de Potência">
-
-        </button> -->
-      </div>
+      <div id="draw_inside" class="shadow-lg bg-white rounded area-draw dropzone-diagram  "></div>
       <!-- /Área de Desenho -->
     </div>
     <!-- /Diagrama -->
@@ -95,7 +96,7 @@
     <div class="col-1 p-0 border">
       <div class="propriety">
         <div class="justify-content-center">
-          <p class="h4 "> Propriedades</p>
+          <p class="h5 "> Propriedades</p>
         </div>
         <div *ngIf="show_proprieties.diagram">
           <div class="row p-0 m-0 border">
@@ -113,6 +114,7 @@
             </div>
           </div>
         </div>
+        
         <div *ngIf="show_proprieties.bus_PV" class="row p-0 m-0">
 
         </div>

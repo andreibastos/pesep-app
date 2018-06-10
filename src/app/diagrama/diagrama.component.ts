@@ -264,6 +264,8 @@ export class DiagramaComponent implements OnInit {
           component.classList.remove('component-fixed');
           component.classList.add('component-diagram');
           component.setAttribute('id', newId);
+
+          SVGIcone.createBus(component.id, 'PV');
         } else {
           const bus = self.diagram.getNode(parseInt(component.id, 0));
           bus.x = component.getAttribute('data-x');
