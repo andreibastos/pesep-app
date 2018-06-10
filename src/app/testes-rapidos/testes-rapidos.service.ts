@@ -23,17 +23,17 @@ export class TestesRapidosService {
   }
 
 
-  calcular(sistema): Promise<any> {
+  calcular(system, method): Promise<any> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
     const options = new RequestOptions({ headers: headers });
-    return this.http.post(this.getUrl('power_flow'), sistema, options).toPromise()
+    return this.http.post(this.getUrl(method), system, options).toPromise()
       .then(this.extractData)
       .catch(this.handleErrorPromise);
   }
 
   private extractData(res: Response) {
     const body = res.json();
-    console.log(body);
+    // console.log(body, 'body');
     return body || [];
   }
 
