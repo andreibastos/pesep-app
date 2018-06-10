@@ -16,10 +16,11 @@ export class FluxoPotenciaComponent implements OnInit {
   linhaCompleta = false;
   barraCompleta = false;
 
-  sistema: any;
+  system: any;
 
 
-  constructor(private testesRapidosService: TestesRapidosService) { }
+  constructor(private testesRapidosService: TestesRapidosService) {
+  }
 
   ngOnInit() {
   }
@@ -27,7 +28,7 @@ export class FluxoPotenciaComponent implements OnInit {
 
   CalculePowerFlow() {
 
-    this.testesRapidosService.calcular(this.sistema).then(
+    this.testesRapidosService.calcular(this.system, 'power_flow').then(
       result => {
         this.fluxo = result['power_flow'];
         this.result = result;
@@ -68,7 +69,7 @@ export class FluxoPotenciaComponent implements OnInit {
   }
 
   carregouArquivos(event) {
-    this.sistema = event;
+    this.system = event;
     this.linhaCompleta = event['linhas'].length > 0;
     this.barraCompleta = event['barras'].length > 0;
   }
