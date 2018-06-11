@@ -31,6 +31,11 @@ export class DiagramaComponent implements OnInit {
   tool_selected = { selected: true, move: false };
   count = 0;
 
+  selections: SVG.Set;
+
+  div_name = 'draw_inside';
+
+
   constructor() {
     this.count_components[EnumBar.VT] = 0;
     this.count_components[EnumBar.PQ] = 0;
@@ -38,17 +43,88 @@ export class DiagramaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const div = 'draw_inside';
     const draw_inside = document.getElementById('draw_inside');
     // Obtém as medidas da tela
     const height = draw_inside.clientHeight;
     const width = draw_inside.clientWidth;
 
-    this.container = SVG(div)
+    this.container = SVG(this.div_name)
+      .addClass('svg_area')
       .size(width, height);
+
+    this.enableSelection();
+
+    // this.container.on('click', function (event) {
+    //   console.log(event, 'mouse_click');
+    // });
+
+    // this.container.mouseout(function (event) {
+    //   console.log(event, 'mouseout');
+    // });
+    // this.container.mouseover(function (event) {
+    //   console.log(event, 'mouseover');
+    // });
+    // this.container.on('', function () {
+
+    // });
 
     this.initInteract();
 
+  }
+
+  enableSelection() {
+    const self = this;
+    let rect: SVG.Element, x, y, dx, dy;
+    let mouse_status = 'mouseup';
+    this.container.mousedown(function (event) {
+      mouse_status = 'mousedown';
+      x = event.offsetX;
+      y = event.offsetY;
+      rect = self.container
+        .rect(0, 0)
+        .move(x, y)
+        .id('rect_selection')
+        .fill({ color: 'rgb(0, 0, 255)', opacity: 0.3 });
+
+
+    });
+    this.container.mouseup(function (event) {
+      mouse_status = 'mouseup';
+      reset();
+
+    });
+    this.container.mousemove(function (event) {
+      if (mouse_status === 'mousedown') {
+        dx = event.offsetX - x;
+        dy = event.offsetY - y;
+        let offsetX = 0, offsetY = 0;
+
+        if (dx < 0) {
+          offsetX = dx;
+          dx *= -1;
+
+        }
+        if (dy < 0) {
+          offsetY = dy;
+          dy *= -1;
+        }
+
+        rect.transform({ x: offsetX, y: offsetY });
+        rect.width(dx)
+          .height(dy);
+
+      }
+
+    });
+
+    this.container.click(reset);
+
+    function reset() {
+      const rect_selection = document.getElementById('rect_selection');
+      if (rect_selection) {
+        rect_selection.remove();
+      }
+    }
   }
 
 
@@ -82,6 +158,8 @@ export class DiagramaComponent implements OnInit {
         // console.log(self.dict_svg_elements);
 
       });
+
+
   }
 
   add(name: string) {
@@ -95,7 +173,6 @@ export class DiagramaComponent implements OnInit {
     const node = this.createNode(name)
       .id(newComponent.name);
     this.dict_svg_elements.set(node.id(), node);
-    console.log(this.dict_svg_elements.get(node.id()));
 
     return newComponent;
   }
@@ -121,11 +198,10 @@ export class DiagramaComponent implements OnInit {
       group.add(line_horizontal);
       group.add(line_vertical);
       group.add(triangule);
-      // group.rotate(180);
-      console.log(group);
 
     }
     group.addClass('component-simple')
+      .animate(500)
       .move(this.container.width() / 2, this.container.height() / 2);
     return group;
 
