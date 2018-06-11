@@ -78,7 +78,16 @@
 
         <!-- Inserir Linha -->
         <div class="btn-group mr-3 " role="group">
-          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Linha">
+          <button (click)="add('VT')"  type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Gerador">
+            <img src="../../assets/icons/menu-acoes/resistor.png">
+          </button>
+          <button (click)="add('PV')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Slack">
+            <img src="../../assets/icons/menu-acoes/resistor.png">
+          </button>
+          <button (click)="add('PQ')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Carga">
+            <img src="../../assets/icons/menu-acoes/resistor.png">
+          </button>
+          <button (click)="add('VT')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Linha">
             <img src="../../assets/icons/menu-acoes/resistor.png">
           </button>
         </div>
@@ -98,7 +107,7 @@
         <div class="justify-content-center">
           <p class="h5 "> Propriedades</p>
         </div>
-        <div *ngIf="show_proprieties.diagram">
+        <!-- <div *ngIf="show_proprieties.diagram">
           <div class="row p-0 m-0 border">
             <div class="m-2 custom-control custom-checkbox">
               <input type="checkbox" (change)="proprieties.view_grid = $event.target.checked; ChangeVisibilityGrid(); " [checked]="proprieties.view_grid"
@@ -117,7 +126,7 @@
         
         <div *ngIf="show_proprieties.bus_PV" class="row p-0 m-0">
 
-        </div>
+        </div> -->
 
       </div>
     </div>
