@@ -92,8 +92,10 @@ export class DiagramaComponent implements OnInit {
     this.dict_nodes.set(newComponent.id, newComponent);
     this.count++;
 
-    const node = this.createNode(name);
+    const node = this.createNode(name)
+      .id(newComponent.name);
     this.dict_svg_elements.set(node.id(), node);
+    console.log(this.dict_svg_elements.get(node.id()));
 
     return newComponent;
   }
@@ -124,7 +126,6 @@ export class DiagramaComponent implements OnInit {
 
     }
     group.addClass('component-simple')
-      .id(name)
       .move(this.container.width() / 2, this.container.height() / 2);
     return group;
 
