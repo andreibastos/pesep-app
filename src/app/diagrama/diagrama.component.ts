@@ -74,56 +74,98 @@ export class DiagramaComponent implements OnInit {
 
   enableSelection() {
     const self = this;
-    let rect: SVG.Element, x, y, dx, dy;
-    let mouse_status = 'mouseup';
-    this.container.mousedown(function (event) {
-      mouse_status = 'mousedown';
-      x = event.offsetX;
-      y = event.offsetY;
-      rect = self.container
-        .rect(0, 0)
+    let box_x = 1, box_y = 1;
+
+    const set: SVG.Set = this.container.set();
+    let selection: SVG.Set = self.container.set();
+    let box: SVG.Element, x = 0, y = 0, dx, dy;
+    const mask_selection = this.container
+      .rect(this.container.width(), this.container.height())
+      .fill({ color: 'transparent' })
+      .id('mask_selection');
+    interact(document.getElementById('mask_selection')).draggable({
+      onstart: dragstart,
+      onmove: dragmove,
+      onend: dragend
+    }).styleCursor(false);
+
+    function dragstart(event) {
+      x = event.interaction.pointers[0].offsetX;
+      y = event.interaction.pointers[0].offsetY;
+      box = self.container.rect(0, 0)
         .move(x, y)
         .id('rect_selection')
-        .fill({ color: 'rgb(0, 0, 255)', opacity: 0.3 });
+        .stroke({ width: 5 })
+        .stroke('blue')
+        .fill({ color: 'rgb(255, 255, 255)', opacity: 0 });
+    }
+    function dragmove(event) {
+      dx = event.interaction.pointers[0].offsetX - x;
+      dy = event.interaction.pointers[0].offsetY - y;
+      let offsetX = 0, offsetY = 0;
+      box_x = 1;
+      box_y = 1;
 
-
-    });
-    this.container.mouseup(function (event) {
-      mouse_status = 'mouseup';
-      reset();
-
-    });
-    this.container.mousemove(function (event) {
-      if (mouse_status === 'mousedown') {
-        dx = event.offsetX - x;
-        dy = event.offsetY - y;
-        let offsetX = 0, offsetY = 0;
-
-        if (dx < 0) {
-          offsetX = dx;
-          dx *= -1;
-
-        }
-        if (dy < 0) {
-          offsetY = dy;
-          dy *= -1;
-        }
-
-        rect.transform({ x: offsetX, y: offsetY });
-        rect.width(dx)
-          .height(dy);
+      if (dx < 0) {
+        offsetX = dx;
+        dx *= -1;
+        box_x = -1;
+      }
+      if (dy < 0) {
+        offsetY = dy;
+        dy *= -1;
+        box_y = -1;
 
       }
 
-    });
+      box.transform({ x: offsetX, y: offsetY });
+      box.width(dx)
+        .height(dy);
+    }
 
-    this.container.click(reset);
+    function dragend(event) {
+      let bounds = box.bbox();
+      bounds = fixBounds(bounds);
+      box.remove();
+      reset();
+      self.container.each(function (c) {
+        const component: SVG.Element = this;
+        if (c > 1) {
+          const mybounds: SVG.BBox = component.bbox();
+          mybounds.x += component.x();
+          mybounds.y += component.y();
+          // console.log(mybounds, bounds);
+          if (mybounds.x >= bounds.x && mybounds.x <= bounds.x2 || mybounds.x2 >= bounds.x && mybounds.x2 <= bounds.x2) {
+            if (mybounds.y >= bounds.y && mybounds.y <= bounds.y2 || mybounds.y2 >= bounds.y && mybounds.y2 <= bounds.y2) {
+              selection.add(this);
+            }
+          }
+          selection.each(function () {
+            this.fill({ opacity: 0.3 });
+          });
+        }
+      });
+    }
+
+    function fixBounds(bounds: SVG.BBox) {
+      if (box_x === -1) {
+        bounds.x2 = bounds.x;
+        bounds.x -= bounds.width;
+      }
+      if (box_y === -1) {
+        bounds.y2 = bounds.y;
+        bounds.y -= bounds.width;
+      }
+      return bounds;
+    }
 
     function reset() {
-      const rect_selection = document.getElementById('rect_selection');
-      if (rect_selection) {
-        rect_selection.remove();
-      }
+      selection = self.container.set();
+      self.container.each(function (c) {
+        if (c > 1) {
+          this.fill({ opacity: 1 });
+        }
+      });
     }
   }
 
