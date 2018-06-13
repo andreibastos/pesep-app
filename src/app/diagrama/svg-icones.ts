@@ -41,8 +41,9 @@ export class SVGIcone {
             group.add(resistance);
             group.rotate(90);
         } else if (type === 'short') {
-            const line_1 = bus.line(0, 0, 50, 50).stroke({ width: 3 }).x(25);
-            const line_2 = bus.line(50, 0, 0, 50).stroke({ width: 3 }).x(25);
+            const size = 25;
+            const line_1 = bus.line(0, 0, size, size).stroke({ width: 5 }).x((100 - size) / 2);
+            const line_2 = bus.line(size, 0, 0, size).stroke({ width: 5 }).x((100 - size) / 2);
         }
         return group;
     }
