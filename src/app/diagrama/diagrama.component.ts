@@ -8,6 +8,7 @@ import * as SVG from 'svg.js';
 // Classes Internas
 import { IComponente, Carga, Fonte, Gerador, EnumBar } from '../models/componente';
 import { SVGIcone } from './svg-icones';
+import { svg } from 'd3';
 
 @Component({
   selector: 'app-diagrama',
@@ -54,21 +55,12 @@ export class DiagramaComponent implements OnInit {
 
     this.enableSelection();
 
-    // this.container.on('click', function (event) {
-    //   console.log(event, 'mouse_click');
-    // });
-
-    // this.container.mouseout(function (event) {
-    //   console.log(event, 'mouseout');
-    // });
-    // this.container.mouseover(function (event) {
-    //   console.log(event, 'mouseover');
-    // });
-    // this.container.on('', function () {
-
-    // });
-
     this.initInteract();
+
+    SVGIcone.createBus('bus_vt', 'VT');
+    SVGIcone.createBus('bus_pv', 'PV');
+    SVGIcone.createBus('bus_pq', 'PQ');
+    SVGIcone.createBus('curto_circuito', 'short');
 
   }
 

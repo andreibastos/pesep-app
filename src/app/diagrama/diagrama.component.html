@@ -8,7 +8,7 @@
         <!-- Barra VT -->
         <div class="row sidebar-row mx-auto p-3" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra Vθ">
           <a id="bus_vt" class="component mt-1 p-0">
-            
+
           </a>
         </div>
         <!-- /Barra vt -->
@@ -23,11 +23,17 @@
 
         <!-- Barra PQ -->
         <div class="row sidebar-row mx-auto p-3">
-          <a id="bus_pq" class="component  mt-1 p-0" data-toggle="tooltip" data-html="true" data-placement="right"
-            title="Barra PQ">
+          <a id="bus_pq" class="component  mt-1 p-0" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra PQ">
           </a>
         </div>
         <!-- /Barra PQ -->
+
+           <!-- Curto Circuito -->
+           <div class="row sidebar-row mx-auto p-3">
+              <a id="curto_circuito" class="component  mt-1 p-0" data-toggle="tooltip" data-html="true" data-placement="right" title="Curto Circuito">
+              </a>
+            </div>
+            <!-- /Curto Circuito -->
 
       </div>
     </div>
@@ -36,10 +42,10 @@
     <!-- Diagrama -->
     <div class="col-10 mt-2 mb-0 ">
       <!-- Menu Superior -->
-      <div class="row menu-superior bg-white border  mb-2 align-items-center p-0 m-0">
+      <div class="row menu-superior  bg-white border  mb-2  p-0 m-0">
 
         <!-- Ações de movimento  -->
-        <div class="btn-group mr-3" role="group">
+        <div class="col-1 btn-group mr-3 " role="group">
 
           <button type="button" (click)="ChangeToolSelected('selected')" [class.active]="tool_selected.selected" class="btn btn-outline-secondary"
             data-toggle="tooltip" data-html="true" data-placement="top" title="Selecionar">
@@ -57,7 +63,7 @@
         <!-- /Ações de movimento  -->
 
         <!-- Ações de Copiar/Recortar/Colar/Excluir -->
-        <div class="btn-group mr-3 " role="group">
+        <div class="col-2 btn-group mr-3" role="group">
           <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
             title="Copiar">
             <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png">
@@ -78,11 +84,12 @@
         <!-- /Ações de Copiar/Recortar/Colar -->
 
         <!-- Inserir Linha -->
-        <div class="btn-group mr-3 " role="group">
-          <button (click)="add('VT')"  type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Gerador">
+        <div class="col-1 btn-group mr-3 " role="group">
+          <button (click)="add('VT')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top"
+            title="Inserir Gerador">
             <img src="../../assets/icons/menu-acoes/resistor.png">
           </button>
-          <button (click)="add('PV')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Slack">
+          <!-- <button (click)="add('PV')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Slack">
             <img src="../../assets/icons/menu-acoes/resistor.png">
           </button>
           <button (click)="add('PQ')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Carga">
@@ -90,9 +97,23 @@
           </button>
           <button (click)="add('VT')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Linha">
             <img src="../../assets/icons/menu-acoes/resistor.png">
-          </button>
+          </button> -->
         </div>
         <!-- /Inserir Linha -->
+
+
+        <!-- calculos -->
+        <div class="col-7 btn-group justify-content-end d-flex " role="group">
+          <button (click)="add('VT')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top"
+            title="Calcular Fluxo de Potência">
+            <img src="../../assets/icons/menu-acoes/flow.png" width="32px" height="32px">
+          </button>
+          <button (click)="add('VT')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top"
+            title="Calcular Curto Circuito">
+            <img src="../../assets/icons/menu-acoes/short.png" width="32px" height="32px">
+          </button>
+        </div>
+        <!-- calculos -->
       </div>
       <!-- /Menu Superior -->
 
@@ -108,7 +129,7 @@
         <div class="justify-content-center">
           <p class="h5 "> Propriedades</p>
         </div>
-        <!-- <div *ngIf="show_proprieties.diagram">
+        <div >
           <div class="row p-0 m-0 border">
             <div class="m-2 custom-control custom-checkbox">
               <input type="checkbox" (change)="proprieties.view_grid = $event.target.checked; ChangeVisibilityGrid(); " [checked]="proprieties.view_grid"
@@ -125,9 +146,9 @@
           </div>
         </div>
         
-        <div *ngIf="show_proprieties.bus_PV" class="row p-0 m-0">
+        <div  class="row p-0 m-0">
 
-        </div> -->
+        </div>
 
       </div>
     </div>

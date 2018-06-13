@@ -40,6 +40,9 @@ export class SVGIcone {
             group.add(line_right);
             group.add(resistance);
             group.rotate(90);
+        } else if (type === 'short') {
+            const line_1 = bus.line(0, 0, 50, 50).stroke({ width: 3 }).x(25);
+            const line_2 = bus.line(50, 0, 0, 50).stroke({ width: 3 }).x(25);
         }
         return group;
     }
