@@ -21,7 +21,7 @@ export class DiagramaComponent implements OnInit {
   links = [];
   dict_nodes: Map<number, IComponente> = new Map();
   container: SVG.Doc;
-  dict_svg_elements: Map<string, SVG.Element> = new Map();
+  dict_svg_elements: Map<string, SVG.G> = new Map();
   count_components = {};
 
   // Propriedades do Diagrama
@@ -66,28 +66,33 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-  addSelected(component: SVG.Element) {
-
+  addSelected(component: SVG.G) {
     if (this.selections.has(component)) {
       this.removeSelected(component);
     } else {
-      component.fill({ opacity: 0.3 });
+      component.last()
+        .fill({ opacity: 0.08 })
+        .stroke({ color: 'blue', opacity: 0.1, width: 1 });
       this.selections.add(component);
-      console.log(component);
     }
   }
 
-  resetSelecteds() {
-    this.selections = this.container.set();
+  resetSelection() {
+    const self = this;
     this.container.each(function (c) {
       if (c > 1) {
-        this.fill({ opacity: 1 });
+        self.removeSelected(this);
       }
+
     });
+    this.selections = this.container.set();
+
   }
-  removeSelected(component: SVG.Element) {
+  removeSelected(component: SVG.G) {
+    component.last()
+      .fill({ opacity: 0 })
+      .stroke({width: 0 });
     this.selections.remove(component);
-    component.fill({ opacity: 1 });
   }
 
   enableSelection() {
@@ -104,7 +109,7 @@ export class DiagramaComponent implements OnInit {
       onstart: dragstart,
       onmove: dragmove,
       onend: dragend
-    }).styleCursor(false).on('tap', function () { self.resetSelecteds(); });
+    }).styleCursor(false).on('tap', function () { self.resetSelection(); });
 
     function dragstart(event) {
       x = event.interaction.pointers[0].offsetX;
@@ -112,7 +117,7 @@ export class DiagramaComponent implements OnInit {
       box = self.container.rect(0, 0)
         .move(x, y)
         .id('rect_selection')
-        .stroke({ width: 5 })
+        .stroke({ width: 1, dasharray: '5, 5' })
         .stroke('blue')
         .fill({ color: 'rgb(255, 255, 255)', opacity: 0 });
     }
@@ -144,9 +149,9 @@ export class DiagramaComponent implements OnInit {
       let bounds = box.bbox();
       bounds = fixBounds(bounds);
       box.remove();
-      self.resetSelecteds();
+      self.resetSelection();
       self.container.each(function (c) {
-        const component: SVG.Element = this;
+        const component: SVG.G = this;
         if (c > 1) {
           const mybounds: SVG.BBox = component.bbox();
           mybounds.x += component.x();
@@ -233,9 +238,9 @@ export class DiagramaComponent implements OnInit {
     return newComponent;
   }
 
-  createNode(name: string): SVG.Element {
+  createNode(name: string): SVG.G {
     const node = this.container;
-    const group = node.group();
+    const group = node.group().size(100, 100);
     const self = this;
     if (name === 'PV' || name === 'VT') {
       const circle = node.circle(50).move(2, 25).fill('#FFF').stroke({ width: 2 }).stroke('#000');
@@ -246,6 +251,7 @@ export class DiagramaComponent implements OnInit {
       group.add(line_horizontal);
       group.add(line_vertical);
       group.add(text);
+
 
     } else if (name === 'PQ') {
       const line_horizontal = node.line(20, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
@@ -262,12 +268,16 @@ export class DiagramaComponent implements OnInit {
         if (event.ctrlKey || event.shiftKey) {
           self.addSelected(this);
         } else {
-          self.resetSelecteds();
+          self.resetSelection();
         }
       })
       .animate(500)
       .move(this.container.width() / 2, this.container.height() / 2);
-
+    // const box = group.bbox();
+    const rect = node.rect(group.width(), group.height())
+      .addClass('selected')
+      .fill({ color: 'blue', opacity: 0 });
+    group.add(rect);
     return group;
 
   }
