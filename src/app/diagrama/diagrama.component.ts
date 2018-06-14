@@ -196,11 +196,20 @@ export class DiagramaComponent implements OnInit {
 
       })
       .on('dragmove', function (event) {
-        // console.log(event.target, 'dragmove');
-        self.dict_svg_elements
-          .get(event.target.id)
-          .dx(event.dx)
-          .dy(event.dy);
+        // // console.log(event.target, 'dragmove');
+        if (self.selections.length() > 0) {
+          self.selections.each(function (index) {
+            const element = self.selections.get(index);
+            // console.log(element);
+            element.dx(event.dx).dy(event.dy);
+          });
+        } else {
+          self.dict_svg_elements
+            .get(event.target.id)
+            .dx(event.dx)
+            .dy(event.dy);
+        }
+
       })
       .on('dragend', function (event) {
         // console.log(event.target, 'dragend');
