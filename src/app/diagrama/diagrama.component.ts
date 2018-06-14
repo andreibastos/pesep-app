@@ -91,9 +91,18 @@ export class DiagramaComponent implements OnInit {
   removeSelected(component: SVG.G) {
     component.last()
       .fill({ opacity: 0 })
-      .stroke({width: 0 });
+      .stroke({ width: 0 });
     this.selections.remove(component);
   }
+
+  updateComponent(component: SVG.G) {
+    const a: IComponente = component.data('data');
+    component.text(a.name)
+      .dx(component.x())
+      .dy(component.y());
+    console.log(a);
+  }
+
 
   enableSelection() {
     const self = this;
@@ -232,7 +241,9 @@ export class DiagramaComponent implements OnInit {
     this.count++;
 
     const node = this.createNode(name)
+      .data('data', newComponent)
       .id(newComponent.name);
+    this.updateComponent(node);
     this.dict_svg_elements.set(node.id(), node);
 
     return newComponent;
