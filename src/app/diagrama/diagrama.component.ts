@@ -8,7 +8,6 @@ import * as SVG from 'svg.js';
 // Classes Internas
 import { IComponente, Carga, Fonte, Gerador, EnumBar } from '../models/componente';
 import { SVGIcone } from './svg-icones';
-import { svg } from 'd3';
 
 @Component({
   selector: 'app-diagrama',
@@ -64,6 +63,8 @@ export class DiagramaComponent implements OnInit {
     SVGIcone.createBus('bus_pq', 'PQ');
     SVGIcone.createBus('curto_circuito', 'short');
 
+
+    this.add('PQ');
   }
 
   addSelected(component: SVG.G) {
@@ -95,12 +96,40 @@ export class DiagramaComponent implements OnInit {
     this.selections.remove(component);
   }
 
-  updateComponent(component: SVG.G) {
+  positionDataComponent(component: SVG.G) {
     const a: IComponente = component.data('data');
-    component.text(a.name)
+    const self = this;
+    component
+      .text(a.name)
+      .style('cursor', 'select')
+      .click(function (event) {
+        // const eu: SVG.Element = this;
+
+        // const box = eu.bbox();
+
+        // const p = eu.parent() as SVG.G;
+
+
+        // const form = document.createElement('foreignObject');
+        // form.setAttribute('x', '50');
+        // form.setAttribute('y', '50');
+        // form.setAttribute('width', '300');
+        // form.setAttribute('height', '25');
+        // const formulario = document.createElement('xhtml:form');
+        // const input = document.createElement('input');
+        // input.setAttribute('value', 'andrei');
+        // formulario.appendChild(input);
+        // form.appendChild(formulario);
+
+        // console.log(form);
+        // p.node.appendChild(form);
+        // console.log(p);
+
+
+      })
       .dx(component.x())
-      .dy(component.y());
-    console.log(a);
+      .dy(component.y() - 50);
+    // console.log(a);
   }
 
 
@@ -193,6 +222,7 @@ export class DiagramaComponent implements OnInit {
 
   initInteract() {
     const self = this;
+    // interact('.component-simple')
     interact('.component-simple')
       .draggable({
         inertia: true, // enable inertial throwing
@@ -240,11 +270,13 @@ export class DiagramaComponent implements OnInit {
     this.dict_nodes.set(newComponent.id, newComponent);
     this.count++;
 
-    const node = this.createNode(name)
+    let node = this.createNode(name)
       .data('data', newComponent)
       .id(newComponent.name);
-    this.updateComponent(node);
+    this.positionDataComponent(node);
+    node = this.addRectSelecion(node);
     this.dict_svg_elements.set(node.id(), node);
+    console.log(node.last());
 
     return newComponent;
   }
@@ -282,17 +314,20 @@ export class DiagramaComponent implements OnInit {
           self.resetSelection();
         }
       })
-      .animate(500)
+      .animate(200)
       .move(this.container.width() / 2, this.container.height() / 2);
+
+    return group;
+  }
+
+  addRectSelecion(group: SVG.G) {
     // const box = group.bbox();
-    const rect = node.rect(group.width(), group.height())
+    const rect = this.container.rect(group.width(), group.height())
       .addClass('selected')
       .fill({ color: 'blue', opacity: 0 });
     group.add(rect);
     return group;
-
   }
-
   getNewBus(name: string) {
     if (name === 'PV') {
       return new Gerador();
@@ -305,9 +340,8 @@ export class DiagramaComponent implements OnInit {
     }
   }
 
-  update(updateComponent: IComponente) {
-    this.dict_nodes[updateComponent.id] = updateComponent;
-    // this.nodes[updateComponent.id] = updateComponent;
+  update(positionDataComponent: IComponente) {
+    // this.dict_nodes[positionDataComponent;
   }
 
   getNodes(): Array<IComponente> {
