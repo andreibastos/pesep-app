@@ -102,34 +102,8 @@ export class DiagramaComponent implements OnInit {
     component
       .text(a.name)
       .style('cursor', 'select')
-      .click(function (event) {
-        // const eu: SVG.Element = this;
-
-        // const box = eu.bbox();
-
-        // const p = eu.parent() as SVG.G;
-
-
-        // const form = document.createElement('foreignObject');
-        // form.setAttribute('x', '50');
-        // form.setAttribute('y', '50');
-        // form.setAttribute('width', '300');
-        // form.setAttribute('height', '25');
-        // const formulario = document.createElement('xhtml:form');
-        // const input = document.createElement('input');
-        // input.setAttribute('value', 'andrei');
-        // formulario.appendChild(input);
-        // form.appendChild(formulario);
-
-        // console.log(form);
-        // p.node.appendChild(form);
-        // console.log(p);
-
-
-      })
       .dx(component.x())
       .dy(component.y() - 50);
-    // console.log(a);
   }
 
 
@@ -147,7 +121,7 @@ export class DiagramaComponent implements OnInit {
       onstart: dragstart,
       onmove: dragmove,
       onend: dragend
-    }).styleCursor(false).on('tap', function () { self.resetSelection(); });
+    }).styleCursor(false).on('tap', function () {  self.resetSelection(); });
 
     function dragstart(event) {
       x = event.interaction.pointers[0].offsetX;
@@ -187,6 +161,7 @@ export class DiagramaComponent implements OnInit {
       let bounds = box.bbox();
       bounds = fixBounds(bounds);
       box.remove();
+
       self.resetSelection();
       self.container.each(function (c) {
         const component: SVG.G = this;
@@ -194,7 +169,6 @@ export class DiagramaComponent implements OnInit {
           const mybounds: SVG.BBox = component.bbox();
           mybounds.x += component.x();
           mybounds.y += component.y();
-          // console.log(mybounds, bounds);
           if (mybounds.x >= bounds.x && mybounds.x <= bounds.x2 || mybounds.x2 >= bounds.x && mybounds.x2 <= bounds.x2) {
             if (mybounds.y >= bounds.y && mybounds.y <= bounds.y2 || mybounds.y2 >= bounds.y && mybounds.y2 <= bounds.y2) {
               self.addSelected(this);
@@ -235,16 +209,12 @@ export class DiagramaComponent implements OnInit {
         }
       })
       .on('dragstart', function (event) {
-        // console.log(event.target, 'dragstart');
-        // console.log(self.dict_svg_elements);
 
       })
       .on('dragmove', function (event) {
-        // // console.log(event.target, 'dragmove');
         if (self.selections.length() > 0) {
           self.selections.each(function (index) {
             const element = self.selections.get(index);
-            // console.log(element);
             element.dx(event.dx).dy(event.dy);
           });
         } else {
@@ -256,9 +226,6 @@ export class DiagramaComponent implements OnInit {
 
       })
       .on('dragend', function (event) {
-        // console.log(event.target, 'dragend');
-        // console.log(self.dict_svg_elements);
-
       });
   }
 
@@ -321,7 +288,6 @@ export class DiagramaComponent implements OnInit {
   }
 
   addRectSelecion(group: SVG.G) {
-    // const box = group.bbox();
     const rect = this.container.rect(group.width(), group.height())
       .addClass('selected')
       .fill({ color: 'blue', opacity: 0 });
