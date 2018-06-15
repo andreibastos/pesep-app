@@ -6,7 +6,7 @@ import * as interact from 'interactjs';
 import * as SVG from 'svg.js';
 
 // Classes Internas
-import { IComponente, Carga, Fonte, Gerador, EnumBar } from '../models/componente';
+import { IComponente, Carga, Fonte, Gerador, EnumBar, IBarra } from '../models/componente';
 import { SVGIcone } from './svg-icones';
 
 @Component({
@@ -32,6 +32,7 @@ export class DiagramaComponent implements OnInit {
   count = 0;
 
   selections: SVG.Set;
+  selected_component: SVG.Element;
 
   div_name = 'draw_inside';
 
@@ -76,6 +77,17 @@ export class DiagramaComponent implements OnInit {
         .stroke({ color: 'blue', opacity: 0.1, width: 1 });
       this.selections.add(component);
     }
+    this.addSelectedComponent();
+  }
+
+  addSelectedComponent() {
+    console.log(this.selections.length());
+    if (this.selections.length() === 1) {
+      this.selected_component = this.selections.get(0);
+      this.selected_component.data('data');
+    } else {
+      this.selected_component = null;
+    }
   }
 
   resetSelection() {
@@ -94,6 +106,8 @@ export class DiagramaComponent implements OnInit {
       .fill({ opacity: 0 })
       .stroke({ width: 0 });
     this.selections.remove(component);
+    this.addSelectedComponent();
+
   }
 
   positionDataComponent(component: SVG.G) {
@@ -121,7 +135,7 @@ export class DiagramaComponent implements OnInit {
       onstart: dragstart,
       onmove: dragmove,
       onend: dragend
-    }).styleCursor(false).on('tap', function () {  self.resetSelection(); });
+    }).styleCursor(false).on('tap', function () { self.resetSelection(); });
 
     function dragstart(event) {
       x = event.interaction.pointers[0].offsetX;

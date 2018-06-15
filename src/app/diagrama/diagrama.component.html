@@ -147,7 +147,13 @@
         </div>
         
         <div  class="row p-0 m-0">
-
+          <div *ngIf="selected_component">
+            <p>{{selected_component.data('data')| json}}</p>
+          </div>
+          <div *ngIf="selections.length()>0">
+            <p>{{
+              selections.length() }}</p>
+          </div>
         </div>
 
       </div>
