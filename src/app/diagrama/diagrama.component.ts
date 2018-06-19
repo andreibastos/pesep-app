@@ -40,7 +40,9 @@ export class DiagramaComponent implements OnInit {
   show_proprieties = { diagram: true, bus_PV: false, bus_PQ: false, bus_VT: false }; // Qual Propriedade Exibir
 
   // Ferramenta selecionada
-  tool_selected = { selected: true, move: false };
+  tool_selected = { selected: true, move: false, line: true };
+  de_barra: Barra;
+  para_barra: Barra;
 
   constructor() {
     this.qtd_barras_tipo[EnumBar.VT] = 0;
@@ -71,9 +73,20 @@ export class DiagramaComponent implements OnInit {
 
 
     // this.add('PQ');
-    this.adicionarBarra(this.enumerador_barra.PQ, 50, 50);
-    this.adicionarBarra(this.enumerador_barra.VT, 300, 300);
-    this.adicionarBarra(this.enumerador_barra.Slack, 600, 600);
+    this.adicionarBarra(this.enumerador_barra.VT, 50, 100);
+    // this.adicionarBarra(this.enumerador_barra.VT, 300, 100);
+    // this.adicionarBarra(this.enumerador_barra.PQ, 600, 100);
+
+    // this.adicionarBarra(this.enumerador_barra.PQ, 50, 300);
+    // this.adicionarBarra(this.enumerador_barra.Slack, 300, 300);
+    // this.adicionarBarra(this.enumerador_barra.PQ, 600, 300);
+
+
+    // this.adicionarBarra(this.enumerador_barra.VT, 50, 500);
+    // this.adicionarBarra(this.enumerador_barra.VT, 300, 500);
+    this.adicionarBarra(this.enumerador_barra.PQ, 600, 500);
+
+
     this.configureKeyDowns();
   }
 
@@ -126,6 +139,15 @@ export class DiagramaComponent implements OnInit {
       .click(function (event) {
         if (event.ctrlKey || event.shiftKey) {
           self.addSelected(this);
+        } else if (self.tool_selected.line) {
+          if (!self.de_barra) {
+            self.de_barra = this.data('barra');
+          } else {
+            self.para_barra = this.data('barra');
+            self.adicionarLinha(self.de_barra, self.para_barra);
+            self.de_barra = null;
+            self.para_barra = null;
+          }
         } else {
           self.resetSelection();
         }
@@ -134,11 +156,71 @@ export class DiagramaComponent implements OnInit {
     return group;
   }
 
+  adicionarLinha(de: Barra, para: Barra) {
+    const rect = this.container.rect();
+    const group_line = this.container.group().add(rect).id('line_1') as SVG.G;
+
+    const de_grupo = this.mapa_SVG_grupos.get(de.id_barra);
+    const de_grupo_box = de_grupo.bbox();
+    const para_grupo = this.mapa_SVG_grupos.get(para.id_barra);
+    const para_grupo_box = para_grupo.bbox();
+
+
+    console.log(de_grupo, para_grupo);
+
+    let eixo_y: string, eixo_x: string;
+    para_grupo_box.x2 += para_grupo.x();
+    para_grupo_box.cy += para_grupo.y();
+
+    de_grupo_box.x2 += de_grupo.x();
+    de_grupo_box.cy += de_grupo.y();
+
+    group_line.move(de_grupo_box.x2, de_grupo_box.cy);
+
+    if ((para_grupo_box.x2) < de_grupo_box.x2) {
+      eixo_x = 'esquerda';
+    } else if (para_grupo_box.x2 > de_grupo_box.x2) {
+      eixo_x = 'direita';
+    } else {
+      eixo_x = 'meio';
+    }
+    if (para_grupo_box.cy < de_grupo_box.cy) {
+      eixo_y = 'acima';
+    } else if (para_grupo_box.cy > de_grupo_box.cy) {
+      eixo_y = 'abaixo';
+    } else {
+      eixo_y = 'meio';
+    }
+
+    if (eixo_x === 'esquerda') {
+      const delta_y = para_grupo.cy() - de_grupo.cy();
+      const delta_x = para_grupo_box.x2 - de_grupo_box.x2;
+
+
+      group_line.polyline([[-de_grupo.width() * 0.4, 0], [10, 0]]);
+      if (eixo_y === 'acima') {
+        group_line.polyline([[10, 0], [10, delta_y]]);
+      } else if (eixo_y === 'abaixo') {
+        group_line.polyline([[10, 0], [10, delta_y]]);
+      } else if (eixo_y === 'meio') {
+        // group_line.polyline([[10, 0], [10, de_grupo.height() / 1.2]]);
+
+      }
+
+      group_line.polyline([[10, delta_y], [delta_x * 1.15, delta_y]]);
+
+
+    }
+    group_line.fill('black').stroke({ width: 2, color: 'black' });
+
+    console.log(eixo_x, eixo_y);
+
+  }
+
   atualizaTextoGrupoBarra(grupo: SVG.G): SVG.G {
 
     const barra: Barra = grupo.data('barra') as Barra;
     const self = this;
-    console.log(grupo);
 
     const grupo_text = grupo.group().id('group_text');
 
