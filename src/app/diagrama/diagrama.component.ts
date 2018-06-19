@@ -18,6 +18,8 @@ import { Linha } from './models/linha';
 })
 
 export class DiagramaComponent implements OnInit {
+
+
   // Elementos do Sistema Elétrico de Potência
   private barras: Array<Barra> = new Array();
   private linhas: Array<Linha> = new Array();
@@ -26,7 +28,7 @@ export class DiagramaComponent implements OnInit {
   // Controle de identificação
   private qtd_barras_tipo = {};
   private qtd_barras_total = 0;
-  private enumerador_barra = EnumBar; // para usar no HTML
+  enumerador_barra = EnumBar; // para usar no HTML
 
   // Controle do SVG
   container: SVG.Doc;
@@ -96,6 +98,8 @@ export class DiagramaComponent implements OnInit {
   }
 
   adicionarBarra(tipo: EnumBar, posicao_x?: number, posicao_y?: number) {
+    const self = this;
+
     // Sistema Elétrico de Potência
     const barra: Barra = new Barra(tipo); // cria uma nova barra com o tipo associado
     barra.id_barra = `barra_${this.qtd_barras_total}`; // atualiza o identificador
@@ -104,15 +108,63 @@ export class DiagramaComponent implements OnInit {
     this.barras.push(barra); // adiciona na lista
 
     // SVG
-    let grupo = this.criaSVGBarra(tipo)
-      .id(barra.id_barra)
-      .move(posicao_x || 0, posicao_y || 0) // move para a posição desejada
-      .data('barra', barra); // adiciona o dado da barra
-    grupo = this.atualizaTextoGrupoBarra(grupo);
-    this.mapa_SVG_grupos.set(grupo.id(), grupo);
+    let grupo_todo = this.criaGrupoTodo(barra, posicao_x, posicao_y);
+
+    // Grupo do desenhos (circulos, linha, etc)
+    const grupo_desenho = this.criaGrupoDesenho(tipo);
+
+    // Grupo de tenho (P,Q,V,T)
+    const grupo_texto = this.criaGrupoTexto(grupo_todo);
+
+    grupo_todo.add(grupo_desenho);
+    grupo_todo.add(grupo_texto);
+
+    const grupo_selecao = this.criarGrupoSelecao(grupo_todo);
+
+    grupo_todo.add(grupo_selecao);
+
+    this.mapa_SVG_grupos.set(grupo_todo.id(), grupo_todo);
+
   }
 
-  criaSVGBarra(tipo: EnumBar): SVG.G {
+  criarGrupoSelecao(grupo: SVG.G): SVG.G {
+    const grupo_selecao = this.container.group();
+    const box = grupo.bbox();
+    grupo_selecao.rect(box.w, box.h)
+      .addClass('grupo_selecao')
+      .fill({ color: 'blue', opacity: 0.1 })
+      .stroke({ width: 2, color: 'blue', opacity: 1 });
+    return grupo_selecao;
+  }
+
+  criaGrupoTodo(barra: Barra, posicao_x?: number, posicao_y?: number) {
+    const self = this;
+    const grupo = this.container.group()
+      .id(barra.id_barra)
+      .addClass('grupo_geral')
+      .move(posicao_x || 0, posicao_y || 0) // move para a posição desejada
+      .data('barra', barra) // adiciona o dado da barra 
+      .addClass('componente-barra')
+      .click(function (event) {
+        if (event.ctrlKey || event.shiftKey) {
+          self.addSelected(this);
+        } else if (self.tool_selected.line) {
+          if (!self.de_barra) {
+            self.de_barra = this.data('barra');
+          } else {
+            self.para_barra = this.data('barra');
+            self.adicionarLinha(self.de_barra, self.para_barra);
+            self.de_barra = null;
+            self.para_barra = null;
+          }
+        } else {
+          self.resetSelection();
+        }
+      });
+    return grupo;
+  }
+
+  criaGrupoDesenho(tipo: EnumBar): SVG.G {
     const node = this.container;
     const group = node.group().size(100, 100);
     const self = this;
@@ -135,24 +187,7 @@ export class DiagramaComponent implements OnInit {
       group.add(triangule);
 
     }
-    group.addClass('component-simple')
-      .click(function (event) {
-        if (event.ctrlKey || event.shiftKey) {
-          self.addSelected(this);
-        } else if (self.tool_selected.line) {
-          if (!self.de_barra) {
-            self.de_barra = this.data('barra');
-          } else {
-            self.para_barra = this.data('barra');
-            self.adicionarLinha(self.de_barra, self.para_barra);
-            self.de_barra = null;
-            self.para_barra = null;
-          }
-        } else {
-          self.resetSelection();
-        }
-      });
-
+    group.addClass('grupo_desenho');
     return group;
   }
 
@@ -217,36 +252,32 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-  atualizaTextoGrupoBarra(grupo: SVG.G): SVG.G {
-
+  criaGrupoTexto(grupo: SVG.G): SVG.G {
     const barra: Barra = grupo.data('barra') as Barra;
     const self = this;
 
-    const grupo_text = grupo.group().id('group_text');
-
+    const grupo_texto = this.container.group().size(100, 100);
     // TEM Q PENSAR ONDE VAI FICAR A POSIÇÃO DE CADA ITEM DA BARRA
-    grupo_text.text(barra.nome)
+    grupo_texto.text(barra.nome)
       .id('nome')
-      .dx(grupo.width() * 0.7)
-      .dy(grupo.height());
+      .dx(grupo_texto.width() * 0.7)
+      .dy(grupo_texto.height());
 
-    grupo_text.text(`P=${barra.pCarga} pu`)
+    grupo_texto.text(`P=${barra.pCarga} pu`)
       .id('P')
-      .dx(-grupo.width() * 0.1)
-      .dy(-grupo.height() * 0.3);
+      .dx(-grupo_texto.width() * 0.1)
+      .dy(-grupo_texto.height() * 0.3);
 
-    grupo_text.text(`Q=${barra.qCarga} pu`)
+    grupo_texto.text(`Q=${barra.qCarga} pu`)
       .id('Q')
-      .dx(-grupo.width() * 0.1)
-      .dy(-grupo.height() * 0.1);
+      .dx(-grupo_texto.width() * 0.1)
+      .dy(-grupo_texto.height() * 0.1);
 
-    grupo_text.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
+    grupo_texto.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
       .id('VT')
-      .dy(-grupo.height() * 0.15)
-      .dx(grupo.width() * 0.7);
-
-    grupo = this.addRectSelecion(grupo);
-    return grupo;
+      .dy(-grupo_texto.height() * 0.15)
+      .dx(grupo_texto.width() * 0.7);
+    return grupo_texto;
   }
 
   addSelected(component: SVG.G) {
@@ -284,7 +315,6 @@ export class DiagramaComponent implements OnInit {
     } else {
       this.selected = null;
     }
-
   }
 
   resetSelection() {
@@ -305,17 +335,6 @@ export class DiagramaComponent implements OnInit {
     this.selections.remove(component);
     this.addSelect();
   }
-
-  positionDataComponent(component: SVG.G) {
-    const a: IComponente = component.data('data');
-    const self = this;
-    component
-      .text(a.name)
-      .style('cursor', 'select')
-      .dx(component.x())
-      .dy(component.y() - 50);
-  }
-
 
   enableSelection() {
     const self = this;
@@ -407,7 +426,7 @@ export class DiagramaComponent implements OnInit {
   initInteract() {
     const self = this;
     // interact('.component-simple')
-    interact('.component-simple')
+    interact('.componente-barra')
       .draggable({
         inertia: true, // enable inertial throwing
         autoScroll: true, // enable autoScroll
@@ -428,6 +447,7 @@ export class DiagramaComponent implements OnInit {
             element.dx(event.dx).dy(event.dy);
           });
         } else {
+          console.log(event.target.id)
           self.mapa_SVG_grupos
             .get(event.target.id)
             .dx(event.dx)
@@ -479,25 +499,6 @@ export class DiagramaComponent implements OnInit {
     });
   }
 
-  add(name: string) {
-    const newComponent: IComponente = this.getNewBus(name);
-    this.qtd_barras_tipo[newComponent.type]++;
-    newComponent.id = this.qtd_barras_total;
-    newComponent.name += ' ' + this.qtd_barras_tipo[newComponent.type];
-    // this.dict_nodes.set(newComponent.id, newComponent);
-    this.qtd_barras_total++;
-
-    let node = this.createNode(name)
-      .data('data', newComponent)
-      .id(newComponent.name);
-    this.positionDataComponent(node);
-    node = this.addRectSelecion(node);
-    this.mapa_SVG_grupos.set(node.id(), node);
-    console.log(node.last());
-
-    return newComponent;
-  }
-
   createNode(name: string): SVG.G {
     const node = this.container;
     const group = node.group().size(100, 100);
@@ -547,30 +548,7 @@ export class DiagramaComponent implements OnInit {
     group.add(rect);
     return group;
   }
-  getNewBus(name: string) {
-    if (name === 'PV') {
-      return new Gerador();
-    }
-    if (name === 'PQ') {
-      return new Carga();
-    }
-    if (name === 'VT') {
-      return new Fonte();
-    }
-  }
 
-  update(positionDataComponent: IComponente) {
-    // this.dict_nodes[positionDataComponent;
-  }
-
-  // getNodes(): Array<IComponente> {
-  //   // return this.nodes;
-  //   return Array.from(this.dict_nodes.values()); // retornar um interable
-  // }
-
-  // getNode(id: number): IComponente {
-  //   // return this.dict_nodes.get(id);
-  // }
 
 
 }
