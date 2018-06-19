@@ -6,8 +6,10 @@ import * as interact from 'interactjs';
 import * as SVG from 'svg.js';
 
 // Classes Internas
-import { IComponente, Carga, Fonte, Gerador, EnumBar, IBarra } from '../models/componente';
+import { IComponente, Carga, Fonte, Gerador, EnumBar } from '../models/componente';
 import { SVGIcone } from './svg-icones';
+import { Barra } from './models/barra';
+import { Linha } from './models/linha';
 
 @Component({
   selector: 'app-diagrama',
@@ -16,12 +18,22 @@ import { SVGIcone } from './svg-icones';
 })
 
 export class DiagramaComponent implements OnInit {
-  nodes: Array<IComponente> = new Array();
-  links = [];
-  dict_nodes: Map<number, IComponente> = new Map();
+  // Elementos do Sistema Elétrico de Potência
+  private barras: Array<Barra> = new Array();
+  private linhas: Array<Linha> = new Array();
+  private slack: Barra = null;
+
+  // Controle de identificação
+  private qtd_barras_tipo = {};
+  private qtd_barras_total = 0;
+  private enumerador_barra = EnumBar; // para usar no HTML
+
+  // Controle do SVG
   container: SVG.Doc;
-  dict_svg_elements: Map<string, SVG.G> = new Map();
-  count_components = {};
+  mapa_SVG_grupos: Map<string, SVG.G> = new Map();
+  selections: SVG.Set;
+  div_name = 'draw_inside';
+  selected: SVG.G;
 
   // Propriedades do Diagrama
   proprieties = { view_grid: true, snap_grid: false }; // Propriedades do diagrama
@@ -29,18 +41,11 @@ export class DiagramaComponent implements OnInit {
 
   // Ferramenta selecionada
   tool_selected = { selected: true, move: false };
-  count = 0;
-
-  selections: SVG.Set;
-  selected_component: SVG.Element;
-
-  div_name = 'draw_inside';
-
 
   constructor() {
-    this.count_components[EnumBar.VT] = 0;
-    this.count_components[EnumBar.PQ] = 0;
-    this.count_components[EnumBar.Slack] = 0;
+    this.qtd_barras_tipo[EnumBar.VT] = 0;
+    this.qtd_barras_tipo[EnumBar.PQ] = 0;
+    this.qtd_barras_tipo[EnumBar.Slack] = 0;
   }
 
   ngOnInit(): void {
@@ -66,6 +71,79 @@ export class DiagramaComponent implements OnInit {
 
 
     this.add('PQ');
+    this.configureKeyDowns();
+  }
+
+  incrementaBarra(tipo: EnumBar) {
+    this.qtd_barras_tipo[tipo]++;
+    this.qtd_barras_total++;
+  }
+
+  adicionarBarra(tipo: EnumBar, posicao_x?: number, posicao_y?: number) {
+    // Sistema Elétrico de Potência
+    const barra: Barra = new Barra(tipo); // cria uma nova barra com o tipo associado
+    barra.id_barra = `barra_${this.qtd_barras_total}`; // atualiza o identificador
+    barra.nome = `Barra ${this.qtd_barras_total}`; // Atualiza o nome
+    this.incrementaBarra(barra.tipo); // incremmenta o numero de barras
+    this.barras.push(barra); // adiciona na lista
+
+    // SVG
+    let grupo = this.criaSVGBarra(tipo)
+      .id(barra.id_barra)
+      .move(posicao_x || 0, posicao_y || 0) // move para a posição desejada
+      .data('barra', barra); // adiciona o dado da barra
+    grupo = this.atualizaTextoGrupoBarra(grupo);
+    this.mapa_SVG_grupos.set(grupo.id(), grupo);
+  }
+
+  criaSVGBarra(tipo: EnumBar): SVG.G {
+    const node = this.container;
+    const group = node.group().size(100, 100);
+    const self = this;
+    if (tipo === EnumBar.Slack || tipo === EnumBar.VT) {
+      const circle = node.circle(50).move(2, 25).fill('#FFF').stroke({ width: 2 }).stroke('#000');
+      const line_horizontal = node.line(52, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
+      const line_vertical = node.line(95, 10, 95, 90).stroke({ width: 5 }).stroke('#000');
+      const text = node.text(name === 'PV' ? '~' : '∞').font({ size: 50, family: 'Times New Roman' }).move(10, 20);
+      group.add(circle);
+      group.add(line_horizontal);
+      group.add(line_vertical);
+      group.add(text);
+    } else if (tipo === EnumBar.PQ) {
+      const line_horizontal = node.line(20, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
+      const line_vertical = node.line(95, 10, 95, 90).stroke({ width: 5 }).stroke('#000');
+      const triangule = node.path('m25,60l10,-25l10,25l-10,0l-10,0z')
+        .rotate(-90, 25, 60);
+      group.add(line_horizontal);
+      group.add(line_vertical);
+      group.add(triangule);
+
+    }
+    group.addClass('component-simple')
+      .click(function (event) {
+        if (event.ctrlKey || event.shiftKey) {
+          self.addSelected(this);
+        } else {
+          self.resetSelection();
+        }
+      });
+
+    return group;
+  }
+
+  atualizaTextoGrupoBarra(grupo: SVG.G): SVG.G {
+    const barra: Barra = grupo.data('barra') as Barra;
+    const self = this;
+
+    // TEM Q PENSAR ONDE VAI FICAR A POSIÇÃO DE CADA ITEM DA BARRA
+    // grupo
+    //   .text(a.name)
+    //   .style('cursor', 'select')
+    //   .dx(component.x())
+    //   .dy(component.y() - 50);
+
+    grupo = this.addRectSelecion(grupo);
+    return grupo;
   }
 
   addSelected(component: SVG.G) {
@@ -77,17 +155,33 @@ export class DiagramaComponent implements OnInit {
         .stroke({ color: 'blue', opacity: 0.1, width: 1 });
       this.selections.add(component);
     }
-    this.addSelectedComponent();
+    this.addSelect();
+
   }
 
-  addSelectedComponent() {
-    console.log(this.selections.length());
+  configureKeyDowns() {
+    const self = this;
+    $(document).keydown(function (e) {
+      if (e.ctrlKey) {
+        if (e.keyCode === 65) {
+          self.container.each(function (c) {
+            if (c > 1) {
+              self.addSelected(this);
+            }
+          });
+        }
+      }
+    });
+  }
+
+
+  addSelect() {
     if (this.selections.length() === 1) {
-      this.selected_component = this.selections.get(0);
-      this.selected_component.data('data');
+      this.selected = this.selections.get(0).data('data');
     } else {
-      this.selected_component = null;
+      this.selected = null;
     }
+
   }
 
   resetSelection() {
@@ -106,8 +200,7 @@ export class DiagramaComponent implements OnInit {
       .fill({ opacity: 0 })
       .stroke({ width: 0 });
     this.selections.remove(component);
-    this.addSelectedComponent();
-
+    this.addSelect();
   }
 
   positionDataComponent(component: SVG.G) {
@@ -232,7 +325,7 @@ export class DiagramaComponent implements OnInit {
             element.dx(event.dx).dy(event.dy);
           });
         } else {
-          self.dict_svg_elements
+          self.mapa_SVG_grupos
             .get(event.target.id)
             .dx(event.dx)
             .dy(event.dy);
@@ -245,18 +338,18 @@ export class DiagramaComponent implements OnInit {
 
   add(name: string) {
     const newComponent: IComponente = this.getNewBus(name);
-    this.count_components[newComponent.type]++;
-    newComponent.id = this.count;
-    newComponent.name += ' ' + this.count_components[newComponent.type];
-    this.dict_nodes.set(newComponent.id, newComponent);
-    this.count++;
+    this.qtd_barras_tipo[newComponent.type]++;
+    newComponent.id = this.qtd_barras_total;
+    newComponent.name += ' ' + this.qtd_barras_tipo[newComponent.type];
+    // this.dict_nodes.set(newComponent.id, newComponent);
+    this.qtd_barras_total++;
 
     let node = this.createNode(name)
       .data('data', newComponent)
       .id(newComponent.name);
     this.positionDataComponent(node);
     node = this.addRectSelecion(node);
-    this.dict_svg_elements.set(node.id(), node);
+    this.mapa_SVG_grupos.set(node.id(), node);
     console.log(node.last());
 
     return newComponent;
@@ -324,14 +417,14 @@ export class DiagramaComponent implements OnInit {
     // this.dict_nodes[positionDataComponent;
   }
 
-  getNodes(): Array<IComponente> {
-    // return this.nodes;
-    return Array.from(this.dict_nodes.values()); // retornar um interable
-  }
+  // getNodes(): Array<IComponente> {
+  //   // return this.nodes;
+  //   return Array.from(this.dict_nodes.values()); // retornar um interable
+  // }
 
-  getNode(id: number): IComponente {
-    return this.dict_nodes.get(id);
-  }
+  // getNode(id: number): IComponente {
+  //   // return this.dict_nodes.get(id);
+  // }
 
 
 }

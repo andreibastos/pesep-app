@@ -28,12 +28,12 @@
         </div>
         <!-- /Barra PQ -->
 
-           <!-- Curto Circuito -->
-           <div class="row sidebar-row mx-auto p-3 my-3">
-              <a id="curto_circuito" class="component  mt-1 p-0" data-toggle="tooltip" data-html="true" data-placement="right" title="Curto Circuito">
-              </a>
-            </div>
-            <!-- /Curto Circuito -->
+        <!-- Curto Circuito -->
+        <div class="row sidebar-row mx-auto p-3 my-3">
+          <a id="curto_circuito" class="component  mt-1 p-0" data-toggle="tooltip" data-html="true" data-placement="right" title="Curto Circuito">
+          </a>
+        </div>
+        <!-- /Curto Circuito -->
 
       </div>
     </div>
@@ -47,12 +47,10 @@
         <!-- Ações de movimento  -->
         <div class="col-1 btn-group mr-3 p-0 " role="group">
 
-          <button type="button" class="btn btn-outline-secondary"
-            data-toggle="tooltip" data-html="true" data-placement="top" title="Selecionar">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Selecionar">
             <img src="../../assets/icons/menu-acoes/icons8-cursor-32.png">
           </button>
-          <button type="button" class="btn btn-outline-secondary"
-            data-toggle="tooltip" data-html="true" data-placement="top" title="Mover">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Mover">
             <img src="../../assets/icons/menu-acoes/icons8-mover-32.png">
           </button>
 
@@ -104,7 +102,7 @@
 
         <!-- calculos -->
         <div class="col-7 btn-group justify-content-end d-flex " role="group">
-          <button (click)="add('VT')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top"
+          <button (click)="adicionarBarra(enumerador_barra.VT)" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top"
             title="Calcular Fluxo de Potência">
             <img src="../../assets/icons/menu-acoes/flow.png" width="32px" height="32px">
           </button>
@@ -126,40 +124,32 @@
     <!-- Propriedades -->
     <div class="col-1 p-0 border">
       <div class="propriety">
-        <div class="justify-content-center">
+        <div *ngIf="selections.length() == 0" class="justify-content-center">
           <p class="h5 "> Propriedades</p>
-        </div>
-        <div >
           <div class="row p-0 m-0 border">
             <div class="m-2 custom-control custom-checkbox">
-              <input type="checkbox" 
-                class="custom-control-input" id="view_grid">
+              <input type="checkbox" class="custom-control-input" id="view_grid">
               <label class="custom-control-label" for="view_grid">Exibir Grade</label>
             </div>
           </div>
           <div class="row p-0 m-0 border">
             <div class="m-2 custom-control custom-checkbox">
-              <input type="checkbox" 
-                class="custom-control-input" id="snap_grid">
+              <input type="checkbox" class="custom-control-input" id="snap_grid">
               <label class="custom-control-label" for="snap_grid">Ajustar a Grade</label>
             </div>
           </div>
         </div>
-        
-        <div  class="row p-0 m-0">
-          <div *ngIf="selected_component">
-            <p>{{selected_component.data('data')| json}}</p>
-          </div>
-          <div *ngIf="selections.length()>0">
-            <p>{{
-              selections.length() }}</p>
+
+        <div *ngIf="selections.length() > 0" class="justify-content-center">
+          <div *ngIf="selected">
+            <div class="row p-0 m-0">
+              <p> {{ selected | json}}</p>
+            </div>
           </div>
         </div>
-
       </div>
-    </div>
-    <!-- /Propriedades -->
+      <!-- /Propriedades -->
 
+    </div>
+    <!-- /Linha Principal -->
   </div>
-  <!-- /Linha Principal -->
-</div>
