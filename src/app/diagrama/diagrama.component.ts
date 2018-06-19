@@ -70,7 +70,10 @@ export class DiagramaComponent implements OnInit {
     SVGIcone.createBus('curto_circuito', 'short');
 
 
-    this.add('PQ');
+    // this.add('PQ');
+    this.adicionarBarra(this.enumerador_barra.PQ, 50, 50);
+    this.adicionarBarra(this.enumerador_barra.VT, 300, 300);
+    this.adicionarBarra(this.enumerador_barra.Slack, 600, 600);
     this.configureKeyDowns();
   }
 
@@ -132,15 +135,29 @@ export class DiagramaComponent implements OnInit {
   }
 
   atualizaTextoGrupoBarra(grupo: SVG.G): SVG.G {
+
     const barra: Barra = grupo.data('barra') as Barra;
     const self = this;
+    console.log(grupo);
 
     // TEM Q PENSAR ONDE VAI FICAR A POSIÇÃO DE CADA ITEM DA BARRA
-    // grupo
-    //   .text(a.name)
-    //   .style('cursor', 'select')
-    //   .dx(component.x())
-    //   .dy(component.y() - 50);
+    grupo.text(barra.nome)
+      .id('nome')
+      .dx(grupo.width() * 0.7)
+      .dy(grupo.height());
+
+    grupo.text(`P=${barra.pCarga} pu`)
+      .id('P')
+      .dy(-grupo.height() * 0.3);
+
+    grupo.text(`Q=${barra.qCarga} pu`)
+      .id('Q')
+      .dy(-grupo.height() * 0.1);
+
+    grupo.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
+      .id('VT')
+      .dy(-grupo.height() * 0.15)
+      .dx(grupo.width() * 0.7);
 
     grupo = this.addRectSelecion(grupo);
     return grupo;
@@ -395,6 +412,9 @@ export class DiagramaComponent implements OnInit {
   }
 
   addRectSelecion(group: SVG.G) {
+    $('selected').each(function () {
+      this.remove();
+    });
     const rect = this.container.rect(group.width(), group.height())
       .addClass('selected')
       .fill({ color: 'blue', opacity: 0 });
