@@ -107,7 +107,7 @@ export class DiagramaComponent implements OnInit {
       const circle = node.circle(50).move(2, 25).fill('#FFF').stroke({ width: 2 }).stroke('#000');
       const line_horizontal = node.line(52, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
       const line_vertical = node.line(95, 10, 95, 90).stroke({ width: 5 }).stroke('#000');
-      const text = node.text(name === 'PV' ? '~' : '∞').font({ size: 50, family: 'Times New Roman' }).move(10, 20);
+      const text = node.text(tipo === EnumBar.VT ? '~' : '∞').font({ size: 50, family: 'Times New Roman' }).move(10, 20);
       group.add(circle);
       group.add(line_horizontal);
       group.add(line_vertical);
@@ -140,21 +140,25 @@ export class DiagramaComponent implements OnInit {
     const self = this;
     console.log(grupo);
 
+    const grupo_text = grupo.group().id('group_text');
+
     // TEM Q PENSAR ONDE VAI FICAR A POSIÇÃO DE CADA ITEM DA BARRA
-    grupo.text(barra.nome)
+    grupo_text.text(barra.nome)
       .id('nome')
       .dx(grupo.width() * 0.7)
       .dy(grupo.height());
 
-    grupo.text(`P=${barra.pCarga} pu`)
+    grupo_text.text(`P=${barra.pCarga} pu`)
       .id('P')
+      .dx(-grupo.width() * 0.1)
       .dy(-grupo.height() * 0.3);
 
-    grupo.text(`Q=${barra.qCarga} pu`)
+    grupo_text.text(`Q=${barra.qCarga} pu`)
       .id('Q')
+      .dx(-grupo.width() * 0.1)
       .dy(-grupo.height() * 0.1);
 
-    grupo.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
+    grupo_text.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
       .id('VT')
       .dy(-grupo.height() * 0.15)
       .dx(grupo.width() * 0.7);
