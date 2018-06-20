@@ -31,20 +31,22 @@ export class DiagramaComponent implements OnInit {
   enumerador_barra = EnumBar; // para usar no HTML
 
   // Controle do SVG
+  div_nome = 'draw_inside';
   container: SVG.Doc;
   mapa_SVG_grupos: Map<string, SVG.G> = new Map();
-  selections: SVG.Set;
-  div_name = 'draw_inside';
-  selected: SVG.G;
+  selecionados: SVG.Set;
+  selecionado: SVG.G;
 
-  // Propriedades do Diagrama
-  proprieties = { view_grid: true, snap_grid: false }; // Propriedades do diagrama
-  show_proprieties = { diagram: true, bus_PV: false, bus_PQ: false, bus_VT: false }; // Qual Propriedade Exibir
-
-  // Ferramenta selecionada
-  tool_selected = { selected: true, move: false, line: true };
+  // Temporário
   de_barra: Barra;
   para_barra: Barra;
+
+  // Propriedades do Diagrama
+  propriedades_diagrama = { visualizar_grade: true, agarrar_grade: false }; // Propriedades do diagrama
+  mostrar_propriedades = { diagram: true, bus_PV: false, bus_PQ: false, bus_VT: false }; // Qual Propriedade Exibir
+
+  // Ferramenta selecionada
+  ferramenta_atual = { selecionado: true, mover: false, linha: true };
 
   constructor() {
     this.qtd_barras_tipo[EnumBar.VT] = 0;
@@ -58,29 +60,29 @@ export class DiagramaComponent implements OnInit {
     const height = draw_inside.clientHeight;
     const width = draw_inside.clientWidth;
 
-    const style = document.createElement('style');
-    style.innerHTML = `.selecionado {
+    const style_svg = document.createElement('style');
+    style_svg.innerHTML = `.selecionado {
                     fill: blue;
                     fill-opacity: 0.1;
                     stroke: black;
                     stroke-opacity:0.6;
                     stroke-width:2;
                    }
-                   .deselecionado {
-                    fill-opacity: 0.0;
-                   }
                    `;
 
-    this.container = SVG(this.div_name)
+    this.container = SVG(this.div_nome)
       .addClass('svg_area')
       .size(width, height);
-    this.container.node.appendChild(style);
+    this.container.node.appendChild(style_svg);
 
-    this.selections = this.container.set();
+    this.selecionados = this.container.set();
 
-    this.enableSelection();
+    this.habilitarSelecao();
 
-    this.initInteract();
+    this.inicializarInteract();
+
+    this.configurarAtalhos();
+
 
     SVGIcone.createBus('bus_vt', 'VT');
     SVGIcone.createBus('bus_pv', 'PV');
@@ -103,7 +105,6 @@ export class DiagramaComponent implements OnInit {
     this.adicionarBarra(this.enumerador_barra.PQ, 600, 500);
 
 
-    this.configureKeyDowns();
   }
 
   incrementaBarra(tipo: EnumBar) {
@@ -140,13 +141,6 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-  criarGrupoSelecao(grupo: SVG.G): SVG.G {
-    const grupo_selecao = this.container.group().addClass('grupo_selecao').addClass('deselecionado');
-    const box = grupo.bbox();
-    grupo_selecao.rect(box.w, box.h).move(box.x, box.y);
-    return grupo_selecao;
-  }
-
   criaGrupoTodo(barra: Barra, posicao_x?: number, posicao_y?: number) {
     const self = this;
     const grupo = this.container.group()
@@ -157,8 +151,8 @@ export class DiagramaComponent implements OnInit {
       .addClass('componente-barra')
       .click(function (event) {
         if (event.ctrlKey || event.shiftKey) {
-          self.addSelected(this);
-        } else if (self.tool_selected.line) {
+          self.toogleSelecionado(this);
+        } else if (self.ferramenta_atual.linha) {
           if (!self.de_barra) {
             self.de_barra = this.data('barra');
           } else {
@@ -168,10 +162,21 @@ export class DiagramaComponent implements OnInit {
             self.para_barra = null;
           }
         } else {
-          self.resetSelection();
+          self.limparSelecao();
         }
       });
     return grupo;
+  }
+
+  criarGrupoSelecao(grupo: SVG.G): SVG.G {
+    const grupo_selecao = this.container
+      .group()
+      .addClass('grupo_selecao')
+      .fill({ opacity: 0 });
+    const box = grupo.bbox();
+    console.log(box, grupo);
+    grupo_selecao.rect(box.w, box.h).move(box.x, box.y);
+    return grupo_selecao;
   }
 
   criaGrupoDesenho(tipo: EnumBar): SVG.G {
@@ -228,7 +233,6 @@ export class DiagramaComponent implements OnInit {
       .dx(box.height * 0.7);
     return grupo_texto;
   }
-
 
   adicionarLinha(de: Barra, para: Barra, tipo?: string) {
     const rect = this.container.rect();
@@ -290,67 +294,51 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-  addSelected(grupo: SVG.G) {
-    if (this.selections.has(grupo)) {
-      this.removeSelected(grupo);
-    } else {
-      const grupo_selecao = grupo.get(2) as SVG.G;
-      if (grupo_selecao) {
-        grupo_selecao.addClass('selecionado').removeClass('deselecionado');
-      }
-
-      this.selections.add(grupo);
+  adicionarSelecionado(grupo: SVG.G) {
+    const grupo_selecao = grupo.get(2) as SVG.G;
+    if (grupo_selecao) {
+      grupo_selecao.addClass('selecionado');
     }
-    this.addSelect();
-
+    this.selecionados.add(grupo);
   }
 
-  configureKeyDowns() {
-    const self = this;
-    $(document).keydown(function (e) {
-      if (e.ctrlKey) {
-        if (e.keyCode === 65) {
-          self.container.each(function (c) {
-            if (c > 1) {
-              self.addSelected(this);
-            }
-          });
-        }
-      }
-    });
-
+  removerSelecionado(grupo: SVG.G) {
+    const grupo_selecao = grupo.get(2) as SVG.G;
+    if (grupo_selecao) {
+      grupo_selecao.removeClass('selecionado');
+    }
+    this.selecionados.remove(grupo);
   }
 
-
-
-  addSelect() {
-    if (this.selections.length() === 1) {
-      this.selected = this.selections.get(0).data('barra');
+  atualizarSelecionado() {
+    if (this.selecionados.length() === 1) {
+      this.selecionado = this.selecionados.get(0).data('barra');
     } else {
-      this.selected = null;
+      this.selecionado = null;
     }
   }
 
-  resetSelection() {
+  toogleSelecionado(grupo: SVG.G) {
+    if (this.selecionados.has(grupo)) {
+      this.removerSelecionado(grupo);
+    } else {
+      this.adicionarSelecionado(grupo);
+    }
+    this.atualizarSelecionado();
+  }
+
+  limparSelecao() {
     const self = this;
     this.container.each(function (c) {
       if (c > 1) {
-        self.removeSelected(this);
+        self.removerSelecionado(this);
       }
     });
-    this.selections = this.container.set();
-
-  }
-  removeSelected(grupo: SVG.G) {
-    const grupo_selecao = grupo.get(2) as SVG.G;
-    if (grupo_selecao) {
-      grupo_selecao.addClass('deselecionado').removeClass('selecionado');
-    }
-    this.selections.remove(grupo);
-
+    this.selecionados = this.container.set();
   }
 
-  enableSelection() {
+
+  habilitarSelecao() {
     const self = this;
     let box_x = 1, box_y = 1;
 
@@ -367,7 +355,7 @@ export class DiagramaComponent implements OnInit {
       restrict: {
         restriction: document.getElementById(this.container.id()),
       }
-    }).styleCursor(false).on('tap', function () { self.resetSelection(); });
+    }).styleCursor(false).on('tap', function () { self.limparSelecao(); });
 
     function dragstart(event) {
       x = event.interaction.pointers[0].offsetX;
@@ -414,7 +402,7 @@ export class DiagramaComponent implements OnInit {
       bounds = fixBounds(bounds);
       box.remove();
 
-      self.resetSelection();
+      self.limparSelecao();
       self.container.each(function (c) {
         const component: SVG.G = this;
         if (c > 1) {
@@ -424,7 +412,7 @@ export class DiagramaComponent implements OnInit {
           mybounds.y += component.y();
           if (mybounds.x >= bounds.x && mybounds.x <= bounds.x2 || mybounds.x2 >= bounds.x && mybounds.x2 <= bounds.x2) {
             if (mybounds.y >= bounds.y && mybounds.y <= bounds.y2 || mybounds.y2 >= bounds.y && mybounds.y2 <= bounds.y2) {
-              self.addSelected(this);
+              self.toogleSelecionado(this);
             }
           }
         }
@@ -447,7 +435,26 @@ export class DiagramaComponent implements OnInit {
   }
 
 
-  initInteract() {
+
+  configurarAtalhos() {
+    const self = this;
+    $(document).keydown(function (e) {
+      if (e.ctrlKey) {
+        if (e.keyCode === 65) {
+          self.container.each(function (c) {
+            if (c > 1) {
+              self.toogleSelecionado(this);
+            }
+          });
+        }
+      }
+    });
+
+  }
+
+
+
+  inicializarInteract() {
     const self = this;
     // interact('.component-simple')
     interact('.componente-barra')
@@ -465,9 +472,9 @@ export class DiagramaComponent implements OnInit {
 
       })
       .on('dragmove', function (event) {
-        if (self.selections.length() > 0) {
-          self.selections.each(function (index) {
-            const element = self.selections.get(index);
+        if (self.selecionados.length() > 0) {
+          self.selecionados.each(function (index) {
+            const element = self.selecionados.get(index);
             element.dx(event.dx).dy(event.dy);
           });
         } else {
@@ -549,9 +556,9 @@ export class DiagramaComponent implements OnInit {
     group.addClass('component-simple')
       .click(function (event) {
         if (event.ctrlKey || event.shiftKey) {
-          self.addSelected(this);
+          self.toogleSelecionado(this);
         } else {
-          self.resetSelection();
+          self.limparSelecao();
         }
       })
       .animate(200)
@@ -561,11 +568,11 @@ export class DiagramaComponent implements OnInit {
   }
 
   addRectSelecion(group: SVG.G) {
-    $('selected').each(function () {
+    $('selecionado').each(function () {
       this.remove();
     });
     const rect = this.container.rect(group.width(), group.height())
-      .addClass('selected')
+      .addClass('selecionado')
       .fill({ color: 'blue', opacity: 0 });
     group.add(rect);
     return group;
