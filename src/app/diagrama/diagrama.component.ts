@@ -143,7 +143,6 @@ export class DiagramaComponent implements OnInit {
   criarGrupoSelecao(grupo: SVG.G): SVG.G {
     const grupo_selecao = this.container.group().addClass('grupo_selecao').addClass('deselecionado');
     const box = grupo.bbox();
-    console.log(box, grupo);
     grupo_selecao.rect(box.w, box.h).move(box.x, box.y);
     return grupo_selecao;
   }
@@ -202,7 +201,36 @@ export class DiagramaComponent implements OnInit {
     return group;
   }
 
-  adicionarLinha(de: Barra, para: Barra) {
+  criaGrupoTexto(grupo: SVG.G): SVG.G {
+    const barra: Barra = grupo.data('barra') as Barra;
+    const self = this;
+    const box = grupo.bbox();
+    const grupo_texto = this.container.group();
+    // TEM Q PENSAR ONDE VAI FICAR A POSIÇÃO DE CADA ITEM DA BARRA
+    grupo_texto.text(barra.nome)
+      .id('nome')
+      .dx(box.height * 0.7)
+      .dy(box.width);
+
+    grupo_texto.text(`P=${barra.pCarga} pu`)
+      .id('P')
+      .dx(-box.height * 0.1)
+      .dy(-box.width * 0.3);
+
+    grupo_texto.text(`Q=${barra.qCarga} pu`)
+      .id('Q')
+      .dx(-box.height * 0.1)
+      .dy(-box.width * 0.1);
+
+    grupo_texto.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
+      .id('VT')
+      .dy(-box.width * 0.15)
+      .dx(box.height * 0.7);
+    return grupo_texto;
+  }
+
+
+  adicionarLinha(de: Barra, para: Barra, tipo?: string) {
     const rect = this.container.rect();
     const group_line = this.container.group().add(rect).id('line_1') as SVG.G;
 
@@ -212,7 +240,7 @@ export class DiagramaComponent implements OnInit {
     const para_grupo_box = para_grupo.bbox();
 
 
-    console.log(de_grupo, para_grupo);
+    // console.log(de_grupo, para_grupo);
 
     let eixo_y: string, eixo_x: string;
     para_grupo_box.x2 += para_grupo.x();
@@ -259,37 +287,7 @@ export class DiagramaComponent implements OnInit {
     }
     group_line.fill('black').stroke({ width: 2, color: 'black' });
 
-    console.log(eixo_x, eixo_y);
 
-  }
-
-  criaGrupoTexto(grupo: SVG.G): SVG.G {
-    const barra: Barra = grupo.data('barra') as Barra;
-    const self = this;
-    const box = grupo.bbox();
-    console.log(box);
-    const grupo_texto = this.container.group();
-    // TEM Q PENSAR ONDE VAI FICAR A POSIÇÃO DE CADA ITEM DA BARRA
-    grupo_texto.text(barra.nome)
-      .id('nome')
-      .dx(box.height * 0.7)
-      .dy(box.width);
-
-    grupo_texto.text(`P=${barra.pCarga} pu`)
-      .id('P')
-      .dx(-box.height * 0.1)
-      .dy(-box.width * 0.3);
-
-    grupo_texto.text(`Q=${barra.qCarga} pu`)
-      .id('Q')
-      .dx(-box.height * 0.1)
-      .dy(-box.width * 0.1);
-
-    grupo_texto.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
-      .id('VT')
-      .dy(-box.width * 0.15)
-      .dx(box.height * 0.7);
-    return grupo_texto;
   }
 
   addSelected(grupo: SVG.G) {
@@ -320,8 +318,10 @@ export class DiagramaComponent implements OnInit {
         }
       }
     });
+  
   }
 
+  
 
   addSelect() {
     if (this.selections.length() === 1) {
@@ -363,7 +363,10 @@ export class DiagramaComponent implements OnInit {
     interact(document.getElementById('mask_selection')).draggable({
       onstart: dragstart,
       onmove: dragmove,
-      onend: dragend
+      onend: dragend,
+      restrict: {
+        restriction: document.getElementById(this.container.id()),
+      }
     }).styleCursor(false).on('tap', function () { self.resetSelection(); });
 
     function dragstart(event) {
@@ -377,27 +380,33 @@ export class DiagramaComponent implements OnInit {
         .fill({ color: 'rgb(255, 255, 255)', opacity: 0 });
     }
     function dragmove(event) {
+      const pointers = event.interaction.pointers[0];
+      console.log(pointers)
+      // if (pointers.target.id != "" ) {
       dx = event.interaction.pointers[0].offsetX - x;
       dy = event.interaction.pointers[0].offsetY - y;
-      let offsetX = 0, offsetY = 0;
+
+      let transform_x = 0, transform_y = 0;
       box_x = 1;
       box_y = 1;
 
       if (dx < 0) {
-        offsetX = dx;
+        transform_x = dx;
         dx *= -1;
         box_x = -1;
       }
       if (dy < 0) {
-        offsetY = dy;
+        transform_y = dy;
         dy *= -1;
         box_y = -1;
-
       }
 
-      box.transform({ x: offsetX, y: offsetY });
+      box.transform({ x: transform_x, y: transform_y });
       box.width(dx)
         .height(dy);
+      // }
+
+
     }
 
     function dragend(event) {
@@ -410,6 +419,7 @@ export class DiagramaComponent implements OnInit {
         const component: SVG.G = this;
         if (c > 1) {
           const mybounds: SVG.BBox = component.bbox();
+
           mybounds.x += component.x();
           mybounds.y += component.y();
           if (mybounds.x >= bounds.x && mybounds.x <= bounds.x2 || mybounds.x2 >= bounds.x && mybounds.x2 <= bounds.x2) {
@@ -487,7 +497,6 @@ export class DiagramaComponent implements OnInit {
         event.interaction.y = parseInt(event.target.getAttribute('data-y'), 10) || 0;
       })
       .on('dragmove', function (event) {
-        console.log(event.currentTarget);
 
         const target = event.target,
           // keep the dragged position in the data-x/data-y attributes
