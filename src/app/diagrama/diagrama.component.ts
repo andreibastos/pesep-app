@@ -58,9 +58,23 @@ export class DiagramaComponent implements OnInit {
     const height = draw_inside.clientHeight;
     const width = draw_inside.clientWidth;
 
+    const style = document.createElement('style');
+    style.innerHTML = `.selecionado {
+                    fill: blue;
+                    fill-opacity: 0.1;
+                    stroke: black;
+                    stroke-opacity:0.6;
+                    stroke-width:2;
+                   }
+                   .deselecionado {
+                    fill-opacity: 0.0;
+                   }
+                   `;
+
     this.container = SVG(this.div_name)
       .addClass('svg_area')
       .size(width, height);
+    this.container.node.appendChild(style);
 
     this.selections = this.container.set();
 
@@ -108,15 +122,14 @@ export class DiagramaComponent implements OnInit {
     this.barras.push(barra); // adiciona na lista
 
     // SVG
-    let grupo_todo = this.criaGrupoTodo(barra, posicao_x, posicao_y);
+    const grupo_todo = this.criaGrupoTodo(barra, posicao_x, posicao_y);
 
     // Grupo do desenhos (circulos, linha, etc)
     const grupo_desenho = this.criaGrupoDesenho(tipo);
+    grupo_todo.add(grupo_desenho);
 
     // Grupo de tenho (P,Q,V,T)
     const grupo_texto = this.criaGrupoTexto(grupo_todo);
-
-    grupo_todo.add(grupo_desenho);
     grupo_todo.add(grupo_texto);
 
     const grupo_selecao = this.criarGrupoSelecao(grupo_todo);
@@ -128,12 +141,10 @@ export class DiagramaComponent implements OnInit {
   }
 
   criarGrupoSelecao(grupo: SVG.G): SVG.G {
-    const grupo_selecao = this.container.group();
+    const grupo_selecao = this.container.group().addClass('grupo_selecao').addClass('deselecionado');
     const box = grupo.bbox();
-    grupo_selecao.rect(box.w, box.h)
-      .addClass('grupo_selecao')
-      .fill({ color: 'blue', opacity: 0.1 })
-      .stroke({ width: 2, color: 'blue', opacity: 1 });
+    console.log(box, grupo);
+    grupo_selecao.rect(box.w, box.h).move(box.x, box.y);
     return grupo_selecao;
   }
 
@@ -143,7 +154,7 @@ export class DiagramaComponent implements OnInit {
       .id(barra.id_barra)
       .addClass('grupo_geral')
       .move(posicao_x || 0, posicao_y || 0) // move para a posição desejada
-      .data('barra', barra) // adiciona o dado da barra 
+      .data('barra', barra) // adiciona o dado da barra
       .addClass('componente-barra')
       .click(function (event) {
         if (event.ctrlKey || event.shiftKey) {
@@ -255,39 +266,42 @@ export class DiagramaComponent implements OnInit {
   criaGrupoTexto(grupo: SVG.G): SVG.G {
     const barra: Barra = grupo.data('barra') as Barra;
     const self = this;
-
-    const grupo_texto = this.container.group().size(100, 100);
+    const box = grupo.bbox();
+    console.log(box);
+    const grupo_texto = this.container.group();
     // TEM Q PENSAR ONDE VAI FICAR A POSIÇÃO DE CADA ITEM DA BARRA
     grupo_texto.text(barra.nome)
       .id('nome')
-      .dx(grupo_texto.width() * 0.7)
-      .dy(grupo_texto.height());
+      .dx(box.height * 0.7)
+      .dy(box.width);
 
     grupo_texto.text(`P=${barra.pCarga} pu`)
       .id('P')
-      .dx(-grupo_texto.width() * 0.1)
-      .dy(-grupo_texto.height() * 0.3);
+      .dx(-box.height * 0.1)
+      .dy(-box.width * 0.3);
 
     grupo_texto.text(`Q=${barra.qCarga} pu`)
       .id('Q')
-      .dx(-grupo_texto.width() * 0.1)
-      .dy(-grupo_texto.height() * 0.1);
+      .dx(-box.height * 0.1)
+      .dy(-box.width * 0.1);
 
     grupo_texto.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
       .id('VT')
-      .dy(-grupo_texto.height() * 0.15)
-      .dx(grupo_texto.width() * 0.7);
+      .dy(-box.width * 0.15)
+      .dx(box.height * 0.7);
     return grupo_texto;
   }
 
-  addSelected(component: SVG.G) {
-    if (this.selections.has(component)) {
-      this.removeSelected(component);
+  addSelected(grupo: SVG.G) {
+    if (this.selections.has(grupo)) {
+      this.removeSelected(grupo);
     } else {
-      component.last()
-        .fill({ opacity: 0.08 })
-        .stroke({ color: 'blue', opacity: 0.1, width: 1 });
-      this.selections.add(component);
+      const grupo_selecao = grupo.get(2) as SVG.G;
+      if (grupo_selecao) {
+        grupo_selecao.addClass('selecionado').removeClass('deselecionado');
+      }
+
+      this.selections.add(grupo);
     }
     this.addSelect();
 
@@ -323,17 +337,17 @@ export class DiagramaComponent implements OnInit {
       if (c > 1) {
         self.removeSelected(this);
       }
-
     });
     this.selections = this.container.set();
 
   }
-  removeSelected(component: SVG.G) {
-    component.last()
-      .fill({ opacity: 0 })
-      .stroke({ width: 0 });
-    this.selections.remove(component);
-    this.addSelect();
+  removeSelected(grupo: SVG.G) {
+    const grupo_selecao = grupo.get(2) as SVG.G;
+    if (grupo_selecao) {
+      grupo_selecao.addClass('deselecionado').removeClass('selecionado');
+    }
+    this.selections.remove(grupo);
+
   }
 
   enableSelection() {
@@ -447,7 +461,6 @@ export class DiagramaComponent implements OnInit {
             element.dx(event.dx).dy(event.dy);
           });
         } else {
-          console.log(event.target.id)
           self.mapa_SVG_grupos
             .get(event.target.id)
             .dx(event.dx)
