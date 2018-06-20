@@ -109,7 +109,7 @@
     <!-- Propriedades -->
     <div class="col-1 p-0 border">
       <div class="propriety">
-        <div *ngIf="selecionados.length() == 0" class="justify-content-center">
+        <div *ngIf="selections.length() == 0" class="justify-content-center">
           <p class="h5 "> Propriedades</p>
           <div class="row p-0 m-0 border">
             <div class="m-2 custom-control custom-checkbox">
@@ -125,8 +125,8 @@
           </div>
         </div>
 
-        <div *ngIf="selecionados.length() > 0" class="justify-content-center">
-          <div *ngIf="selecionado">
+        <div *ngIf="selections.length() > 0" class="justify-content-center">
+          <div *ngIf="selected">
             <div class="row p-0 m-0">
               <p>Editar Barra</p>
             </div>
@@ -134,29 +134,29 @@
               <div class="form-row">
                 <div class="form-group col-md-12">
                   <label for="input_nome_barra">Nome</label>
-                  <input type="text" class="form-control" id="input_nome_barra" value="{{selecionado.nome}}" placeholder="barra_1">
+                  <input type="text" class="form-control" id="input_nome_barra" value="{{selected.nome}}" placeholder="barra_1">
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label for="input_P_barra">P</label>
-                  <input type="text" class="form-control" id="input_P_barra" value="{{selecionado.pCarga}}" placeholder="1 pu">
+                  <input type="text" class="form-control" id="input_P_barra" value="{{selected.pCarga}}" placeholder="1 pu">
                 </div>
                 <div class="form-group col-md-6">
                   <label for="input_Q_barra">Q</label>
-                  <input type="text" class="form-control" id="input_Q_barra" value="{{selecionado.qCarga}}" placeholder="0 pu">
+                  <input type="text" class="form-control" id="input_Q_barra" value="{{selected.qCarga}}" placeholder="0 pu">
                 </div>
               </div>
               
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label for="input_V_barra">V</label>
-                  <input type="text" class="form-control" id="input_V_barra" value="{{selecionado.tensao_0}}" placeholder="1 pu">
+                  <input type="text" class="form-control" id="input_V_barra" value="{{selected.tensao_0}}" placeholder="1 pu">
                 </div>
                 <div class="form-group col-md-6">
                   <label for="input_T_barra">T</label>
-                  <input type="text" class="form-control" id="input_T_barra" value="{{selecionado.angulo_0}}" placeholder="0 pu">
+                  <input type="text" class="form-control" id="input_T_barra" value="{{selected.angulo_0}}" placeholder="0 pu">
                 </div>
               </div>
             </form>
