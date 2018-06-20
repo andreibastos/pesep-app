@@ -107,10 +107,9 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-  incrementaBarra(tipo: EnumBar) {
-    this.qtd_barras_tipo[tipo]++;
-    this.qtd_barras_total++;
-  }
+  /*
+  FUNÇÕES DO SISTEMA ELÉTRICO DE POTÊNCIA
+  */
 
   adicionarBarra(tipo: EnumBar, posicao_x?: number, posicao_y?: number) {
     const self = this;
@@ -139,99 +138,6 @@ export class DiagramaComponent implements OnInit {
 
     this.mapa_SVG_grupos.set(grupo_todo.id(), grupo_todo);
 
-  }
-
-  criaGrupoTodo(barra: Barra, posicao_x?: number, posicao_y?: number) {
-    const self = this;
-    const grupo = this.container.group()
-      .id(barra.id_barra)
-      .addClass('grupo_geral')
-      .move(posicao_x || 0, posicao_y || 0) // move para a posição desejada
-      .data('barra', barra) // adiciona o dado da barra
-      .addClass('componente-barra')
-      .click(function (event) {
-        if (event.ctrlKey || event.shiftKey) {
-          self.toogleSelecionado(this);
-        } else if (self.ferramenta_atual.linha) {
-          if (!self.de_barra) {
-            self.de_barra = this.data('barra');
-          } else {
-            self.para_barra = this.data('barra');
-            self.adicionarLinha(self.de_barra, self.para_barra);
-            self.de_barra = null;
-            self.para_barra = null;
-          }
-        } else {
-          self.limparSelecao();
-        }
-      });
-    return grupo;
-  }
-
-  criarGrupoSelecao(grupo: SVG.G): SVG.G {
-    const grupo_selecao = this.container
-      .group()
-      .addClass('grupo_selecao')
-      .fill({ opacity: 0 });
-    const box = grupo.bbox();
-    console.log(box, grupo);
-    grupo_selecao.rect(box.w, box.h).move(box.x, box.y);
-    return grupo_selecao;
-  }
-
-  criaGrupoDesenho(tipo: EnumBar): SVG.G {
-    const node = this.container;
-    const group = node.group().size(100, 100);
-    const self = this;
-    if (tipo === EnumBar.Slack || tipo === EnumBar.VT) {
-      const circle = node.circle(50).move(2, 25).fill('#FFF').stroke({ width: 2 }).stroke('#000');
-      const line_horizontal = node.line(52, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
-      const line_vertical = node.line(95, 10, 95, 90).stroke({ width: 5 }).stroke('#000');
-      const text = node.text(tipo === EnumBar.VT ? '~' : '∞').font({ size: 50, family: 'Times New Roman' }).move(10, 20);
-      group.add(circle);
-      group.add(line_horizontal);
-      group.add(line_vertical);
-      group.add(text);
-    } else if (tipo === EnumBar.PQ) {
-      const line_horizontal = node.line(20, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
-      const line_vertical = node.line(95, 10, 95, 90).stroke({ width: 5 }).stroke('#000');
-      const triangule = node.path('m25,60l10,-25l10,25l-10,0l-10,0z')
-        .rotate(-90, 25, 60);
-      group.add(line_horizontal);
-      group.add(line_vertical);
-      group.add(triangule);
-
-    }
-    group.addClass('grupo_desenho');
-    return group;
-  }
-
-  criaGrupoTexto(grupo: SVG.G): SVG.G {
-    const barra: Barra = grupo.data('barra') as Barra;
-    const self = this;
-    const box = grupo.bbox();
-    const grupo_texto = this.container.group();
-    // TEM Q PENSAR ONDE VAI FICAR A POSIÇÃO DE CADA ITEM DA BARRA
-    grupo_texto.text(barra.nome)
-      .id('nome')
-      .dx(box.height * 0.7)
-      .dy(box.width);
-
-    grupo_texto.text(`P=${barra.pCarga} pu`)
-      .id('P')
-      .dx(-box.height * 0.1)
-      .dy(-box.width * 0.3);
-
-    grupo_texto.text(`Q=${barra.qCarga} pu`)
-      .id('Q')
-      .dx(-box.height * 0.1)
-      .dy(-box.width * 0.1);
-
-    grupo_texto.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
-      .id('VT')
-      .dy(-box.width * 0.15)
-      .dx(box.height * 0.7);
-    return grupo_texto;
   }
 
   adicionarLinha(de: Barra, para: Barra, tipo?: string) {
@@ -294,6 +200,117 @@ export class DiagramaComponent implements OnInit {
 
   }
 
+  incrementaBarra(tipo: EnumBar) {
+    this.qtd_barras_tipo[tipo]++;
+    this.qtd_barras_total++;
+  }
+
+  /*
+  FUNÇÕES DO SVG
+  */
+
+  // CRIAÇÃO DE GRUPOS
+
+  // grupo Geral, contém os outros grupos (desenho, texto e seleção)
+  criaGrupoTodo(barra: Barra, posicao_x?: number, posicao_y?: number) {
+    const self = this;
+    const grupo = this.container.group()
+      .id(barra.id_barra)
+      .addClass('grupo_geral')
+      .move(posicao_x || 0, posicao_y || 0) // move para a posição desejada
+      .data('barra', barra) // adiciona o dado da barra
+      .addClass('componente-barra')
+      .click(function (event) {
+        if (event.ctrlKey || event.shiftKey) {
+          self.toogleSelecionado(this);
+        } else if (self.ferramenta_atual.linha) {
+          if (!self.de_barra) {
+            self.de_barra = this.data('barra');
+          } else {
+            self.para_barra = this.data('barra');
+            self.adicionarLinha(self.de_barra, self.para_barra);
+            self.de_barra = null;
+            self.para_barra = null;
+          }
+        } else {
+          self.limparSelecao();
+        }
+      });
+    return grupo;
+  }
+
+  // grupo de Seleção
+  criarGrupoSelecao(grupo: SVG.G): SVG.G {
+    const grupo_selecao = this.container
+      .group()
+      .addClass('grupo_selecao')
+      .fill({ opacity: 0 });
+    const box = grupo.bbox();
+    console.log(box, grupo);
+    grupo_selecao.rect(box.w, box.h).move(box.x, box.y);
+    return grupo_selecao;
+  }
+
+  // grupo de desenho (circulos, setas, triangulos)
+  criaGrupoDesenho(tipo: EnumBar): SVG.G {
+    const node = this.container;
+    const group = node.group().size(100, 100);
+    const self = this;
+    if (tipo === EnumBar.Slack || tipo === EnumBar.VT) {
+      const circle = node.circle(50).move(2, 25).fill('#FFF').stroke({ width: 2 }).stroke('#000');
+      const line_horizontal = node.line(52, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
+      const line_vertical = node.line(95, 10, 95, 90).stroke({ width: 5 }).stroke('#000');
+      const text = node.text(tipo === EnumBar.VT ? '~' : '∞').font({ size: 50, family: 'Times New Roman' }).move(10, 20);
+      group.add(circle);
+      group.add(line_horizontal);
+      group.add(line_vertical);
+      group.add(text);
+    } else if (tipo === EnumBar.PQ) {
+      const line_horizontal = node.line(20, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
+      const line_vertical = node.line(95, 10, 95, 90).stroke({ width: 5 }).stroke('#000');
+      const triangule = node.path('m25,60l10,-25l10,25l-10,0l-10,0z')
+        .rotate(-90, 25, 60);
+      group.add(line_horizontal);
+      group.add(line_vertical);
+      group.add(triangule);
+
+    }
+    group.addClass('grupo_desenho');
+    return group;
+  }
+
+  // grupo de texto (P,Q, V, T)
+  criaGrupoTexto(grupo: SVG.G): SVG.G {
+    const barra: Barra = grupo.data('barra') as Barra;
+    const self = this;
+    const box = grupo.bbox();
+    const grupo_texto = this.container.group();
+    // TEM Q PENSAR ONDE VAI FICAR A POSIÇÃO DE CADA ITEM DA BARRA
+    grupo_texto.text(barra.nome)
+      .id('nome')
+      .dx(box.height * 0.7)
+      .dy(box.width);
+
+    grupo_texto.text(`P=${barra.pCarga} pu`)
+      .id('P')
+      .dx(-box.height * 0.1)
+      .dy(-box.width * 0.3);
+
+    grupo_texto.text(`Q=${barra.qCarga} pu`)
+      .id('Q')
+      .dx(-box.height * 0.1)
+      .dy(-box.width * 0.1);
+
+    grupo_texto.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
+      .id('VT')
+      .dy(-box.width * 0.15)
+      .dx(box.height * 0.7);
+    return grupo_texto;
+  }
+
+  // MANIPULAÇÃO DOS SELECIONADOS
+
+  // adiciona grupo para seleção
   adicionarSelecionado(grupo: SVG.G) {
     const grupo_selecao = grupo.get(2) as SVG.G;
     if (grupo_selecao) {
@@ -302,6 +319,7 @@ export class DiagramaComponent implements OnInit {
     this.selecionados.add(grupo);
   }
 
+  // remove grupo da seleção
   removerSelecionado(grupo: SVG.G) {
     const grupo_selecao = grupo.get(2) as SVG.G;
     if (grupo_selecao) {
@@ -310,6 +328,7 @@ export class DiagramaComponent implements OnInit {
     this.selecionados.remove(grupo);
   }
 
+  // atualiza o selecionado
   atualizarSelecionado() {
     if (this.selecionados.length() === 1) {
       this.selecionado = this.selecionados.get(0).data('barra');
@@ -318,6 +337,7 @@ export class DiagramaComponent implements OnInit {
     }
   }
 
+  // muda o item selecionado, (se está selecionado passa a não ser, e vice versa)
   toogleSelecionado(grupo: SVG.G) {
     if (this.selecionados.has(grupo)) {
       this.removerSelecionado(grupo);
@@ -327,6 +347,7 @@ export class DiagramaComponent implements OnInit {
     this.atualizarSelecionado();
   }
 
+  // limpa a seleção
   limparSelecao() {
     const self = this;
     this.container.each(function (c) {
@@ -337,7 +358,7 @@ export class DiagramaComponent implements OnInit {
     this.selecionados = this.container.set();
   }
 
-
+  // Habilita a seleção, mascara de seleção
   habilitarSelecao() {
     const self = this;
     let box_x = 1, box_y = 1;
@@ -434,8 +455,9 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-
-
+  /*
+  CONFIGURAÇÕES DE ATALHOS
+  */
   configurarAtalhos() {
     const self = this;
     $(document).keydown(function (e) {
@@ -452,8 +474,7 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-
-
+  // INICIAR FUNÇÕES DE ARRASTAR, MOVIMENTAR E SOLTAR (Drag and Drop)
   inicializarInteract() {
     const self = this;
     // interact('.component-simple')
@@ -566,18 +587,4 @@ export class DiagramaComponent implements OnInit {
 
     return group;
   }
-
-  addRectSelecion(group: SVG.G) {
-    $('selecionado').each(function () {
-      this.remove();
-    });
-    const rect = this.container.rect(group.width(), group.height())
-      .addClass('selecionado')
-      .fill({ color: 'blue', opacity: 0 });
-    group.add(rect);
-    return group;
-  }
-
-
-
 }
