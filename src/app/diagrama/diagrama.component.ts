@@ -318,10 +318,10 @@ export class DiagramaComponent implements OnInit {
         }
       }
     });
-  
+
   }
 
-  
+
 
   addSelect() {
     if (this.selections.length() === 1) {
@@ -381,7 +381,7 @@ export class DiagramaComponent implements OnInit {
     }
     function dragmove(event) {
       const pointers = event.interaction.pointers[0];
-      console.log(pointers)
+      console.log(pointers);
       // if (pointers.target.id != "" ) {
       dx = event.interaction.pointers[0].offsetX - x;
       dy = event.interaction.pointers[0].offsetY - y;
