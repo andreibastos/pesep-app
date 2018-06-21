@@ -81,6 +81,7 @@ export class DiagramaComponent implements OnInit {
     this.selecionados = this.container.set();
 
     this.habilitarSelecao();
+    this.habilitarRotacao();
 
     this.inicializarInteract();
 
@@ -177,15 +178,10 @@ export class DiagramaComponent implements OnInit {
 
     grupo_linha.move(de_grupo_box.x2 - 20, de_grupo_box.cy);
 
-    let delta_x = para_grupo_box.x2 - de_grupo_box.x2;
+    const delta_x = para_grupo_box.x2 - de_grupo_box.x2;
     const delta_y = para_grupo_box.cy - de_grupo_box.cy;
+    const angulo = this.calcularAngulo(delta_x, delta_y);
 
-    let m = 0;
-    if (delta_x === 0) {
-      delta_x = 1 / 10000000;
-    }
-    m = delta_y / delta_x;
-    const angulo = Math.atan(m) * 180 / Math.PI;
 
     if (enumLinhaTipo === EnumLinhaTipo.reta) {
       polilinha = grupo_linha.polyline([[0, 0], [delta_x, delta_y]]);
@@ -275,9 +271,12 @@ export class DiagramaComponent implements OnInit {
     const grupo_barra_selecao = this.container
       .group()
       .addClass('grupo_barra_selecao')
-      .fill({ opacity: 0 });
+      ;
     const box = grupo.bbox();
-    grupo_barra_selecao.rect(box.w, box.h).move(box.x, box.y);
+    grupo_barra_selecao.rect(box.w, box.h).fill({ opacity: 0 }).move(box.x, box.y);
+    grupo_barra_selecao.circle(10)
+      .addClass('rotacao')
+      .move(box.cx, box.cy + 80);
     return grupo_barra_selecao;
   }
 
@@ -338,10 +337,29 @@ export class DiagramaComponent implements OnInit {
     return grupo_texto;
   }
 
+
+  calcularAngulo(dx, dy) {
+    let m = 0;
+    if (dx === 0) {
+      dx = 1 / 10000000;
+    }
+    m = dy / dx;
+    let angulo = Math.atan2(dx, dy) * 180 / Math.PI;
+    angulo += 90;
+
+    if (angulo < 0) {
+      angulo = 360 + angulo;
+    }
+    return -angulo;
+  }
+
   // MANIPULAÇÃO DOS SELECIONADOS
 
   // adiciona grupo para seleção
   adicionarSelecionado(grupo: SVG.G) {
+    if (!grupo.hasClass('grupo_barra')) {
+      return;
+    }
     const grupo_barra_selecao = grupo.get(2) as SVG.G;
     if (grupo_barra_selecao) {
       grupo_barra_selecao.addClass('selecionado');
@@ -387,6 +405,40 @@ export class DiagramaComponent implements OnInit {
       }
     });
     this.selecionados = this.container.set();
+  }
+
+  habilitarRotacao() {
+    const self = this;
+    let dx, dy;
+
+    interact('.rotacao').draggable({
+      onstart: dragstart,
+      onmove: dragmove,
+      onend: dragend,
+      restrict: {
+        restriction: document.getElementById(this.container.id()),
+        // elementRect: { top: 0, left: 0, bottom: 0, right: 1 }
+      }
+    });
+    function dragstart(event) {
+      console.log(event);
+      // x = event.
+    }
+    function dragmove(event) {
+      // // console.log(event);
+      dx = event.clientX0 - event.clientX;
+      dy = event.clientY0 - event.clientY;
+      const angulo = self.calcularAngulo(dx, dy);
+      const id_barra = event.target.parentNode.parentNode.id;
+      const grupo_barra = self.mapa_SVG_grupos.get(id_barra);
+      grupo_barra.select('.grupo_barra_desenho').each(function () {
+        const grupo_barra_desenho = this as SVG.G;
+        grupo_barra_desenho.rotate(angulo);
+      });
+    }
+    function dragend(event) {
+
+    }
   }
 
   // Habilita a seleção, mascara de seleção

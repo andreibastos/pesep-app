@@ -16,6 +16,10 @@
     stroke: black;
 }
 
+.rotacao {
+    cursor: col-resize
+}
+
 .linha {
     stroke: black;
     stroke-width: 2;
