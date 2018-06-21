@@ -46,7 +46,7 @@ export class DiagramaComponent implements OnInit {
   mostrar_propriedades = { diagram: true, bus_PV: false, bus_PQ: false, bus_VT: false }; // Qual Propriedade Exibir
 
   // Ferramenta selecionada
-  ferramenta_atual = { selecionado: true, mover: false, linha: true };
+  ferramenta_atual = { selecionado: true, mover: false, linha: false };
 
   constructor() {
     this.qtd_barras_tipo[EnumBar.VT] = 0;
@@ -104,7 +104,7 @@ export class DiagramaComponent implements OnInit {
     // this.adicionarBarra(this.enumerador_barra.VT, 300, 500);
     this.adicionarBarra(this.enumerador_barra.PQ, 600, 500);
 
-
+    this.adicionarLinha(this.barras[1], this.barras[0]);
   }
 
   /*
@@ -141,16 +141,25 @@ export class DiagramaComponent implements OnInit {
   }
 
   adicionarLinha(de: Barra, para: Barra, tipo?: string) {
+    const linha: Linha = new Linha(de, para);
+    this.linhas.push(linha);
+
+    this.redesenhaLinha(linha);
+
+  }
+
+  redesenhaLinha(linha: Linha) {
+
+    const select = this.container.select(`#${linha.id_linha}`);
+    select.each(function () { this.remove(); });
+
     const rect = this.container.rect();
-    const group_line = this.container.group().add(rect).id('line_1') as SVG.G;
+    const group_line = this.container.group().add(rect).id(linha.id_linha) as SVG.G;
 
-    const de_grupo = this.mapa_SVG_grupos.get(de.id_barra);
+    const de_grupo = this.mapa_SVG_grupos.get(linha.de.id_barra);
     const de_grupo_box = de_grupo.bbox();
-    const para_grupo = this.mapa_SVG_grupos.get(para.id_barra);
+    const para_grupo = this.mapa_SVG_grupos.get(linha.para.id_barra);
     const para_grupo_box = para_grupo.bbox();
-
-
-    // console.log(de_grupo, para_grupo);
 
     let eixo_y: string, eixo_x: string;
     para_grupo_box.x2 += para_grupo.x();
@@ -175,6 +184,7 @@ export class DiagramaComponent implements OnInit {
     } else {
       eixo_y = 'meio';
     }
+    console.log(eixo_x, eixo_y);
 
     if (eixo_x === 'esquerda') {
       const delta_y = para_grupo.cy() - de_grupo.cy();
@@ -490,6 +500,7 @@ export class DiagramaComponent implements OnInit {
   // INICIAR FUNÇÕES DE ARRASTAR, MOVIMENTAR E SOLTAR (Drag and Drop)
   inicializarInteract() {
     const self = this;
+    let grupo_geral: SVG.G, linha: Linha;
     // interact('.component-simple')
     interact('.componente-barra')
       .draggable({
@@ -503,7 +514,17 @@ export class DiagramaComponent implements OnInit {
         }
       })
       .on('dragstart', function (event) {
+        grupo_geral = self.mapa_SVG_grupos
+          .get(event.target.id);
 
+        // como saber se esse grupo que estou movimentando tem uma linha
+        self.linhas.forEach(
+          linha_usada => {
+            if (grupo_geral.id() === linha_usada.de.id_barra || grupo_geral.id() === linha_usada.para.id_barra) {
+              linha = linha_usada;
+            }
+          }
+        );
       })
       .on('dragmove', function (event) {
         if (self.selecionados.length() > 0) {
@@ -512,14 +533,13 @@ export class DiagramaComponent implements OnInit {
             element.dx(event.dx).dy(event.dy);
           });
         } else {
-          self.mapa_SVG_grupos
-            .get(event.target.id)
-            .dx(event.dx)
+          grupo_geral.dx(event.dx)
             .dy(event.dy);
         }
-
       })
       .on('dragend', function (event) {
+        console.log(linha);
+        self.redesenhaLinha(linha);
       });
 
     interact('.component-fixed')
