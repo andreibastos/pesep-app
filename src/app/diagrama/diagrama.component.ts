@@ -184,11 +184,12 @@ export class DiagramaComponent implements OnInit {
     m = delta_y / delta_x;
     const angulo = Math.atan(m) * 180 / Math.PI;
 
-    if (enumLinhaTipo === EnumLinhaTipo.reta) {
-      polilinha = grupo_linha.polyline([[0, 0], [delta_x, delta_y]]);
-    } else if (enumLinhaTipo === EnumLinhaTipo.poliretas) {
-      polilinha = grupo_linha.polyline([[0, 0], [30, 0], [30, delta_y], [30 + delta_x, delta_y]]);
-    }
+    // if (enumLinhaTipo === EnumLinhaTipo.reta) {
+    polilinha = grupo_linha.polyline([[0, 0], [delta_x, delta_y]]);
+
+    // } else if (enumLinhaTipo === EnumLinhaTipo.poliretas) {
+    //   polilinha = grupo_linha.polyline([[0, 0], [30, 0], [30, delta_y], [30 + delta_x, delta_y]]);
+    // }
 
     polilinha.fill({ opacity: 0 })
       .stroke({ width: 2, opacity: 0.8, color: 'black' });
@@ -207,6 +208,7 @@ export class DiagramaComponent implements OnInit {
         this.redesenhaLinha(linha);
       }
     );
+
   }
 
   incrementaBarra(tipo: EnumBar) {
