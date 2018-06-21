@@ -117,4 +117,8 @@ export enum EnumBar {
     PQ
 }
 
-
+export enum EnumLinhaTipo {
+    reta,
+    poliretas,
+    curva
+}

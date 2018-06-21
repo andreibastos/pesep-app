@@ -1,3 +1,4 @@
+import { EnumLinhaTipo } from './../models/componente';
 import { Component, OnInit } from '@angular/core';
 
 // Bibliotecas externas
@@ -104,9 +105,9 @@ export class DiagramaComponent implements OnInit {
     // this.adicionarBarra(this.enumerador_barra.VT, 300, 500);
     this.adicionarBarra(this.enumerador_barra.PQ, 600, 500);
 
-    this.adicionarLinha(this.barras[0], this.barras[1]);
-    this.adicionarLinha(this.barras[1], this.barras[2]);
-    this.adicionarLinha(this.barras[1], this.barras[3]);
+    this.adicionarLinha(this.barras[0], this.barras[1], EnumLinhaTipo.reta);
+    this.adicionarLinha(this.barras[1], this.barras[2], EnumLinhaTipo.reta);
+    this.adicionarLinha(this.barras[1], this.barras[3], EnumLinhaTipo.reta);
   }
 
   /*
@@ -142,21 +143,22 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-  adicionarLinha(de: Barra, para: Barra, tipo?: string) {
+  adicionarLinha(de: Barra, para: Barra, enumLinhaTipo?: EnumLinhaTipo) {
     const linha: Linha = new Linha(de, para);
     this.linhas.push(linha);
 
-    this.redesenhaLinha(linha);
+    this.redesenhaLinha(linha, enumLinhaTipo);
 
   }
 
-  redesenhaLinha(linha: Linha) {
+  redesenhaLinha(linha: Linha, enumLinhaTipo: EnumLinhaTipo = EnumLinhaTipo.reta) {
 
     const select = this.container.select(`#${linha.id_linha}`);
     select.each(function () { this.remove(); });
 
-    const rect = this.container.rect();
-    const group_line = this.container.group().add(rect).id(linha.id_linha) as SVG.G;
+    const grupo_linha = this.container.group().id(linha.id_linha) as SVG.G;
+    let polilinha: SVG.PolyLine;
+    let impedancia: SVG.Element;
 
     const de_grupo = this.mapa_SVG_grupos.get(linha.de.id_barra);
     const de_grupo_box = de_grupo.bbox();
@@ -170,7 +172,7 @@ export class DiagramaComponent implements OnInit {
     de_grupo_box.x2 += de_grupo.x();
     de_grupo_box.cy += de_grupo.y();
 
-    group_line.move(de_grupo_box.x2 - 20, de_grupo_box.cy);
+    grupo_linha.move(de_grupo_box.x2 - 20, de_grupo_box.cy);
 
     let delta_x = para_grupo_box.x2 - de_grupo_box.x2;
     const delta_y = para_grupo_box.cy - de_grupo_box.cy;
@@ -182,59 +184,21 @@ export class DiagramaComponent implements OnInit {
     m = delta_y / delta_x;
     const angulo = Math.atan(m) * 180 / Math.PI;
 
-    console.log(delta_x, delta_y, angulo);
+    if (enumLinhaTipo === EnumLinhaTipo.reta) {
+      polilinha = grupo_linha.polyline([[0, 0], [delta_x, delta_y]]);
+    } else if (enumLinhaTipo === EnumLinhaTipo.poliretas) {
+      polilinha = grupo_linha.polyline([[0, 0], [30, 0], [30, delta_y], [30 + delta_x, delta_y]]);
+    }
 
-    group_line.polyline([[0, 0], [delta_x, delta_y]])
-      .fill('black')
+    polilinha.fill({ opacity: 0 })
       .stroke({ width: 2, opacity: 0.8, color: 'black' });
-    const impedancia = group_line.rect(60, 20)
+
+    impedancia = grupo_linha.rect(60, 20)
       .fill({ color: 'white' })
       .stroke({ color: 'black', width: 2 });
 
     impedancia.move(delta_x / 2 - impedancia.width() / 2, delta_y / 2 - impedancia.height() / 2);
-    // impedancia.dx(-25);
     impedancia.rotate(angulo, impedancia.cx(), impedancia.cy());
-
-
-
-    // if ((para_grupo_box.x2) < de_grupo_box.x2) {
-    //   eixo_x = 'esquerda';
-    // } else if (para_grupo_box.x2 > de_grupo_box.x2) {
-    //   eixo_x = 'direita';
-    // } else {
-    //   eixo_x = 'meio';
-    // }
-    // if (para_grupo_box.cy < de_grupo_box.cy) {
-    //   eixo_y = 'acima';
-    // } else if (para_grupo_box.cy > de_grupo_box.cy) {
-    //   eixo_y = 'abaixo';
-    // } else {
-    //   eixo_y = 'meio';
-    // }
-    // console.log(eixo_x, eixo_y);
-
-    // if (eixo_x === 'esquerda') {
-    //   const delta_y = para_grupo.cy() - de_grupo.cy();
-    //   const delta_x = para_grupo_box.x2 - de_grupo_box.x2;
-
-
-    //   group_line.polyline([[-de_grupo.width() * 0.4, 0], [10, 0]]);
-    //   if (eixo_y === 'acima') {
-    //     group_line.polyline([[10, 0], [10, delta_y]]);
-    //   } else if (eixo_y === 'abaixo') {
-    //     group_line.polyline([[10, 0], [10, delta_y]]);
-    //   } else if (eixo_y === 'meio') {
-    //     // group_line.polyline([[10, 0], [10, de_grupo.height() / 1.2]]);
-
-    //   }
-
-    //   group_line.polyline([[10, delta_y], [delta_x * 1.15, delta_y]]);
-
-
-    // }
-    // group_line.fill('black').stroke({ width: 2, color: 'black' });
-
-
   }
 
   redesenhaLinhas(linhas: Array<Linha>) {
@@ -571,6 +535,7 @@ export class DiagramaComponent implements OnInit {
         } else {
           grupo_geral.dx(event.dx)
             .dy(event.dy);
+
           self.redesenhaLinhas(linhas);
         }
       })
