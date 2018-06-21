@@ -61,24 +61,17 @@ export class DiagramaComponent implements OnInit {
     const height = draw_inside.clientHeight;
     const width = draw_inside.clientWidth;
 
-    const style_svg = document.createElement('style');
-    style_svg.innerHTML = `.selecionado {
-                    fill: blue;
-                    fill-opacity: 0.1;
-                    stroke: black;
-                    stroke-opacity:0.6;
-                    stroke-width:2;
-                   }
-                   .linha {
-                    stroke: black;
-                    stroke-width:2;
-                   }
-                   .linha.movimento {
-                     stroke: blue;
-                     stroke-width: 1;
-                   }
+    // const style_svg = document.createElement('style');
+    // style_svg.setAttribute('href', './assets/css/svg.css');
+    // style_svg.setAttribute('rel', 'stylesheet');
+    // style_svg.type = 'text/css';
 
-                   `;
+    const style_svg = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+
+    // Now (ab)use the @import directive to load make the browser load our css
+    style_svg.textContent = '@import url("./assets/css/svg.css");';
+
+    console.log(style_svg);
 
     this.container = SVG(this.div_nome)
       .addClass('svg_area')
@@ -114,9 +107,9 @@ export class DiagramaComponent implements OnInit {
     // this.adicionarBarra(this.enumerador_barra.VT, 300, 500);
     this.adicionarBarra(this.enumerador_barra.PQ, 600, 500);
 
-    this.adicionarLinha(this.barras[0], this.barras[1], EnumLinhaTipo.poliretas);
-    this.adicionarLinha(this.barras[1], this.barras[2], EnumLinhaTipo.poliretas);
-    this.adicionarLinha(this.barras[1], this.barras[3], EnumLinhaTipo.poliretas);
+    this.adicionarLinha(this.barras[0], this.barras[1], EnumLinhaTipo.reta);
+    this.adicionarLinha(this.barras[1], this.barras[2], EnumLinhaTipo.reta);
+    this.adicionarLinha(this.barras[1], this.barras[3], EnumLinhaTipo.reta);
   }
 
   /*
@@ -134,21 +127,22 @@ export class DiagramaComponent implements OnInit {
     this.barras.push(barra); // adiciona na lista
 
     // SVG
-    const grupo_todo = this.criaGrupoTodo(barra, posicao_x, posicao_y);
+    const grupo_barra = this.criaGrupoBarra(barra, posicao_x, posicao_y);
 
     // Grupo do desenhos (circulos, linha, etc)
-    const grupo_desenho = this.criaGrupoDesenho(tipo);
-    grupo_todo.add(grupo_desenho);
+    const grupo_barra_desenho = this.criaGrupoBarraDesenho(tipo);
+    grupo_barra.add(grupo_barra_desenho);
 
     // Grupo de tenho (P,Q,V,T)
-    const grupo_texto = this.criaGrupoTexto(grupo_todo);
-    grupo_todo.add(grupo_texto);
+    const grupo_texto = this.criaGrupoBarraTexto(grupo_barra);
+    grupo_barra.add(grupo_texto);
 
-    const grupo_selecao = this.criarGrupoSelecao(grupo_todo);
+    const grupo_barra_selecao = this.criarGrupoBarraSelecao(grupo_barra);
 
-    grupo_todo.add(grupo_selecao);
+    grupo_barra.add(grupo_barra_selecao);
+    grupo_barra.addClass('barra');
 
-    this.mapa_SVG_grupos.set(grupo_todo.id(), grupo_todo);
+    this.mapa_SVG_grupos.set(grupo_barra.id(), grupo_barra);
 
   }
 
@@ -250,14 +244,13 @@ export class DiagramaComponent implements OnInit {
   // CRIAÇÃO DE GRUPOS
 
   // grupo Geral, contém os outros grupos (desenho, texto e seleção)
-  criaGrupoTodo(barra: Barra, posicao_x?: number, posicao_y?: number) {
+  criaGrupoBarra(barra: Barra, posicao_x?: number, posicao_y?: number) {
     const self = this;
     const grupo = this.container.group()
       .id(barra.id_barra)
-      .addClass('grupo_geral')
+      .addClass('grupo_barra')
       .move(posicao_x || 0, posicao_y || 0) // move para a posição desejada
       .data('barra', barra) // adiciona o dado da barra
-      .addClass('componente-barra')
       .click(function (event) {
         if (event.ctrlKey || event.shiftKey) {
           self.toogleSelecionado(this);
@@ -278,18 +271,18 @@ export class DiagramaComponent implements OnInit {
   }
 
   // grupo de Seleção
-  criarGrupoSelecao(grupo: SVG.G): SVG.G {
-    const grupo_selecao = this.container
+  criarGrupoBarraSelecao(grupo: SVG.G): SVG.G {
+    const grupo_barra_selecao = this.container
       .group()
-      .addClass('grupo_selecao')
+      .addClass('grupo_barra_selecao')
       .fill({ opacity: 0 });
     const box = grupo.bbox();
-    grupo_selecao.rect(box.w, box.h).move(box.x, box.y);
-    return grupo_selecao;
+    grupo_barra_selecao.rect(box.w, box.h).move(box.x, box.y);
+    return grupo_barra_selecao;
   }
 
   // grupo de desenho (circulos, setas, triangulos)
-  criaGrupoDesenho(tipo: EnumBar): SVG.G {
+  criaGrupoBarraDesenho(tipo: EnumBar): SVG.G {
     const node = this.container;
     const group = node.group().size(100, 100);
     const self = this;
@@ -312,12 +305,12 @@ export class DiagramaComponent implements OnInit {
       group.add(triangule);
 
     }
-    group.addClass('grupo_desenho');
+    group.addClass('grupo_barra_desenho');
     return group;
   }
 
   // grupo de texto (P,Q, V, T)
-  criaGrupoTexto(grupo: SVG.G): SVG.G {
+  criaGrupoBarraTexto(grupo: SVG.G): SVG.G {
     const barra: Barra = grupo.data('barra') as Barra;
     const self = this;
     const box = grupo.bbox();
@@ -349,18 +342,18 @@ export class DiagramaComponent implements OnInit {
 
   // adiciona grupo para seleção
   adicionarSelecionado(grupo: SVG.G) {
-    const grupo_selecao = grupo.get(2) as SVG.G;
-    if (grupo_selecao) {
-      grupo_selecao.addClass('selecionado');
+    const grupo_barra_selecao = grupo.get(2) as SVG.G;
+    if (grupo_barra_selecao) {
+      grupo_barra_selecao.addClass('selecionado');
     }
     this.selecionados.add(grupo);
   }
 
   // remove grupo da seleção
   removerSelecionado(grupo: SVG.G) {
-    const grupo_selecao = grupo.get(2) as SVG.G;
-    if (grupo_selecao) {
-      grupo_selecao.removeClass('selecionado');
+    const grupo_barra_selecao = grupo.get(2) as SVG.G;
+    if (grupo_barra_selecao) {
+      grupo_barra_selecao.removeClass('selecionado');
     }
     this.selecionados.remove(grupo);
   }
@@ -388,7 +381,8 @@ export class DiagramaComponent implements OnInit {
   limparSelecao() {
     const self = this;
     this.container.each(function (c) {
-      if (c > 1) {
+      const elemento: SVG.Element = this;
+      if (elemento.hasClass('grupo_barra')) {
         self.removerSelecionado(this);
       }
     });
@@ -473,7 +467,7 @@ export class DiagramaComponent implements OnInit {
       self.limparSelecao();
       self.container.each(function (c) {
         const component: SVG.G = this;
-        if (component.hasClass('grupo_geral')) {
+        if (component.hasClass('grupo_barra')) {
           const mybounds: SVG.BBox = component.bbox();
 
           mybounds.x += component.x();
@@ -528,9 +522,9 @@ export class DiagramaComponent implements OnInit {
   // INICIAR FUNÇÕES DE ARRASTAR, MOVIMENTAR E SOLTAR (Drag and Drop)
   inicializarInteract() {
     const self = this;
-    let grupo_geral: SVG.G, linhas: Array<Linha> = new Array();
+    let grupo_barra: SVG.G, linhas: Array<Linha> = new Array();
     // interact('.component-simple')
-    interact('.componente-barra')
+    interact('.grupo_barra')
       .draggable({
         inertia: true, // enable inertial throwing
         autoScroll: true, // enable autoScroll
@@ -542,14 +536,14 @@ export class DiagramaComponent implements OnInit {
         }
       })
       .on('dragstart', function (event) {
-        grupo_geral = self.mapa_SVG_grupos
+        grupo_barra = self.mapa_SVG_grupos
           .get(event.target.id);
         linhas = new Array();
 
         // como saber se esse grupo que estou movimentando tem uma linha
         self.linhas.forEach(
           linha_usada => {
-            if (grupo_geral.id() === linha_usada.de.id_barra || grupo_geral.id() === linha_usada.para.id_barra) {
+            if (grupo_barra.id() === linha_usada.de.id_barra || grupo_barra.id() === linha_usada.para.id_barra) {
               linhas.push(linha_usada);
             }
           }
@@ -562,7 +556,7 @@ export class DiagramaComponent implements OnInit {
             element.dx(event.dx).dy(event.dy);
           });
         } else {
-          grupo_geral.dx(event.dx)
+          grupo_barra.dx(event.dx)
             .dy(event.dy);
 
           self.redesenhaLinhas(linhas);

@@ -1,0 +1,27 @@
+.selecionado {
+    fill: blue;
+    fill-opacity: 0.1;
+    stroke: black;
+    stroke-opacity: 0.6;
+    stroke-width: 2;
+}
+
+.barra {}
+
+.barra:hover {}
+
+.retangulo_selecao:hover {
+    stroke-width: 5;
+    stroke-opacity: 1;
+    stroke: black;
+}
+
+.linha {
+    stroke: black;
+    stroke-width: 2;
+}
+
+.linha.movimento {
+    stroke: blue;
+    stroke-width: 1;
+}
