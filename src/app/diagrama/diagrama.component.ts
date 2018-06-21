@@ -69,6 +69,15 @@ export class DiagramaComponent implements OnInit {
                     stroke-opacity:0.6;
                     stroke-width:2;
                    }
+                   .linha {
+                    stroke: black;
+                    stroke-width:2;
+                   }
+                   .linha.movimento {
+                     stroke: blue;
+                     stroke-width: 1;
+                   }
+
                    `;
 
     this.container = SVG(this.div_nome)
@@ -105,9 +114,9 @@ export class DiagramaComponent implements OnInit {
     // this.adicionarBarra(this.enumerador_barra.VT, 300, 500);
     this.adicionarBarra(this.enumerador_barra.PQ, 600, 500);
 
-    this.adicionarLinha(this.barras[0], this.barras[1], EnumLinhaTipo.reta);
-    this.adicionarLinha(this.barras[1], this.barras[2], EnumLinhaTipo.reta);
-    this.adicionarLinha(this.barras[1], this.barras[3], EnumLinhaTipo.reta);
+    this.adicionarLinha(this.barras[0], this.barras[1], EnumLinhaTipo.poliretas);
+    this.adicionarLinha(this.barras[1], this.barras[2], EnumLinhaTipo.poliretas);
+    this.adicionarLinha(this.barras[1], this.barras[3], EnumLinhaTipo.poliretas);
   }
 
   /*
@@ -151,7 +160,7 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-  redesenhaLinha(linha: Linha, enumLinhaTipo: EnumLinhaTipo = EnumLinhaTipo.reta) {
+  redesenhaLinha(linha: Linha, enumLinhaTipo: EnumLinhaTipo = EnumLinhaTipo.poliretas, cor = 'black') {
 
     const select = this.container.select(`#${linha.id_linha}`);
     select.each(function () { this.remove(); });
@@ -184,15 +193,16 @@ export class DiagramaComponent implements OnInit {
     m = delta_y / delta_x;
     const angulo = Math.atan(m) * 180 / Math.PI;
 
-    // if (enumLinhaTipo === EnumLinhaTipo.reta) {
-    polilinha = grupo_linha.polyline([[0, 0], [delta_x, delta_y]]);
+    if (enumLinhaTipo === EnumLinhaTipo.reta) {
+      polilinha = grupo_linha.polyline([[0, 0], [delta_x, delta_y]]);
 
-    // } else if (enumLinhaTipo === EnumLinhaTipo.poliretas) {
-    //   polilinha = grupo_linha.polyline([[0, 0], [30, 0], [30, delta_y], [30 + delta_x, delta_y]]);
-    // }
+    } else if (enumLinhaTipo === EnumLinhaTipo.poliretas) {
 
-    polilinha.fill({ opacity: 0 })
-      .stroke({ width: 2, opacity: 0.8, color: 'black' });
+
+      polilinha = grupo_linha.polyline(criarPontos(delta_x, delta_y, 15));
+    }
+
+    polilinha.addClass('linha');
 
     impedancia = grupo_linha.rect(60, 20)
       .fill({ color: 'white' })
@@ -200,12 +210,29 @@ export class DiagramaComponent implements OnInit {
 
     impedancia.move(delta_x / 2 - impedancia.width() / 2, delta_y / 2 - impedancia.height() / 2);
     impedancia.rotate(angulo, impedancia.cx(), impedancia.cy());
+
+
+    function criarPontos(x, y, d): Array<any> {
+      const pontos = [];
+      pontos.push([0, 0]);
+      pontos.push([d, 0]);
+      pontos.push([d, y]);
+      pontos.push([-d + x, y]);
+      console.log(pontos);
+
+      for (let index = pontos.length - 1; index > 0; index--) {
+        const ponto = pontos[index];
+        pontos.push(ponto);
+      }
+      console.log(pontos);
+      return pontos;
+    }
   }
 
-  redesenhaLinhas(linhas: Array<Linha>) {
+  redesenhaLinhas(linhas: Array<Linha>, enumLinhaTipo = EnumLinhaTipo.reta, cor = 'black') {
     linhas.forEach(
       linha => {
-        this.redesenhaLinha(linha);
+        this.redesenhaLinha(linha, enumLinhaTipo, cor);
       }
     );
 
