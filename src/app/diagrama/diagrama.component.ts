@@ -95,7 +95,7 @@ export class DiagramaComponent implements OnInit {
     // this.adicionarBarra(this.enumerador_barra.VT, 300, 100);
     // this.adicionarBarra(this.enumerador_barra.PQ, 600, 100);
 
-    // this.adicionarBarra(this.enumerador_barra.PQ, 50, 300);
+    this.adicionarBarra(this.enumerador_barra.PQ, 50, 300);
     this.adicionarBarra(this.enumerador_barra.Slack, 300, 300);
     // this.adicionarBarra(this.enumerador_barra.PQ, 600, 300);
 
@@ -106,6 +106,7 @@ export class DiagramaComponent implements OnInit {
 
     this.adicionarLinha(this.barras[0], this.barras[1]);
     this.adicionarLinha(this.barras[1], this.barras[2]);
+    this.adicionarLinha(this.barras[1], this.barras[3]);
   }
 
   /*
@@ -171,13 +172,28 @@ export class DiagramaComponent implements OnInit {
 
     group_line.move(de_grupo_box.x2 - 20, de_grupo_box.cy);
 
-    const delta_x = para_grupo_box.x2 - de_grupo_box.x2;
+    let delta_x = para_grupo_box.x2 - de_grupo_box.x2;
     const delta_y = para_grupo_box.cy - de_grupo_box.cy;
 
-    console.log(delta_x, delta_y);
+    let m = 0;
+    if (delta_x === 0) {
+      delta_x = 1 / 10000000;
+    }
+    m = delta_y / delta_x;
+    const angulo = Math.atan(m) * 180 / Math.PI;
 
-    group_line.polyline([[0, 0], [delta_x, delta_y], []]);
-    group_line.fill('black').stroke({ width: 2, color: 'black' });
+    console.log(delta_x, delta_y, angulo);
+
+    group_line.polyline([[0, 0], [delta_x, delta_y]])
+      .fill('black')
+      .stroke({ width: 2, opacity: 0.8, color: 'black' });
+    const impedancia = group_line.rect(60, 20)
+      .fill({ color: 'white' })
+      .stroke({ color: 'black', width: 2 });
+
+    impedancia.move(delta_x / 2 - impedancia.width() / 2, delta_y / 2 - impedancia.height() / 2);
+    // impedancia.dx(-25);
+    impedancia.rotate(angulo, impedancia.cx(), impedancia.cy());
 
 
 
