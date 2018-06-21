@@ -273,7 +273,7 @@ export class DiagramaComponent implements OnInit {
       .addClass('grupo_barra_selecao')
       ;
     const box = grupo.bbox();
-    grupo_barra_selecao.rect(box.w, box.h).fill({ opacity: 0 }).move(box.x, box.y);
+    grupo_barra_selecao.rect(box.w, box.h).fill({ color: 'none', opacity: 0 }).move(box.x, box.y);
     grupo_barra_selecao.circle(10)
       .addClass('rotacao')
       .move(box.cx, box.cy + 80);
@@ -302,8 +302,9 @@ export class DiagramaComponent implements OnInit {
       group.add(line_horizontal);
       group.add(line_vertical);
       group.add(triangule);
-
     }
+    const box = group.bbox();
+    group.circle(10).addClass('criar_linha').move(box.x2, box.cy - 5);
     group.addClass('grupo_barra_desenho');
     return group;
   }
@@ -336,6 +337,8 @@ export class DiagramaComponent implements OnInit {
       .dx(box.height * 0.7);
     return grupo_texto;
   }
+
+
 
 
   calcularAngulo(dx, dy) {
@@ -552,6 +555,40 @@ export class DiagramaComponent implements OnInit {
 
   }
 
+  habilitarAdicionarLinha() {
+    const self = this;
+    let dx, dy;
+
+    interact('.criar_linha').draggable({
+      onstart: dragstart,
+      onmove: dragmove,
+      onend: dragend,
+      restrict: {
+        restriction: document.getElementById(this.container.id()),
+        // elementRect: { top: 0, left: 0, bottom: 0, right: 1 }
+      }
+    });
+    function dragstart(event) {
+      console.log(event);
+      // x = event.
+    }
+    function dragmove(event) {
+      // // console.log(event);
+      dx = event.clientX0 - event.clientX;
+      dy = event.clientY0 - event.clientY;
+      const angulo = self.calcularAngulo(dx, dy);
+      const id_barra = event.target.parentNode.parentNode.id;
+      const grupo_barra = self.mapa_SVG_grupos.get(id_barra);
+      grupo_barra.select('.grupo_barra_desenho').each(function () {
+        const grupo_barra_desenho = this as SVG.G;
+        grupo_barra_desenho.rotate(angulo);
+      });
+    }
+    function dragend(event) {
+
+    }
+  }
+
   /*
   CONFIGURAÇÕES DE ATALHOS
   */
@@ -576,7 +613,7 @@ export class DiagramaComponent implements OnInit {
     const self = this;
     let grupo_barra: SVG.G, linhas: Array<Linha> = new Array();
     // interact('.component-simple')
-    interact('.grupo_barra')
+    interact('.barra')
       .draggable({
         inertia: true, // enable inertial throwing
         autoScroll: true, // enable autoScroll

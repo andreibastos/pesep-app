@@ -10,6 +10,16 @@
 
 .barra:hover {}
 
+.criar_linha {
+    fill: black;
+}
+
+.criar_linha:hover {
+    fill: red;
+    cursor: col-resize;
+
+}
+
 .retangulo_selecao:hover {
     stroke-width: 5;
     stroke-opacity: 1;
