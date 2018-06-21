@@ -169,14 +169,14 @@ export class DiagramaComponent implements OnInit {
     de_grupo_box.x2 += de_grupo.x();
     de_grupo_box.cy += de_grupo.y();
 
-    group_line.move(de_grupo_box.x2, de_grupo_box.cy);
+    group_line.move(de_grupo_box.x2 - 20, de_grupo_box.cy);
 
     const delta_x = para_grupo_box.x2 - de_grupo_box.x2;
     const delta_y = para_grupo_box.cy - de_grupo_box.cy;
 
     console.log(delta_x, delta_y);
 
-    group_line.polyline([[0, 0], [delta_x, delta_y]]);
+    group_line.polyline([[0, 0], [delta_x, delta_y], []]);
     group_line.fill('black').stroke({ width: 2, color: 'black' });
 
 
@@ -219,6 +219,14 @@ export class DiagramaComponent implements OnInit {
     // group_line.fill('black').stroke({ width: 2, color: 'black' });
 
 
+  }
+
+  redesenhaLinhas(linhas: Array<Linha>) {
+    linhas.forEach(
+      linha => {
+        this.redesenhaLinha(linha);
+      }
+    );
   }
 
   incrementaBarra(tipo: EnumBar) {
@@ -511,7 +519,7 @@ export class DiagramaComponent implements OnInit {
   // INICIAR FUNÇÕES DE ARRASTAR, MOVIMENTAR E SOLTAR (Drag and Drop)
   inicializarInteract() {
     const self = this;
-    let grupo_geral: SVG.G, linha: Linha;
+    let grupo_geral: SVG.G, linhas: Array<Linha> = new Array();
     // interact('.component-simple')
     interact('.componente-barra')
       .draggable({
@@ -527,12 +535,13 @@ export class DiagramaComponent implements OnInit {
       .on('dragstart', function (event) {
         grupo_geral = self.mapa_SVG_grupos
           .get(event.target.id);
+        linhas = new Array();
 
         // como saber se esse grupo que estou movimentando tem uma linha
         self.linhas.forEach(
           linha_usada => {
             if (grupo_geral.id() === linha_usada.de.id_barra || grupo_geral.id() === linha_usada.para.id_barra) {
-              linha = linha_usada;
+              linhas.push(linha_usada);
             }
           }
         );
@@ -546,12 +555,12 @@ export class DiagramaComponent implements OnInit {
         } else {
           grupo_geral.dx(event.dx)
             .dy(event.dy);
-          self.redesenhaLinha(linha);
+          self.redesenhaLinhas(linhas);
         }
       })
       .on('dragend', function (event) {
-        console.log(linha);
-        self.redesenhaLinha(linha);
+        console.log(linhas);
+        self.redesenhaLinhas(linhas);
       });
 
     interact('.component-fixed')
