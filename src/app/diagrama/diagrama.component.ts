@@ -96,7 +96,7 @@ export class DiagramaComponent implements OnInit {
     // this.adicionarBarra(this.enumerador_barra.PQ, 600, 100);
 
     // this.adicionarBarra(this.enumerador_barra.PQ, 50, 300);
-    // this.adicionarBarra(this.enumerador_barra.Slack, 300, 300);
+    this.adicionarBarra(this.enumerador_barra.Slack, 300, 300);
     // this.adicionarBarra(this.enumerador_barra.PQ, 600, 300);
 
 
@@ -104,7 +104,8 @@ export class DiagramaComponent implements OnInit {
     // this.adicionarBarra(this.enumerador_barra.VT, 300, 500);
     this.adicionarBarra(this.enumerador_barra.PQ, 600, 500);
 
-    this.adicionarLinha(this.barras[1], this.barras[0]);
+    this.adicionarLinha(this.barras[0], this.barras[1]);
+    this.adicionarLinha(this.barras[1], this.barras[2]);
   }
 
   /*
@@ -161,7 +162,7 @@ export class DiagramaComponent implements OnInit {
     const para_grupo = this.mapa_SVG_grupos.get(linha.para.id_barra);
     const para_grupo_box = para_grupo.bbox();
 
-    let eixo_y: string, eixo_x: string;
+    // let eixo_y: string, eixo_x: string;
     para_grupo_box.x2 += para_grupo.x();
     para_grupo_box.cy += para_grupo.y();
 
@@ -170,42 +171,52 @@ export class DiagramaComponent implements OnInit {
 
     group_line.move(de_grupo_box.x2, de_grupo_box.cy);
 
-    if ((para_grupo_box.x2) < de_grupo_box.x2) {
-      eixo_x = 'esquerda';
-    } else if (para_grupo_box.x2 > de_grupo_box.x2) {
-      eixo_x = 'direita';
-    } else {
-      eixo_x = 'meio';
-    }
-    if (para_grupo_box.cy < de_grupo_box.cy) {
-      eixo_y = 'acima';
-    } else if (para_grupo_box.cy > de_grupo_box.cy) {
-      eixo_y = 'abaixo';
-    } else {
-      eixo_y = 'meio';
-    }
-    console.log(eixo_x, eixo_y);
+    const delta_x = para_grupo_box.x2 - de_grupo_box.x2;
+    const delta_y = para_grupo_box.cy - de_grupo_box.cy;
 
-    if (eixo_x === 'esquerda') {
-      const delta_y = para_grupo.cy() - de_grupo.cy();
-      const delta_x = para_grupo_box.x2 - de_grupo_box.x2;
+    console.log(delta_x, delta_y);
 
-
-      group_line.polyline([[-de_grupo.width() * 0.4, 0], [10, 0]]);
-      if (eixo_y === 'acima') {
-        group_line.polyline([[10, 0], [10, delta_y]]);
-      } else if (eixo_y === 'abaixo') {
-        group_line.polyline([[10, 0], [10, delta_y]]);
-      } else if (eixo_y === 'meio') {
-        // group_line.polyline([[10, 0], [10, de_grupo.height() / 1.2]]);
-
-      }
-
-      group_line.polyline([[10, delta_y], [delta_x * 1.15, delta_y]]);
-
-
-    }
+    group_line.polyline([[0, 0], [delta_x, delta_y]]);
     group_line.fill('black').stroke({ width: 2, color: 'black' });
+
+
+
+    // if ((para_grupo_box.x2) < de_grupo_box.x2) {
+    //   eixo_x = 'esquerda';
+    // } else if (para_grupo_box.x2 > de_grupo_box.x2) {
+    //   eixo_x = 'direita';
+    // } else {
+    //   eixo_x = 'meio';
+    // }
+    // if (para_grupo_box.cy < de_grupo_box.cy) {
+    //   eixo_y = 'acima';
+    // } else if (para_grupo_box.cy > de_grupo_box.cy) {
+    //   eixo_y = 'abaixo';
+    // } else {
+    //   eixo_y = 'meio';
+    // }
+    // console.log(eixo_x, eixo_y);
+
+    // if (eixo_x === 'esquerda') {
+    //   const delta_y = para_grupo.cy() - de_grupo.cy();
+    //   const delta_x = para_grupo_box.x2 - de_grupo_box.x2;
+
+
+    //   group_line.polyline([[-de_grupo.width() * 0.4, 0], [10, 0]]);
+    //   if (eixo_y === 'acima') {
+    //     group_line.polyline([[10, 0], [10, delta_y]]);
+    //   } else if (eixo_y === 'abaixo') {
+    //     group_line.polyline([[10, 0], [10, delta_y]]);
+    //   } else if (eixo_y === 'meio') {
+    //     // group_line.polyline([[10, 0], [10, de_grupo.height() / 1.2]]);
+
+    //   }
+
+    //   group_line.polyline([[10, delta_y], [delta_x * 1.15, delta_y]]);
+
+
+    // }
+    // group_line.fill('black').stroke({ width: 2, color: 'black' });
 
 
   }
@@ -535,6 +546,7 @@ export class DiagramaComponent implements OnInit {
         } else {
           grupo_geral.dx(event.dx)
             .dy(event.dy);
+          self.redesenhaLinha(linha);
         }
       })
       .on('dragend', function (event) {
