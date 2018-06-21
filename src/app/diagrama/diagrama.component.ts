@@ -246,7 +246,6 @@ export class DiagramaComponent implements OnInit {
       .addClass('grupo_selecao')
       .fill({ opacity: 0 });
     const box = grupo.bbox();
-    console.log(box, grupo);
     grupo_selecao.rect(box.w, box.h).move(box.x, box.y);
     return grupo_selecao;
   }
@@ -375,6 +374,7 @@ export class DiagramaComponent implements OnInit {
       onend: dragend,
       restrict: {
         restriction: document.getElementById(this.container.id()),
+        // elementRect: { top: 0, left: 0, bottom: 0, right: 1 }
       }
     }).styleCursor(false).on('tap', function () { self.limparSelecao(); });
 
@@ -386,14 +386,27 @@ export class DiagramaComponent implements OnInit {
         .id('rect_selection')
         .stroke({ width: 1, dasharray: '5, 5' })
         .stroke('blue')
-        .fill({ color: 'rgb(255, 255, 255)', opacity: 0 });
+        .fill({ opacity: 0 });
     }
     function dragmove(event) {
       const pointers = event.interaction.pointers[0];
-      console.log(pointers);
-      // if (pointers.target.id != "" ) {
-      dx = event.interaction.pointers[0].offsetX - x;
-      dy = event.interaction.pointers[0].offsetY - y;
+      const restrict = event.restrict;
+      const offsetY = event.interaction.pointers[0].offsetY;
+      dx = event.clientX - event.clientX0;
+      dy = event.clientY - event.clientY0;
+
+      if (restrict) {
+        if (restrict.dx < 0) {
+          dx -= 8;
+        } else {
+          dx += 10;
+        }
+        if (restrict.dy < 0) {
+          dy -= 8;
+        } else {
+          dy += 10;
+        }
+      }
 
       let transform_x = 0, transform_y = 0;
       box_x = 1;
@@ -413,29 +426,29 @@ export class DiagramaComponent implements OnInit {
       box.transform({ x: transform_x, y: transform_y });
       box.width(dx)
         .height(dy);
-      // }
-
-
     }
 
     function dragend(event) {
       let bounds = box.bbox();
       bounds = fixBounds(bounds);
       box.remove();
-
       self.limparSelecao();
       self.container.each(function (c) {
         const component: SVG.G = this;
-        if (c > 1) {
+        if (component.hasClass('grupo_geral')) {
           const mybounds: SVG.BBox = component.bbox();
 
           mybounds.x += component.x();
+          mybounds.x2 += component.x();
           mybounds.y += component.y();
-          if (mybounds.x >= bounds.x && mybounds.x <= bounds.x2 || mybounds.x2 >= bounds.x && mybounds.x2 <= bounds.x2) {
-            if (mybounds.y >= bounds.y && mybounds.y <= bounds.y2 || mybounds.y2 >= bounds.y && mybounds.y2 <= bounds.y2) {
-              self.toogleSelecionado(this);
+          mybounds.y2 += component.y();
+
+          if (mybounds.x > bounds.x && mybounds.x2 < bounds.x2) {
+            if (mybounds.y > bounds.y && mybounds.y2 < bounds.y2) {
+              self.adicionarSelecionado(this);
             }
           }
+
         }
       });
     }
@@ -447,7 +460,7 @@ export class DiagramaComponent implements OnInit {
       }
       if (box_y === -1) {
         bounds.y2 = bounds.y;
-        bounds.y -= bounds.width;
+        bounds.y -= bounds.height;
       }
       return bounds;
     }
