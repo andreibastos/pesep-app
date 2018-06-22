@@ -1,0 +1,19 @@
+<p class="h3">Análise do Fluxo de Potência</p>
+
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <app-fluxo-arquivos (arquivosCarregados)="carregouArquivos($event)"></app-fluxo-arquivos>
+    </div>
+  </div>
+</div>
+
+
+<button *ngIf="linhaCompleta && barraCompleta" (click)="CalculePowerFlow()" class="btn btn-secondary mb-3" role="button">Calcular Fluxo de Potência</button>
+<div *ngIf="fluxo.length > 0 ">
+  <app-fluxo-tabela [fluxoPotencia]="fluxo"></app-fluxo-tabela>
+  <button (click)="Export('fluxo.csv')" class="btn btn-secondary mb-3" role="button">Exportar Fluxo de Potência</button>
+  <button (click)="Export('susceptancia.txt')" class="btn btn-secondary mb-3" role="button">Exportar Susceptância</button>
+  <button (click)="Export('linhas.txt')" class="btn btn-secondary mb-3" role="button">Exportar Linhas</button>
+  <button (click)="Export('colunas.txt')" class="btn btn-secondary mb-3" role="button">Exportar Colunas</button>
+</div>

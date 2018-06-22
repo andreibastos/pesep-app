@@ -1,0 +1,21 @@
+<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+ <g>
+  <title>background</title>
+  <rect fill="#fff" id="canvas_background" height="102" width="102" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <ellipse ry="25" rx="25" id="svg_1" cy="50" cx="26.848514" stroke-width="2" stroke="#000" fill="#ffffff"/>
+  <line stroke="#000" stroke-linecap="null" stroke-linejoin="null" id="svg_3" y2="50.000002" x2="95.090001" y1="50.000002" x1="52.423264" fill-opacity="null" stroke-opacity="null" stroke-width="2" fill="none"/>
+  <line stroke="#000" stroke-linecap="null" stroke-linejoin="null" id="svg_4" y2="89.212138" x2="95.574723" y1="10.787864" x1="95.574723" fill-opacity="null" stroke-opacity="null" fill="none"/>
+  <line stroke="#000" stroke-linecap="null" stroke-linejoin="null" id="svg_8" y2="89.212138" x2="97.288919" y1="10.787864" x1="97.288919" fill-opacity="null" stroke-opacity="null" fill="none"/>
+  <line stroke="#000" stroke-linecap="null" stroke-linejoin="null" id="svg_9" y2="89.212138" x2="98.970822" y1="10.787864" x1="98.970822" fill-opacity="null" stroke-opacity="null" fill="none"/>
+  <text stroke="#000" transform="matrix(2.514127254486084,0,0,2.514127254486084,-29.359873794019222,-93.73394034802914) " xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="15" id="svg_10" y="62.239533" x="17.320847" fill-opacity="null" stroke-opacity="null" stroke-width="0" fill="#000000">∞</text>
+  <text xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="24" id="svg_11" y="96.848425" x="14.545499" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">Barra 1</text>
+  <text transform="rotate(-14.23156452178955 16.1015625,-1.9999999999999958) " xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="24" id="svg_12" y="6.06066" x="10.787928" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000"/>
+ </g>
+</svg>

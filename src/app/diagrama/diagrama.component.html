@@ -1,0 +1,170 @@
+<div class="container-fluid noselect">
+  <!-- Linha Principal -->
+  <div class="row mt-5">
+    <!-- Componentes  -->
+    <div class="col-1 p-0 m-0 border ">
+      <div id="component-sidebar" class="sidebar dropzone dropzone-components mx-auto pt-3">
+        <p class="h5">Componentes</p>
+        <!-- Barra VT -->
+        <div class="row sidebar-row mx-auto p-3" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra Vθ">
+          <a id="bus_vt" class="component component-fixed mt-1 p-0">
+
+          </a>
+        </div>
+        <!-- /Barra vt -->
+
+        <!-- Barra pv -->
+        <div class="row sidebar-row mx-auto p-3" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra PV">
+          <a id="bus_pv" class="component component-fixed mt-1 mx-1 p-0">
+          </a>
+        </div>
+        <!-- /Barra pv -->
+
+
+        <!-- Barra PQ -->
+        <div class="row sidebar-row mx-auto p-3">
+          <a id="bus_pq" class="component  mt-1 p-0" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra PQ">
+          </a>
+        </div>
+        <!-- /Barra PQ -->
+
+        <!-- Curto Circuito -->
+        <div class="row sidebar-row mx-auto p-3 my-3">
+          <a id="curto_circuito" class="component  mt-1 p-0" data-toggle="tooltip" data-html="true" data-placement="right" title="Curto Circuito">
+          </a>
+        </div>
+        <!-- /Curto Circuito -->
+
+      </div>
+    </div>
+    <!-- /Componentes  -->
+
+    <!-- Diagrama -->
+    <div class="col-10 mt-2 mb-0 ">
+      <!-- Menu Superior -->
+      <div class="row menu-superior  bg-white border  mb-2  p-0 m-0">
+
+
+
+        <!-- Ações de Copiar/Recortar/Colar/Excluir -->
+        <div class="col-2 btn-group mr-3 px-0" role="group">
+          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
+            title="Copiar">
+            <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png">
+          </button>
+          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
+            title="Recortar">
+            <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png">
+          </button>
+          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
+            title="Colar">
+            <img src="../../assets/icons/menu-acoes/icons8-colar-32.png">
+          </button>
+          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
+            title="Excluir">
+            <img src="../../assets/icons/menu-acoes/icons8-lixo-32.png">
+          </button>
+        </div>
+        <!-- /Ações de Copiar/Recortar/Colar -->
+
+        <!-- Inserir Linha -->
+        <div class="col-1 btn-group mr-3 " role="group">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Linha">
+            <img src="../../assets/icons/menu-acoes/resistor.png">
+          </button>
+          <!-- <button (click)="add('PV')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Slack">
+            <img src="../../assets/icons/menu-acoes/resistor.png">
+          </button>
+          <button (click)="add('PQ')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Carga">
+            <img src="../../assets/icons/menu-acoes/resistor.png">
+          </button>
+          <button (click)="add('VT')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Linha">
+            <img src="../../assets/icons/menu-acoes/resistor.png">
+          </button> -->
+        </div>
+        <!-- /Inserir Linha -->
+
+
+        <!-- calculos -->
+        <div class="col-7 btn-group justify-content-end d-flex " role="group">
+          <button (click)="adicionarBarra(enumerador_barra.VT)" type="button" class="btn btn-outline-secondary" data-toggle="tooltip"
+            data-html="true" data-placement="top" title="Calcular Fluxo de Potência">
+            <img src="../../assets/icons/menu-acoes/flow.png" width="32px" height="32px">
+          </button>
+          <button (click)="adicionarBarra(enumerador_barra.Slack)" type="button" class="btn btn-outline-secondary" data-toggle="tooltip"
+            data-html="true" data-placement="top" title="Calcular Curto Circuito">
+            <img src="../../assets/icons/menu-acoes/short.png" width="32px" height="32px">
+          </button>
+        </div>
+        <!-- calculos -->
+      </div>
+      <!-- /Menu Superior -->
+
+      <!-- Área de Desenho -->
+      <div id="draw_inside" class="shadow-lg bg-white rounded area-draw dropzone-diagram  "></div>
+      <!-- /Área de Desenho -->
+    </div>
+    <!-- /Diagrama -->
+
+    <!-- Propriedades -->
+    <div class="col-1 p-0 border">
+      <div class="propriety">
+        <div *ngIf="selecionados.length() == 0" class="justify-content-center">
+          <p class="h5 "> Propriedades</p>
+          <div class="row p-0 m-0 border">
+            <div class="m-2 custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="view_grid">
+              <label class="custom-control-label" for="view_grid">Exibir Grade</label>
+            </div>
+          </div>
+          <div class="row p-0 m-0 border">
+            <div class="m-2 custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="snap_grid">
+              <label class="custom-control-label" for="snap_grid">Ajustar a Grade</label>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="selecionados.length() > 0" class="justify-content-center">
+          <div *ngIf="selecionado">
+            <div class="row p-0 m-0">
+              <p>Editar Barra</p>
+            </div>
+            <form>
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <label for="input_nome_barra">Nome</label>
+                  <input type="text" class="form-control" id="input_nome_barra" value="{{selecionado.nome}}" placeholder="barra_1">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="input_P_barra">P</label>
+                  <input type="text" class="form-control" id="input_P_barra" value="{{selecionado.pCarga}}" placeholder="1 pu">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="input_Q_barra">Q</label>
+                  <input type="text" class="form-control" id="input_Q_barra" value="{{selecionado.qCarga}}" placeholder="0 pu">
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="input_V_barra">V</label>
+                  <input type="text" class="form-control" id="input_V_barra" value="{{selecionado.tensao_0}}" placeholder="1 pu">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="input_T_barra">T</label>
+                  <input type="text" class="form-control" id="input_T_barra" value="{{selecionado.angulo_0}}" placeholder="0 pu">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- /Propriedades -->
+
+    </div>
+    <!-- /Linha Principal -->
+  </div>

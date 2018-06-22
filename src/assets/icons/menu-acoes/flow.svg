@@ -1,0 +1,20 @@
+<svg width="99.99999999999999" height="99.99999999999999" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+ <g>
+  <title>background</title>
+  <rect fill="#fff" id="canvas_background" height="102" width="102" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_1" y2="260.5" x2="69" y1="112.5" x1="68" stroke-width="5" stroke="#000" fill="none"/>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_3" y2="79.678623" x2="5.954665" y1="23.534995" x1="5.954665" fill-opacity="null" stroke-opacity="null" stroke-width="5" stroke="#000" fill="none"/>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_5" y2="79.678627" x2="93.872771" y1="23.534998" x1="93.872771" fill-opacity="null" stroke-opacity="null" stroke-width="5" stroke="#000" fill="none"/>
+  <rect id="svg_6" height="15.122863" width="51.60677" y="44.045377" x="24.196615" fill-opacity="null" stroke-opacity="null" stroke-width="3" stroke="#000" fill="none"/>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_8" y2="51.606811" x2="23.534993" y1="51.606811" x1="5.765629" fill-opacity="null" stroke-opacity="null" stroke-width="3" stroke="#000" fill="none"/>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_10" y2="51.606809" x2="93.936714" y1="51.606809" x1="75.897906" fill-opacity="null" stroke-opacity="null" stroke-width="3" stroke="#000" fill="none"/>
+  <path stroke="#000" transform="rotate(90 50.00000000000001,19.125354766845707) " id="svg_11" d="m39.035924,19.070685l10.964076,-22.724141l10.964076,22.724141l-5.482038,0l0,22.833485l-10.964075,0l0,-22.833485l-5.482038,0z" fill-opacity="null" stroke-opacity="null" stroke-width="2" fill="none"/>
+ </g>
+</svg>
