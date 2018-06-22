@@ -213,7 +213,7 @@ export class DiagramaComponent implements OnInit {
         this.redesenhaLinha(linha, enumLinhaTipo, cor);
       }
     );
-
+    console.log(linhas);
   }
 
   incrementaBarra(tipo: EnumBar) {
@@ -410,6 +410,9 @@ export class DiagramaComponent implements OnInit {
     let dx, dy;
     let ceil = 10;
 
+    let grupo_barra: SVG.G, linhas: Array<Linha> = new Array();
+
+
 
     interact('.rotacao').draggable({
       onstart: dragstart,
@@ -421,10 +424,13 @@ export class DiagramaComponent implements OnInit {
       }
     });
     function dragstart(event) {
-      // x = event.
+      const id_barra = event.target.parentNode.parentNode.id;
+      grupo_barra = self.mapa_SVG_grupos.get(id_barra);
+      const barra = grupo_barra.data('barra') as Barra;
+      linhas = self.linhasConectadasBarra(barra);
     }
     function dragmove(event) {
-      // // console.log(event);
+
       dx = event.clientX0 - event.clientX;
       dy = event.clientY0 - event.clientY;
       if (event.shiftKey) {
@@ -434,10 +440,12 @@ export class DiagramaComponent implements OnInit {
       }
 
       const angulo = self.calcularAngulo(dx, dy, ceil);
-      const id_barra = event.target.parentNode.parentNode.id;
-      const grupo_barra = self.mapa_SVG_grupos.get(id_barra);
+
       const grupo_barra_desenho = grupo_barra.select('.grupo_barra_desenho').first() as SVG.G;
       grupo_barra_desenho.rotate(angulo);
+
+      self.redesenhaLinhas(linhas);
+
 
     }
     function dragend(event) {
@@ -638,6 +646,19 @@ export class DiagramaComponent implements OnInit {
     }
   }
 
+  linhasConectadasBarra(barra: Barra): Array<Linha> {
+    const linhas = new Array();
+    // como saber se esse grupo que estou movimentando tem uma linha
+    this.linhas.forEach(
+      linha_usada => {
+        if (barra.id_barra === linha_usada.de.id_barra || barra.id_barra === linha_usada.para.id_barra) {
+          linhas.push(linha_usada);
+        }
+      }
+    );
+    return linhas;
+  }
+
   /*
   CONFIGURAÇÕES DE ATALHOS
   */
@@ -677,16 +698,8 @@ export class DiagramaComponent implements OnInit {
       .on('dragstart', function (event) {
         grupo_barra = self.mapa_SVG_grupos
           .get(event.target.id);
-        linhas = new Array();
-
-        // como saber se esse grupo que estou movimentando tem uma linha
-        self.linhas.forEach(
-          linha_usada => {
-            if (grupo_barra.id() === linha_usada.de.id_barra || grupo_barra.id() === linha_usada.para.id_barra) {
-              linhas.push(linha_usada);
-            }
-          }
-        );
+        const barra = grupo_barra.data('barra') as Barra;
+        linhas = self.linhasConectadasBarra(barra);
       })
       .on('dragmove', function (event) {
 
