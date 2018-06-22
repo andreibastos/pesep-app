@@ -1,8 +1,8 @@
-import { EnumBar } from '../../models/componente';
+import { EnumBarra } from '../../models/componente';
 
 export class Barra {
     id_barra: string;
-    tipo: EnumBar;
+    tipo: EnumBarra;
     nome: string;
     tensao_0 =  1.0;
     angulo_0 = 0.0;
@@ -17,7 +17,7 @@ export class Barra {
     qShunt: number;
     X: number;
 
-    constructor(tipo: EnumBar) {
+    constructor(tipo: EnumBarra) {
         this.tipo = tipo;
     }
 }
