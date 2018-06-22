@@ -71,7 +71,6 @@ export class DiagramaComponent implements OnInit {
     // Now (ab)use the @import directive to load make the browser load our css
     style_svg.textContent = '@import url("./assets/css/svg.css");';
 
-    console.log(style_svg);
 
     this.container = SVG(this.div_nome)
       .addClass('svg_area')
@@ -167,11 +166,15 @@ export class DiagramaComponent implements OnInit {
 
     const de_grupo = this.mapa_SVG_grupos.get(linha.de.id_barra);
 
-    const de_grupo_box = de_grupo.select('.criar_linha').first().bbox();
-    const para_grupo = this.mapa_SVG_grupos.get(linha.para.id_barra);
-    const para_grupo_box = para_grupo.select('.criar_linha').first().bbox();
+    // const de_grupo_box = de_grupo.select('.criar_linha').first().bbox();
+    // const para_grupo = this.mapa_SVG_grupos.get(linha.para.id_barra);
+    // const para_grupo_box = para_grupo.select('.criar_linha').first().bbox();
 
-    console.log(de_grupo_box, para_grupo_box);
+    const de_grupo_box = de_grupo.bbox();
+    const para_grupo = this.mapa_SVG_grupos.get(linha.para.id_barra);
+    const para_grupo_box = para_grupo.bbox();
+
+    // console.log(de_grupo_box, para_grupo_box);
 
     // let eixo_y: string, eixo_x: string;
     para_grupo_box.cx += para_grupo.x();
@@ -213,13 +216,11 @@ export class DiagramaComponent implements OnInit {
     pontos.push([d, 0]);
     pontos.push([d, y]);
     pontos.push([-d + x, y]);
-    console.log(pontos);
 
     for (let index = pontos.length - 1; index > 0; index--) {
       const ponto = pontos[index];
       pontos.push(ponto);
     }
-    console.log(pontos);
     return pontos;
   }
 
@@ -432,7 +433,6 @@ export class DiagramaComponent implements OnInit {
       }
     });
     function dragstart(event) {
-      console.log(event);
       // x = event.
     }
     function dragmove(event) {
@@ -587,7 +587,6 @@ export class DiagramaComponent implements OnInit {
         event.target.classList.add('criar_linha');
         const id_barra = event.target.parentNode.parentNode.id;
         para_barra = self.mapa_SVG_grupos.get(id_barra);
-        console.log(para_barra);
         self.adicionarLinha(de_barra.data('barra'), para_barra.data('barra'), EnumLinhaTipo.reta);
 
       }
@@ -606,12 +605,15 @@ export class DiagramaComponent implements OnInit {
     function dragstart(event) {
       const id_barra = event.target.parentNode.parentNode.id;
       de_barra = self.mapa_SVG_grupos.get(id_barra);
+      const circulo = de_barra.select('.criar_linha');
+      if (circulo) {
+        const criar_linha_box = de_barra.select('.criar_linha').bbox();
+        grupo_linha.move(criar_linha_box.cx, criar_linha_box.cy);
 
-      const criar_linha_box = de_barra.select('.criar_linha').bbox();
+      }
 
-      grupo_linha.move(criar_linha_box.cx, criar_linha_box.cy);
 
-      console.log(grupo_linha);
+      // console.log(grupo_linha);
 
     }
     function dragmove(event) {
@@ -702,7 +704,7 @@ export class DiagramaComponent implements OnInit {
         }
       })
       .on('dragend', function (event) {
-        console.log(linhas);
+        // console.log(linhas);
         self.redesenhaLinhas(linhas);
       });
 
