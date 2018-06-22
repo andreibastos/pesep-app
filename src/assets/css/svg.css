@@ -14,17 +14,21 @@
     fill: black;
 }
 
-.nova_linha {
+.criar_linha:hover {
+    fill: black;
+    cursor: nwse-resize;
+    r: 10;
+}
+
+.nova_linha, .nova_linha:hover {
     fill: green;
+    fill-opacity: 0.4;
+    stroke: blue;
+    stroke-opacity: 0.6;
+    stroke-dasharray: 5, 5;
     r: 20;
 }
 
-.criar_linha:hover {
-    fill: red;
-    cursor: nwse-resize;
-    r: 10;
-
-}
 
 .retangulo_selecao {
     fill: none;
@@ -51,7 +55,7 @@
 
 .rotacao:active, .rotacao:hover {
     fill-opacity: 1;
-    r: 20;
+    r: 10;
 }
 
 .linha {

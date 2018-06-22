@@ -164,31 +164,16 @@ export class DiagramaComponent implements OnInit {
     let polilinha: SVG.PolyLine;
     let impedancia: SVG.Element;
 
-    const de_grupo = this.mapa_SVG_grupos.get(linha.de.id_barra);
+    const de_barra = this.mapa_SVG_grupos.get(linha.de.id_barra);
+    const para_barra = this.mapa_SVG_grupos.get(linha.para.id_barra);
+    const criar_linha_de = de_barra.select('.criar_linha').bbox();
+    const criar_linha_para = para_barra.select('.criar_linha').bbox();
 
-    // const de_grupo_box = de_grupo.select('.criar_linha').first().bbox();
-    // const para_grupo = this.mapa_SVG_grupos.get(linha.para.id_barra);
-    // const para_grupo_box = para_grupo.select('.criar_linha').first().bbox();
+    grupo_linha.move(criar_linha_de.cx, criar_linha_de.cy);
 
-    const de_grupo_box = de_grupo.bbox();
-    const para_grupo = this.mapa_SVG_grupos.get(linha.para.id_barra);
-    const para_grupo_box = para_grupo.bbox();
-
-    // console.log(de_grupo_box, para_grupo_box);
-
-    // let eixo_y: string, eixo_x: string;
-    para_grupo_box.cx += para_grupo.x();
-    para_grupo_box.cy += para_grupo.y();
-
-    de_grupo_box.cx += de_grupo.x();
-    de_grupo_box.cy += de_grupo.y();
-
-    grupo_linha.move(de_grupo_box.cx, de_grupo_box.cy);
-
-    const delta_x = para_grupo_box.cx - de_grupo_box.cx;
-    const delta_y = para_grupo_box.cy - de_grupo_box.cy;
+    const delta_x = criar_linha_para.cx - criar_linha_de.cx;
+    const delta_y = criar_linha_para.cy - criar_linha_de.cy;
     const angulo = this.calcularAngulo(delta_x, delta_y);
-
 
     if (enumLinhaTipo === EnumLinhaTipo.reta) {
       polilinha = grupo_linha.polyline([[0, 0], [delta_x, delta_y]]);
@@ -205,8 +190,6 @@ export class DiagramaComponent implements OnInit {
 
     impedancia.move(delta_x / 2 - impedancia.width() / 2, delta_y / 2 - impedancia.height() / 2);
     impedancia.rotate(angulo, impedancia.cx(), impedancia.cy());
-
-
 
   }
 
@@ -350,7 +333,7 @@ export class DiagramaComponent implements OnInit {
 
 
 
-  calcularAngulo(dx, dy) {
+  calcularAngulo(dx, dy, ceil = 1) {
     let m = 0;
     if (dx === 0) {
       dx = 1 / 10000000;
@@ -362,6 +345,8 @@ export class DiagramaComponent implements OnInit {
     if (angulo < 0) {
       angulo = 360 + angulo;
     }
+    angulo = Math.ceil(angulo / ceil) * ceil;
+
     return -angulo;
   }
 
@@ -422,6 +407,8 @@ export class DiagramaComponent implements OnInit {
   habilitarRotacao() {
     const self = this;
     let dx, dy;
+    let ceil = 10;
+
 
     interact('.rotacao').draggable({
       onstart: dragstart,
@@ -439,7 +426,13 @@ export class DiagramaComponent implements OnInit {
       // // console.log(event);
       dx = event.clientX0 - event.clientX;
       dy = event.clientY0 - event.clientY;
-      const angulo = self.calcularAngulo(dx, dy);
+      if (event.shiftKey) {
+        ceil = 90;
+      } else {
+        ceil = 10;
+      }
+      
+      const angulo = self.calcularAngulo(dx, dy, ceil);
       const id_barra = event.target.parentNode.parentNode.id;
       const grupo_barra = self.mapa_SVG_grupos.get(id_barra);
       const grupo_barra_desenho = grupo_barra.select('.grupo_barra_desenho').first() as SVG.G;
@@ -609,7 +602,8 @@ export class DiagramaComponent implements OnInit {
       if (circulo) {
         const criar_linha_box = de_barra.select('.criar_linha').bbox();
         grupo_linha.move(criar_linha_box.cx, criar_linha_box.cy);
-
+        console.log(criar_linha_box.cx);
+        console.log(event.interaction.pointers[0].offsetX);
       }
 
 
@@ -622,6 +616,7 @@ export class DiagramaComponent implements OnInit {
       grupo_linha.clear();
       dx = event.clientX - event.clientX0;
       dy = event.clientY - event.clientY0;
+
       angulo = self.calcularAngulo(dx, dy);
 
       polilinha = grupo_linha.polyline([[0, 0], [dx, dy]]);
@@ -664,6 +659,7 @@ export class DiagramaComponent implements OnInit {
   inicializarInteract() {
     const self = this;
     let grupo_barra: SVG.G, linhas: Array<Linha> = new Array();
+    const ceil = 10;
     // interact('.component-simple')
     interact('.barra')
       .draggable({
@@ -691,6 +687,7 @@ export class DiagramaComponent implements OnInit {
         );
       })
       .on('dragmove', function (event) {
+
         if (self.selecionados.length() > 0) {
           self.selecionados.each(function (index) {
             const element = self.selecionados.get(index);
@@ -708,17 +705,16 @@ export class DiagramaComponent implements OnInit {
         self.redesenhaLinhas(linhas);
       });
 
-    interact('.component-fixed')
-      .draggable({
-        inertia: true, // enable inertial throwing
-        autoScroll: true, // enable autoScroll
-        // keep the element within the area of draw_inside
-        restrict: {
-          restriction: document.getElementsByClassName('sidebar').item(0),
-          endOnly: true,
-          elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
-        }
-      })
+    interact('.component-fixed').draggable({
+      inertia: true, // enable inertial throwing
+      autoScroll: true, // enable autoScroll
+      // keep the element within the area of draw_inside
+      restrict: {
+        restriction: document.getElementsByClassName('sidebar').item(0),
+        endOnly: true,
+        elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+      }
+    })
       .on('dragstart', function (event) {
         event.interaction.x = parseInt(event.target.getAttribute('data-x'), 10) || 0;
         event.interaction.y = parseInt(event.target.getAttribute('data-y'), 10) || 0;
