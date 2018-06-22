@@ -260,15 +260,16 @@ export class DiagramaComponent implements OnInit {
       .group()
       .addClass('grupo_barra_selecao')
       ;
-    const box = grupo.bbox();
-    grupo_barra_selecao.rect(box.w, box.h)
+    const box_grupo = grupo.bbox();
+    grupo_barra_selecao.rect(box_grupo.w, box_grupo.h)
       // .fill({ opacity: 0 })
-      .move(box.x, box.y)
+      .move(box_grupo.x, box_grupo.y)
       .addClass('retangulo_selecao');
+    const box_selecao = grupo_barra_selecao.bbox();
 
     grupo_barra_selecao.circle(10)
       .addClass('rotacao')
-      .move(box.cx, box.cy);
+      .move(box_selecao.cx, box_selecao.cy);
     return grupo_barra_selecao;
   }
 
@@ -279,16 +280,16 @@ export class DiagramaComponent implements OnInit {
     const self = this;
     if (tipo === EnumBar.Slack || tipo === EnumBar.VT) {
       const circle = node.circle(50).move(2, 25).fill('#FFF').stroke({ width: 2 }).stroke('#000');
-      const line_horizontal = node.line(52, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
-      const line_vertical = node.line(95, 10, 95, 90).stroke({ width: 5 }).stroke('#000');
+      const line_horizontal = node.line(52, 50, 80, 50).stroke({ width: 2 }).stroke('#000');
+      const line_vertical = node.line(80, 10, 80, 90).stroke({ width: 5 }).stroke('#000');
       const text = node.text(tipo === EnumBar.VT ? '~' : '∞').font({ size: 50, family: 'Times New Roman' }).move(10, 20);
       group.add(circle);
       group.add(line_horizontal);
       group.add(line_vertical);
       group.add(text);
     } else if (tipo === EnumBar.PQ) {
-      const line_horizontal = node.line(20, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
-      const line_vertical = node.line(95, 10, 95, 90).stroke({ width: 5 }).stroke('#000');
+      const line_horizontal = node.line(20, 50, 80, 50).stroke({ width: 2 }).stroke('#000');
+      const line_vertical = node.line(80, 10, 80, 90).stroke({ width: 5 }).stroke('#000');
       const triangule = node.path('m25,60l10,-25l10,25l-10,0l-10,0z')
         .rotate(-90, 25, 60);
       group.add(line_horizontal);
@@ -296,7 +297,7 @@ export class DiagramaComponent implements OnInit {
       group.add(triangule);
     }
     const box = group.bbox();
-    group.circle(10).addClass('criar_linha').move(box.x2, box.cy - 5);
+    group.circle(10).addClass('criar_linha').move(box.x2 - 5, box.cy - 5);
     group.addClass('grupo_barra_desenho');
     return group;
   }
@@ -431,7 +432,7 @@ export class DiagramaComponent implements OnInit {
       } else {
         ceil = 10;
       }
-      
+
       const angulo = self.calcularAngulo(dx, dy, ceil);
       const id_barra = event.target.parentNode.parentNode.id;
       const grupo_barra = self.mapa_SVG_grupos.get(id_barra);
@@ -566,6 +567,7 @@ export class DiagramaComponent implements OnInit {
 
 
     interact('.criar_linha').dropzone({
+      accept: '.criar_linha',
       ondragenter: function (event) {
         event.target.classList.remove('criar_linha');
         event.target.classList.add('nova_linha');
