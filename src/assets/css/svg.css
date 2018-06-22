@@ -14,14 +14,30 @@
     fill: black;
 }
 
+.nova_linha {
+    fill: green;
+    r: 20;
+}
+
 .criar_linha:hover {
     fill: red;
-    cursor: col-resize;
+    cursor: nwse-resize;
+    r: 10;
 
 }
 
-.retangulo_selecao:hover {
+.retangulo_selecao {
+    fill: none;
     stroke-width: 5;
+    stroke-opacity: 0;
+    stroke: black;
+}
+
+.retangulo_selecao:hover {
+    /* fill: blue; */
+    /* fill-opacity: 0.1; */
+    stroke-width: 2;
+    stroke-dasharray: 5, 5;
     stroke-opacity: 1;
     stroke: black;
 }

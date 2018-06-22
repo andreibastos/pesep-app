@@ -82,7 +82,7 @@ export class DiagramaComponent implements OnInit {
 
     this.habilitarSelecao();
     this.habilitarRotacao();
-
+    this.habilitarAdicionarLinha();
     this.inicializarInteract();
 
     this.configurarAtalhos();
@@ -97,10 +97,10 @@ export class DiagramaComponent implements OnInit {
     // this.add('PQ');
     this.adicionarBarra(this.enumerador_barra.VT, 50, 100);
     // this.adicionarBarra(this.enumerador_barra.VT, 300, 100);
-    // this.adicionarBarra(this.enumerador_barra.PQ, 600, 100);
+    this.adicionarBarra(this.enumerador_barra.PQ, 600, 100);
 
-    this.adicionarBarra(this.enumerador_barra.PQ, 50, 300);
-    this.adicionarBarra(this.enumerador_barra.Slack, 300, 300);
+    // this.adicionarBarra(this.enumerador_barra.PQ, 50, 300);
+    // this.adicionarBarra(this.enumerador_barra.Slack, 300, 300);
     // this.adicionarBarra(this.enumerador_barra.PQ, 600, 300);
 
 
@@ -109,8 +109,8 @@ export class DiagramaComponent implements OnInit {
     this.adicionarBarra(this.enumerador_barra.PQ, 600, 500);
 
     this.adicionarLinha(this.barras[0], this.barras[1], EnumLinhaTipo.reta);
-    this.adicionarLinha(this.barras[1], this.barras[2], EnumLinhaTipo.reta);
-    this.adicionarLinha(this.barras[1], this.barras[3], EnumLinhaTipo.reta);
+    // this.adicionarLinha(this.barras[1], this.barras[2], EnumLinhaTipo.reta);
+    // this.adicionarLinha(this.barras[1], this.barras[3], EnumLinhaTipo.reta);
   }
 
   /*
@@ -155,6 +155,7 @@ export class DiagramaComponent implements OnInit {
 
   }
 
+
   redesenhaLinha(linha: Linha, enumLinhaTipo: EnumLinhaTipo = EnumLinhaTipo.poliretas, cor = 'black') {
 
     const select = this.container.select(`#${linha.id_linha}`);
@@ -187,9 +188,7 @@ export class DiagramaComponent implements OnInit {
       polilinha = grupo_linha.polyline([[0, 0], [delta_x, delta_y]]);
 
     } else if (enumLinhaTipo === EnumLinhaTipo.poliretas) {
-
-
-      polilinha = grupo_linha.polyline(criarPontos(delta_x, delta_y, 15));
+      polilinha = grupo_linha.polyline(this.criarPontos(delta_x, delta_y, 15));
     }
 
     polilinha.addClass('linha');
@@ -202,21 +201,23 @@ export class DiagramaComponent implements OnInit {
     impedancia.rotate(angulo, impedancia.cx(), impedancia.cy());
 
 
-    function criarPontos(x, y, d): Array<any> {
-      const pontos = [];
-      pontos.push([0, 0]);
-      pontos.push([d, 0]);
-      pontos.push([d, y]);
-      pontos.push([-d + x, y]);
-      console.log(pontos);
 
-      for (let index = pontos.length - 1; index > 0; index--) {
-        const ponto = pontos[index];
-        pontos.push(ponto);
-      }
-      console.log(pontos);
-      return pontos;
+  }
+
+  criarPontos(x, y, d): Array<any> {
+    const pontos = [];
+    pontos.push([0, 0]);
+    pontos.push([d, 0]);
+    pontos.push([d, y]);
+    pontos.push([-d + x, y]);
+    console.log(pontos);
+
+    for (let index = pontos.length - 1; index > 0; index--) {
+      const ponto = pontos[index];
+      pontos.push(ponto);
     }
+    console.log(pontos);
+    return pontos;
   }
 
   redesenhaLinhas(linhas: Array<Linha>, enumLinhaTipo = EnumLinhaTipo.reta, cor = 'black') {
@@ -273,10 +274,14 @@ export class DiagramaComponent implements OnInit {
       .addClass('grupo_barra_selecao')
       ;
     const box = grupo.bbox();
-    grupo_barra_selecao.rect(box.w, box.h).fill({ color: 'none', opacity: 0 }).move(box.x, box.y);
+    grupo_barra_selecao.rect(box.w, box.h)
+      // .fill({ opacity: 0 })
+      .move(box.x, box.y)
+      .addClass('retangulo_selecao');
+
     grupo_barra_selecao.circle(10)
       .addClass('rotacao')
-      .move(box.cx, box.cy + 80);
+      .move(box.cx, box.cy - box.height / 1.5);
     return grupo_barra_selecao;
   }
 
@@ -557,35 +562,78 @@ export class DiagramaComponent implements OnInit {
 
   habilitarAdicionarLinha() {
     const self = this;
-    let dx, dy;
+    let dx, dy, angulo;
+    const grupo_linha = this.container.group().id('linha_nova') as SVG.G;
+    let de_barra: SVG.G, para_barra: SVG.G;
+
+    let polilinha: SVG.PolyLine;
+    let impedancia: SVG.Element;
+
+
+    interact('.criar_linha').dropzone({
+      ondragenter: function (event) {
+        event.target.classList.remove('criar_linha');
+        event.target.classList.add('nova_linha');
+      },
+      ondragleave: function (event) {
+        event.target.classList.remove('nova_linha');
+        event.target.classList.add('criar_linha');
+
+      },
+      ondrop: function (event) {
+        event.target.classList.remove('nova_linha');
+        event.target.classList.add('criar_linha');
+        const id_barra = event.target.parentNode.parentNode.id;
+        para_barra = self.mapa_SVG_grupos.get(id_barra);
+        console.log(para_barra);
+        self.adicionarLinha(de_barra.data('barra'), para_barra.data('barra'), EnumLinhaTipo.reta);
+
+      }
+    });
 
     interact('.criar_linha').draggable({
       onstart: dragstart,
       onmove: dragmove,
       onend: dragend,
       restrict: {
-        restriction: document.getElementById(this.container.id()),
+        // restriction: '.nova_linha',
         // elementRect: { top: 0, left: 0, bottom: 0, right: 1 }
       }
     });
+
     function dragstart(event) {
-      console.log(event);
-      // x = event.
+      const id_barra = event.target.parentNode.parentNode.id;
+      de_barra = self.mapa_SVG_grupos.get(id_barra);
+
+      const criar_linha_box = de_barra.select('.criar_linha').bbox();
+
+      grupo_linha.move(criar_linha_box.cx, criar_linha_box.cy);
+
+      console.log(grupo_linha);
+
     }
     function dragmove(event) {
-      // // console.log(event);
-      dx = event.clientX0 - event.clientX;
-      dy = event.clientY0 - event.clientY;
-      const angulo = self.calcularAngulo(dx, dy);
-      const id_barra = event.target.parentNode.parentNode.id;
-      const grupo_barra = self.mapa_SVG_grupos.get(id_barra);
-      grupo_barra.select('.grupo_barra_desenho').each(function () {
-        const grupo_barra_desenho = this as SVG.G;
-        grupo_barra_desenho.rotate(angulo);
-      });
+      // de_barra = grupo_barra.clone() as SVG.G;
+
+      grupo_linha.clear();
+      dx = event.clientX - event.clientX0;
+      dy = event.clientY - event.clientY0;
+      angulo = self.calcularAngulo(dx, dy);
+
+      polilinha = grupo_linha.polyline([[0, 0], [dx, dy]]);
+
+      polilinha.addClass('linha');
+
+      impedancia = grupo_linha.rect(60, 20)
+        .fill({ color: 'white' })
+        .stroke({ color: 'black', width: 2 });
+
+      impedancia.move(dx / 2 - impedancia.width() / 2, dy / 2 - impedancia.height() / 2);
+      impedancia.rotate(angulo, impedancia.cx(), impedancia.cy());
+
     }
     function dragend(event) {
-
+      grupo_linha.clear();
     }
   }
 
