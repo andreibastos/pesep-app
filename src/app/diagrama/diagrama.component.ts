@@ -97,10 +97,10 @@ export class DiagramaComponent implements OnInit {
     // this.add('PQ');
     this.adicionarBarra(this.enumerador_barra.VT, 50, 100);
     // this.adicionarBarra(this.enumerador_barra.VT, 300, 100);
-    this.adicionarBarra(this.enumerador_barra.PQ, 600, 100);
+    // this.adicionarBarra(this.enumerador_barra.PQ, 600, 100);
 
     // this.adicionarBarra(this.enumerador_barra.PQ, 50, 300);
-    // this.adicionarBarra(this.enumerador_barra.Slack, 300, 300);
+    this.adicionarBarra(this.enumerador_barra.Slack, 300, 300);
     // this.adicionarBarra(this.enumerador_barra.PQ, 600, 300);
 
 
@@ -166,20 +166,23 @@ export class DiagramaComponent implements OnInit {
     let impedancia: SVG.Element;
 
     const de_grupo = this.mapa_SVG_grupos.get(linha.de.id_barra);
-    const de_grupo_box = de_grupo.bbox();
+
+    const de_grupo_box = de_grupo.select('.criar_linha').first().bbox();
     const para_grupo = this.mapa_SVG_grupos.get(linha.para.id_barra);
-    const para_grupo_box = para_grupo.bbox();
+    const para_grupo_box = para_grupo.select('.criar_linha').first().bbox();
+
+    console.log(de_grupo_box, para_grupo_box);
 
     // let eixo_y: string, eixo_x: string;
-    para_grupo_box.x2 += para_grupo.x();
+    para_grupo_box.cx += para_grupo.x();
     para_grupo_box.cy += para_grupo.y();
 
-    de_grupo_box.x2 += de_grupo.x();
+    de_grupo_box.cx += de_grupo.x();
     de_grupo_box.cy += de_grupo.y();
 
-    grupo_linha.move(de_grupo_box.x2 - 20, de_grupo_box.cy);
+    grupo_linha.move(de_grupo_box.cx, de_grupo_box.cy);
 
-    const delta_x = para_grupo_box.x2 - de_grupo_box.x2;
+    const delta_x = para_grupo_box.cx - de_grupo_box.cx;
     const delta_y = para_grupo_box.cy - de_grupo_box.cy;
     const angulo = this.calcularAngulo(delta_x, delta_y);
 
@@ -281,7 +284,7 @@ export class DiagramaComponent implements OnInit {
 
     grupo_barra_selecao.circle(10)
       .addClass('rotacao')
-      .move(box.cx, box.cy - box.height / 1.5);
+      .move(box.cx, box.cy);
     return grupo_barra_selecao;
   }
 
@@ -439,10 +442,9 @@ export class DiagramaComponent implements OnInit {
       const angulo = self.calcularAngulo(dx, dy);
       const id_barra = event.target.parentNode.parentNode.id;
       const grupo_barra = self.mapa_SVG_grupos.get(id_barra);
-      grupo_barra.select('.grupo_barra_desenho').each(function () {
-        const grupo_barra_desenho = this as SVG.G;
-        grupo_barra_desenho.rotate(angulo);
-      });
+      const grupo_barra_desenho = grupo_barra.select('.grupo_barra_desenho').first() as SVG.G;
+      grupo_barra_desenho.rotate(angulo);
+
     }
     function dragend(event) {
 

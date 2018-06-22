@@ -43,7 +43,15 @@
 }
 
 .rotacao {
-    cursor: col-resize
+    fill: blue;
+    fill-opacity: 0.1;
+    cursor: url('../icons/menu-acoes/rotate.png'), pointer;
+}
+
+
+.rotacao:active, .rotacao:hover {
+    fill-opacity: 1;
+    r: 20;
 }
 
 .linha {
