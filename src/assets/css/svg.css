@@ -1,0 +1,69 @@
+.selecionado {
+    fill: blue;
+    fill-opacity: 0.1;
+    stroke: black;
+    stroke-opacity: 0.6;
+    stroke-width: 2;
+}
+
+.barra {}
+
+.barra:hover {}
+
+.criar_linha {
+    fill: black;
+}
+
+.criar_linha:hover {
+    fill: black;
+    cursor: nwse-resize;
+    r: 10;
+}
+
+.nova_linha, .nova_linha:hover {
+    fill: green;
+    fill-opacity: 0.4;
+    stroke: blue;
+    stroke-opacity: 0.6;
+    stroke-dasharray: 5, 5;
+    r: 20;
+}
+
+
+.retangulo_selecao {
+    fill: none;
+    stroke-width: 5;
+    stroke-opacity: 0;
+    stroke: black;
+}
+
+.retangulo_selecao:hover {
+    /* fill: blue; */
+    /* fill-opacity: 0.1; */
+    stroke-width: 2;
+    stroke-dasharray: 5, 5;
+    stroke-opacity: 1;
+    stroke: black;
+}
+
+.rotacao {
+    fill: blue;
+    fill-opacity: 0.1;
+    cursor: url('../icons/menu-acoes/rotate.png'), pointer;
+}
+
+
+.rotacao:active, .rotacao:hover {
+    fill-opacity: 1;
+    r: 10;
+}
+
+.linha {
+    stroke: black;
+    stroke-width: 2;
+}
+
+.linha.movimento {
+    stroke: blue;
+    stroke-width: 1;
+}

@@ -11,7 +11,39 @@ export interface IComponente {
     st: any; // set, conjunto;
 
 }
-export class Carga implements IComponente {
+export interface IBarra {
+    item: number;
+    tipo: number;
+    nome: string;
+    tensao_0: number;
+    angulo0: number;
+    pGerada: number;
+    qGerada: number;
+    qMinimo: number;
+    qMaximo: number;
+    pCarga: number;
+    qCarga: number;
+    pGeradamin: number;
+    pGeradamax: number;
+    qShunt: number;
+    xGenerator: number;
+}
+export class Carga implements IComponente, IBarra {
+    item: number;
+    tipo: number;
+    nome: string;
+    tensao_0: number;
+    angulo0: number;
+    pGerada: number;
+    qGerada: number;
+    qMinimo: number;
+    qMaximo: number;
+    pCarga: number;
+    qCarga: number;
+    pGeradamin: number;
+    pGeradamax: number;
+    qShunt: number;
+    xGenerator: number;
     st: any;
     type: EnumBar = EnumBar.PQ;
     name = 'Carga';
@@ -23,7 +55,22 @@ export class Carga implements IComponente {
     constructor() { }
 
 }
-export class Fonte implements IComponente {
+export class Fonte implements IComponente, IBarra {
+    item: number;
+    tipo: number;
+    nome: string;
+    tensao_0: number;
+    angulo0: number;
+    pGerada: number;
+    qGerada: number;
+    qMinimo: number;
+    qMaximo: number;
+    pCarga: number;
+    qCarga: number;
+    pGeradamin: number;
+    pGeradamax: number;
+    qShunt: number;
+    xGenerator: number;
     st: any;
     type: EnumBar = EnumBar.VT;
     name = 'Fonte';
@@ -36,7 +83,22 @@ export class Fonte implements IComponente {
 
     }
 }
-export class Gerador implements IComponente {
+export class Gerador implements IComponente, IBarra {
+    item: number;
+    tipo: number;
+    nome: string;
+    tensao_0: number;
+    angulo0: number;
+    pGerada: number;
+    qGerada: number;
+    qMinimo: number;
+    qMaximo: number;
+    pCarga: number;
+    qCarga: number;
+    pGeradamin: number;
+    pGeradamax: number;
+    qShunt: number;
+    xGenerator: number;
     st: any;
     type: EnumBar = EnumBar.Slack;
     name = 'Gerador';
@@ -50,9 +112,13 @@ export class Gerador implements IComponente {
 }
 
 export enum EnumBar {
-    'VT',
-    'Slack',
-    'PQ'
+    VT,
+    Slack,
+    PQ
 }
 
-
+export enum EnumLinhaTipo {
+    reta,
+    poliretas,
+    curva
+}
