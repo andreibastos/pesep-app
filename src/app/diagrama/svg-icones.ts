@@ -8,10 +8,10 @@ export class SVGIcone {
 
     }
 
-    static createBus(ID: string, type: string) {
+    static criarBarra(ID: string, type: string) {
         const bus = SVG(ID).size(100, 100);
         const group = bus.group();
-        if (type === 'PV' || type === 'VT') {
+        if (type === 'PV' || type === 'Slack') {
             const circle = bus.circle(50).move(2, 25).fill('#FFF').stroke({ width: 2 }).stroke('#000');
             const line_horizontal = bus.line(52, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
             const line_vertical = bus.line(95, 10, 95, 90).stroke({ width: 5 }).stroke('#000');
