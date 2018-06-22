@@ -92,55 +92,69 @@ export class DiagramaComponent implements OnInit {
     SVGIcone.createBus('bus_pq', 'PQ');
     SVGIcone.createBus('curto_circuito', 'short');
 
+    this.desenharExemplo(3);
 
-    // this.add('PQ');
-    this.adicionarBarra(this.enumerador_barra.VT, 50, 100);
-    // this.adicionarBarra(this.enumerador_barra.VT, 300, 100);
-    // this.adicionarBarra(this.enumerador_barra.PQ, 600, 100);
+  }
 
-    // this.adicionarBarra(this.enumerador_barra.PQ, 50, 300);
-    this.adicionarBarra(this.enumerador_barra.Slack, 300, 300);
-    // this.adicionarBarra(this.enumerador_barra.PQ, 600, 300);
+  desenharExemplo(indice: number) {
+    switch (indice) {
+      case 3:
+        const slack = this.criarBarra(EnumBar.Slack);
+        const pq1 = this.criarBarra(EnumBar.PQ);
+        const pq2 = this.criarBarra(EnumBar.PQ);
+        const pv = this.criarBarra(EnumBar.VT);
 
 
-    // this.adicionarBarra(this.enumerador_barra.VT, 50, 500);
-    // this.adicionarBarra(this.enumerador_barra.VT, 300, 500);
-    this.adicionarBarra(this.enumerador_barra.PQ, 600, 500);
+        this.adicionarBarra(slack, 300, 100, 90);
+        this.adicionarBarra(pq1, 300, 600, -90);
+        this.adicionarBarra(pq2, 900, 100, 90);
+        this.adicionarBarra(pv, 900, 600, -90);
 
-    this.adicionarLinha(this.barras[0], this.barras[1], EnumLinhaTipo.reta);
-    // this.adicionarLinha(this.barras[1], this.barras[2], EnumLinhaTipo.reta);
-    // this.adicionarLinha(this.barras[1], this.barras[3], EnumLinhaTipo.reta);
+        this.adicionarLinha(slack, pq1);
+        this.adicionarLinha(slack, pq2);
+        this.adicionarLinha(pq1, pv);
+        this.adicionarLinha(pq2, pv);
+        break;
+    }
+
   }
 
   /*
   FUNÇÕES DO SISTEMA ELÉTRICO DE POTÊNCIA
   */
 
-  adicionarBarra(tipo: EnumBar, posicao_x?: number, posicao_y?: number) {
-    const self = this;
-
+  criarBarra(tipo: EnumBar): Barra {
     // Sistema Elétrico de Potência
     const barra: Barra = new Barra(tipo); // cria uma nova barra com o tipo associado
     barra.id_barra = `barra_${this.qtd_barras_total}`; // atualiza o identificador
-    barra.nome = `Barra ${this.qtd_barras_total}`; // Atualiza o nome
+    // barra.nome = `Barra ${this.qtd_barras_total}`; // Atualiza o nome
+    barra.nome = `${tipo.toString()} ${this.qtd_barras_tipo[tipo]}`;
+    if (tipo === EnumBar.Slack) {
+      barra.nome = `${tipo.toString()}`;
+    }
     this.incrementaBarra(barra.tipo); // incremmenta o numero de barras
     this.barras.push(barra); // adiciona na lista
+    console.log(barra);
+    return barra;
+  }
+
+  adicionarBarra(barra: Barra, posicao_x?: number, posicao_y?: number, angulo: number = 0) {
+    const self = this;
 
     // SVG
-    const grupo_barra = this.criaGrupoBarra(barra, posicao_x, posicao_y);
+    const grupo_barra = this.criaGrupoBarra(barra, posicao_x, posicao_y)
+      .addClass('barra');
 
     // Grupo do desenhos (circulos, linha, etc)
-    const grupo_barra_desenho = this.criaGrupoBarraDesenho(tipo);
+    const grupo_barra_desenho = this.criaGrupoBarraDesenho(barra.tipo).rotate(angulo);
     grupo_barra.add(grupo_barra_desenho);
 
     // Grupo de tenho (P,Q,V,T)
-    const grupo_texto = this.criaGrupoBarraTexto(grupo_barra);
-    grupo_barra.add(grupo_texto);
+    this.criaGrupoBarraTexto(grupo_barra);
 
     const grupo_barra_selecao = this.criarGrupoBarraSelecao(grupo_barra);
 
     grupo_barra.add(grupo_barra_selecao);
-    grupo_barra.addClass('barra');
 
     this.mapa_SVG_grupos.set(grupo_barra.id(), grupo_barra);
 
@@ -155,7 +169,7 @@ export class DiagramaComponent implements OnInit {
   }
 
 
-  redesenhaLinha(linha: Linha, enumLinhaTipo: EnumLinhaTipo = EnumLinhaTipo.poliretas, cor = 'black') {
+  redesenhaLinha(linha: Linha, enumLinhaTipo: EnumLinhaTipo = EnumLinhaTipo.reta, cor = 'black') {
 
     const select = this.container.select(`#${linha.id_linha}`);
     select.each(function () { this.remove(); });
@@ -179,7 +193,7 @@ export class DiagramaComponent implements OnInit {
       polilinha = grupo_linha.polyline([[0, 0], [delta_x, delta_y]]);
 
     } else if (enumLinhaTipo === EnumLinhaTipo.poliretas) {
-      polilinha = grupo_linha.polyline(this.criarPontos(delta_x, delta_y, 15));
+      polilinha = grupo_linha.polyline(this.criarPolilinha(delta_x, delta_y, 15));
     }
 
     polilinha.addClass('linha');
@@ -193,7 +207,7 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-  criarPontos(x, y, d): Array<any> {
+  criarPolilinha(x, y, d): Array<any> {
     const pontos = [];
     pontos.push([0, 0]);
     pontos.push([d, 0]);
@@ -305,24 +319,26 @@ export class DiagramaComponent implements OnInit {
   // grupo de texto (P,Q, V, T)
   criaGrupoBarraTexto(grupo: SVG.G): SVG.G {
     const barra: Barra = grupo.data('barra') as Barra;
+    console.log(grupo);
+
     const self = this;
     const box = grupo.bbox();
-    const grupo_texto = this.container.group();
+    const grupo_texto = grupo.group();
     // TEM Q PENSAR ONDE VAI FICAR A POSIÇÃO DE CADA ITEM DA BARRA
     grupo_texto.text(barra.nome)
       .id('nome')
-      .dx(box.height * 0.7)
-      .dy(box.width);
+      .dx(box.x)
+      .dy(box.width * 1.1);
 
     grupo_texto.text(`P=${barra.pCarga} pu`)
       .id('P')
       .dx(-box.height * 0.1)
-      .dy(-box.width * 0.3);
+      .dy(-box.width * 0.5);
 
     grupo_texto.text(`Q=${barra.qCarga} pu`)
       .id('Q')
       .dx(-box.height * 0.1)
-      .dy(-box.width * 0.1);
+      .dy(-box.width * 0.3);
 
     grupo_texto.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
       .id('VT')
@@ -434,7 +450,7 @@ export class DiagramaComponent implements OnInit {
       dx = event.clientX0 - event.clientX;
       dy = event.clientY0 - event.clientY;
       if (event.shiftKey) {
-        ceil = 90;
+        ceil = 45;
       } else {
         ceil = 10;
       }
