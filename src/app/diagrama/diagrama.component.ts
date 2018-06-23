@@ -546,13 +546,13 @@ export class DiagramaComponent implements OnInit {
       this.remove();
     });
     this.barrasCopiadas = this.SVGPrincipal.set();
-    this.LimparSelecaoBarras();
+    this.LimparBarrasSelecionadas();
   }
 
 
   ColarBarras() {
     const self = this;
-    this.LimparSelecaoBarras();
+    this.LimparBarrasSelecionadas();
 
     if (this.barrasCopiadas.length() > 0) {
       console.log(`colando ${self.barrasCopiadas.length()} barras copiadas`);
@@ -605,7 +605,7 @@ export class DiagramaComponent implements OnInit {
   }
 
   // limpa a seleção
-  LimparSelecaoBarras() {
+  LimparBarrasSelecionadas() {
     const self = this;
     console.log(`removendo seleção de ${self.barrasSelecionadas.length()} barras`);
     this.SVGPrincipal.each(function (c) {
@@ -716,7 +716,7 @@ export class DiagramaComponent implements OnInit {
       restrict: {
         restriction: document.getElementById(this.SVGPrincipal.id()),
       }
-    }).styleCursor(false).on('tap', function () { console.log('tap'); self.LimparSelecaoBarras(); });
+    }).styleCursor(false).on('tap', function () { console.log('tap'); self.LimparBarrasSelecionadas(); });
 
     function verificaBarrasNaSelecao(retanguloSelecao: SVG.Element) {
       self.SVGPrincipal.each(function (c) {
@@ -854,7 +854,7 @@ export class DiagramaComponent implements OnInit {
       switch (e.keyCode) {
         case 27:
           console.log('esc');
-          self.LimparSelecaoBarras();
+          self.LimparBarrasSelecionadas();
           break;
         case 46:
           console.log('del');
@@ -908,15 +908,20 @@ export class DiagramaComponent implements OnInit {
       linhas = new Array();
 
       grupoBarras = self.SVGPrincipal.set();
+      let grupoBarra = self.MapaGruposSVG.get(event.target.id);
+
 
       if (self.barrasSelecionadas.length() > 0) {
         grupoBarras = self.barrasSelecionadas;
+        if (!self.barrasSelecionadas.has(grupoBarra)) { // caso pegue uma barra q não está na seleção
+          self.LimparBarrasSelecionadas();
+          grupoBarras.add(grupoBarra);
+        }
       } else {
-        const grupoBarra = self.MapaGruposSVG.get(event.target.id);
         grupoBarras.add(grupoBarra);
       }
       grupoBarras.each(function (c) {
-        const grupoBarra = this as SVG.G;
+        grupoBarra = this as SVG.G;
         const barra = grupoBarra.data('barra') as Barra;
         self.linhasConectadasBarra(barra).forEach(linha => {
           if (linhas.indexOf(linha) === -1) {
