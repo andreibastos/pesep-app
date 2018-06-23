@@ -164,6 +164,9 @@ export class DiagramaComponent implements OnInit {
       barra.nome = `${tipo.toString()}`;
       if (!this.slack) {
         this.slack = barra;
+        // this.SVGLateral.select('#Slack').each(function () {
+        //   this.removeClass('componente-lateral');
+        // });
       } else {
         return null;
       }
