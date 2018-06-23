@@ -3,37 +3,8 @@
   <div class="row mt-5">
     <!-- Componentes  -->
     <div class="col-1 p-0 m-0 border ">
-      <div id="component-sidebar" class="sidebar dropzone dropzone-components mx-auto pt-3">
-        <p class="h5">Componentes</p>
-        <!-- Barra VT -->
-        <div class="row sidebar-row mx-auto p-3" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra Vθ">
-          <a id="bus_vt" class="component component-fixed mt-1 p-0">
+      <div id="svg_lateral" class="sidebar mx-auto pt-3">
 
-          </a>
-        </div>
-        <!-- /Barra vt -->
-
-        <!-- Barra pv -->
-        <div class="row sidebar-row mx-auto p-3" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra PV">
-          <a id="bus_pv" class="component component-fixed mt-1 mx-1 p-0">
-          </a>
-        </div>
-        <!-- /Barra pv -->
-
-
-        <!-- Barra PQ -->
-        <div class="row sidebar-row mx-auto p-3">
-          <a id="bus_pq" class="component  mt-1 p-0" data-toggle="tooltip" data-html="true" data-placement="right" title="Barra PQ">
-          </a>
-        </div>
-        <!-- /Barra PQ -->
-
-        <!-- Curto Circuito -->
-        <div class="row sidebar-row mx-auto p-3 my-3">
-          <a id="curto_circuito" class="component  mt-1 p-0" data-toggle="tooltip" data-html="true" data-placement="right" title="Curto Circuito">
-          </a>
-        </div>
-        <!-- /Curto Circuito -->
 
       </div>
     </div>
@@ -48,51 +19,32 @@
 
         <!-- Ações de Copiar/Recortar/Colar/Excluir -->
         <div class="col-2 btn-group mr-3 px-0" role="group">
-          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
-            title="Copiar">
+          <button [disabled]="barrasSelecionadas.length() == 0" (click)="CopiarBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
+            disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Copiar">
             <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png">
           </button>
-          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
-            title="Recortar">
+          <button [disabled]="barrasSelecionadas.length() == 0" (click)="RecortarBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
+            disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Recortar">
             <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png">
           </button>
-          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
-            title="Colar">
+          <button [disabled]="!podeColar()" (click)="ColarBarras()" type="button" class="btn btn-outline-secondary"
+            data-toggle="tooltip" data-html="true" data-placement="top" title="Colar">
             <img src="../../assets/icons/menu-acoes/icons8-colar-32.png">
           </button>
-          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
-            title="Excluir">
+          <button [disabled]="barrasSelecionadas.length() == 0" (click)="ExcluirBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
+            data-toggle="tooltip" data-html="true" data-placement="top" title="Excluir">
             <img src="../../assets/icons/menu-acoes/icons8-lixo-32.png">
           </button>
         </div>
         <!-- /Ações de Copiar/Recortar/Colar -->
 
-        <!-- Inserir Linha -->
-        <div class="col-1 btn-group mr-3 " role="group">
-          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Linha">
-            <img src="../../assets/icons/menu-acoes/resistor.png">
-          </button>
-          <!-- <button (click)="add('PV')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Slack">
-            <img src="../../assets/icons/menu-acoes/resistor.png">
-          </button>
-          <button (click)="add('PQ')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Carga">
-            <img src="../../assets/icons/menu-acoes/resistor.png">
-          </button>
-          <button (click)="add('VT')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Linha">
-            <img src="../../assets/icons/menu-acoes/resistor.png">
-          </button> -->
-        </div>
-        <!-- /Inserir Linha -->
-
 
         <!-- calculos -->
         <div class="col-7 btn-group justify-content-end d-flex " role="group">
-          <button  type="button" class="btn btn-outline-secondary" data-toggle="tooltip"
-            data-html="true" data-placement="top" title="Calcular Fluxo de Potência">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Calcular Fluxo de Potência">
             <img src="../../assets/icons/menu-acoes/flow.png" width="32px" height="32px">
           </button>
-          <button  type="button" class="btn btn-outline-secondary" data-toggle="tooltip"
-            data-html="true" data-placement="top" title="Calcular Curto Circuito">
+          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Calcular Curto Circuito">
             <img src="../../assets/icons/menu-acoes/short.png" width="32px" height="32px">
           </button>
         </div>
@@ -101,7 +53,7 @@
       <!-- /Menu Superior -->
 
       <!-- Área de Desenho -->
-      <div id="draw_inside" class="shadow-lg bg-white rounded area-draw dropzone-diagram  "></div>
+      <div id="svg_principal" tabindex="0" class="shadow-lg bg-white border rounded area-draw"></div>
       <!-- /Área de Desenho -->
     </div>
     <!-- /Diagrama -->
@@ -148,7 +100,7 @@
                   <input type="text" class="form-control" id="input_Q_barra" value="{{barraSelecionada.qCarga}}" placeholder="0 pu">
                 </div>
               </div>
-              
+
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label for="input_V_barra">V</label>
