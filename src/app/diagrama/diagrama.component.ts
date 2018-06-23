@@ -644,6 +644,8 @@ export class DiagramaComponent implements OnInit {
         this.barrasRecortadas.each(function () {
           self.SVGPrincipal.add(this);
           self.MapaGruposSVG.set(this.id(), this);
+          self.AdicionarBarraSelecionada(this);
+
         });
         this.barrasRecortadas = this.SVGPrincipal.set();
       }
