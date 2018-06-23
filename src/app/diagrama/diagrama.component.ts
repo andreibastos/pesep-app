@@ -906,7 +906,8 @@ export class DiagramaComponent implements OnInit {
       impedancia.rotate(angulo, impedancia.cx(), impedancia.cy());
     }
     function dragend(event) {
-      grupoLinha.clear();
+      // grupoLinha.clear();
+      grupoLinha.remove();
     }
   }
 
