@@ -29,6 +29,10 @@
   transition: background-color 0.3s;
 }
 
+#svg_principal {
+  outline: 0 solid;
+}
+
 .dropzone-components {
   /* background-color: aqua; */
 }

@@ -35,8 +35,10 @@ export class DiagramaComponent implements OnInit {
   SVGPrincipal: SVG.Doc;
   SVGLateral: SVG.Doc;
 
-  dicionarioSVGGrupos: Map<string, SVG.G> = new Map();
+  MapaGruposSVG: Map<string, SVG.G> = new Map();
   barrasSelecionadas: SVG.Set;
+  barrasCopiadas: SVG.Set;
+  barrasRecortadas: SVG.Set;
   barraSelecionada: SVG.G;
 
   // Propriedades do Diagrama
@@ -66,6 +68,9 @@ export class DiagramaComponent implements OnInit {
 
     // desenha um exemplo na tela
     this.DesenharExemplo(3);
+
+    this.ExcluirBarra(this.barras[0]);
+    this.ExcluirBarra(this.barras[3]);
   }
 
   DesenharExemplo(indice: number) {
@@ -78,14 +83,15 @@ export class DiagramaComponent implements OnInit {
 
 
         this.AdicionarBarra(slack, 300, 100, 90);
-        // this.AdicionarBarra(pq1, 300, 600, -90);
-        // this.AdicionarBarra(pq2, 900, 100, 90);
-        // this.AdicionarBarra(pv, 900, 600, -90);
+        this.AdicionarBarra(pq1, 300, 600, -90);
+        this.AdicionarBarra(pq2, 900, 100, 90);
+        this.AdicionarBarra(pv, 900, 600, -90);
 
-        // this.AdicionarLinha(slack, pq1);
-        // this.AdicionarLinha(slack, pq2);
-        // this.AdicionarLinha(pq1, pv);
-        // this.AdicionarLinha(pq2, pv);
+        this.AdicionarLinha(slack, pq1);
+        this.AdicionarLinha(slack, pq2);
+        this.AdicionarLinha(slack, pv);
+        this.AdicionarLinha(pq1, pv);
+        this.AdicionarLinha(pq2, pv);
         break;
     }
 
@@ -110,6 +116,8 @@ export class DiagramaComponent implements OnInit {
         .size(width, height);
       this.SVGPrincipal.node.appendChild(styleSvg);
       this.barrasSelecionadas = this.SVGPrincipal.set();
+      this.barrasCopiadas = this.SVGPrincipal.set();
+      this.barrasRecortadas = this.SVGPrincipal.set();
 
     } else if (SVGNome === 'svg_lateral') {
 
@@ -118,6 +126,7 @@ export class DiagramaComponent implements OnInit {
         .addClass('svg_area')
         .size(width, height);
     }
+
   }
 
   CriarComponentesFixos() {
@@ -176,6 +185,15 @@ export class DiagramaComponent implements OnInit {
     return barra;
   }
 
+  RemoverBarra(barra: Barra) {
+    if (barra.tipo === EnumBarra.Slack) {
+      this.slack = null;
+    }
+    this.MapaGruposSVG.get(barra.id_barra).remove();
+    this.MapaGruposSVG.delete(barra.id_barra);
+    // this.DecrementarBarra(barra.tipo);
+  }
+
   AdicionarBarra(barra: Barra, posicao_x?: number, posicao_y?: number, angulo: number = 0) {
     // SVG
     const grupoBarra = this.CriaGrupoBarra(barra, posicao_x, posicao_y);
@@ -192,13 +210,44 @@ export class DiagramaComponent implements OnInit {
     grupoBarra.add(grupoBarraSelecao);
 
     // Adiciona no dicionário do SVG
-    this.dicionarioSVGGrupos.set(grupoBarra.id(), grupoBarra);
+    this.MapaGruposSVG.set(grupoBarra.id(), grupoBarra);
+  }
+
+  ExcluirBarra(barra: Barra) {
+    if (this.MapaGruposSVG.get(barra.id_barra)) {
+      this.ExcluirLinhas(barra);
+      this.RemoverBarra(barra);
+    }
+  }
+  IncrementaBarra(tipo: EnumBarra) {
+    this.qtdBarrasTipo[tipo]++; // respectivo tipo
+    this.qtdBarrasTotal++; // barras total
+  }
+  DecrementarBarra(tipo: EnumBarra) {
+    this.qtdBarrasTipo[tipo]--; // respectivo tipo
+    this.qtdBarrasTotal--; // barras total
   }
 
   AdicionarLinha(de: Barra, para: Barra, enumLinhaTipo?: EnumLinhaTipo) {
     const linha: Linha = new Linha(de, para);
     this.linhas.push(linha);
     this.RedesenhaLinha(linha, enumLinhaTipo);
+  }
+
+  ExcluirLinhas(barra: Barra) {
+    const paraRemover = [];
+    this.linhas.forEach((linha) => {
+      if (linha.de.id_barra === barra.id_barra || linha.para.id_barra === barra.id_barra) {
+        this.MapaGruposSVG.get(linha.id_linha).remove();
+        this.MapaGruposSVG.delete(linha.id_linha);
+        paraRemover.push(linha);
+      }
+    });
+    console.log(`excluindo ${paraRemover.length} linhas associadas a barra ${barra.id_barra}`);
+
+    paraRemover.forEach(linha => {
+      this.linhas.splice(this.linhas.indexOf(linha), 1);
+    });
   }
 
   CriarPoliLinha(x, y, d): Array<Array<number>> {
@@ -227,9 +276,9 @@ export class DiagramaComponent implements OnInit {
     let impedancia: SVG.Element;
 
     // identifica as ligações da linha (da barra, para barra)
-    const deBarra = this.dicionarioSVGGrupos.get(linha.de.id_barra);
+    const deBarra = this.MapaGruposSVG.get(linha.de.id_barra);
     const deBarraCriaLinhaBox = deBarra.select('.criarLinha').bbox();
-    const paraBarra = this.dicionarioSVGGrupos.get(linha.para.id_barra);
+    const paraBarra = this.MapaGruposSVG.get(linha.para.id_barra);
     const paraBarraCriarLinhaBox = paraBarra.select('.criarLinha').bbox();
 
     // move o ponto inicial para o meio do circulo
@@ -255,6 +304,8 @@ export class DiagramaComponent implements OnInit {
     // adiciona as respectivas classes
     poliLinha.addClass('linha');
     impedancia.addClass('impedancia');
+
+    this.MapaGruposSVG.set(linha.id_linha, grupoLinha);
   }
 
   RedesenhaLinhas(linhas: Array<Linha>, enumLinhaTipo = EnumLinhaTipo.reta) {
@@ -263,11 +314,6 @@ export class DiagramaComponent implements OnInit {
         this.RedesenhaLinha(linha, enumLinhaTipo);
       }
     );
-  }
-
-  IncrementaBarra(tipo: EnumBarra) {
-    this.qtdBarrasTipo[tipo]++; // respectivo tipo
-    this.qtdBarrasTotal++; // barras total
   }
 
   /*
@@ -417,7 +463,6 @@ export class DiagramaComponent implements OnInit {
       grupoBarraSelecao.addClass('selecionado');
     }
     this.barrasSelecionadas.add(grupoBarra);
-    console.log(this.barrasSelecionadas);
   }
 
   // remove grupo da seleção
@@ -430,6 +475,75 @@ export class DiagramaComponent implements OnInit {
       grupoBarraSelecao.removeClass('selecionado');
     }
     this.barrasSelecionadas.remove(grupoBarra);
+  }
+
+  ExcluirBarraSelecionada(grupoBarra: SVG.G) {
+    const barra = grupoBarra.data('barra') as Barra;
+    this.ExcluirBarra(barra);
+  }
+  ExcluirBarrasSelecionadas() {
+    const self = this;
+    console.log(`excluindo ${self.barrasSelecionadas.length()} barras selecionadas`);
+    this.barrasSelecionadas.each(function () {
+      self.ExcluirBarraSelecionada(this);
+    });
+    this.barrasSelecionadas = this.SVGPrincipal.set();
+  }
+
+  SelecionarTodasBarras() {
+    const self = this;
+    this.SVGPrincipal.each(function (c) {
+      const componente: SVG.G = this;
+      if (componente.hasClass('grupoBarra')) {
+        self.AlternarBarraSelecionada(this);
+      }
+    });
+  }
+
+
+
+  CopiarBarrasSelecionadas() {
+    const self = this;
+    this.barrasCopiadas.clear();
+    console.log(`copiando ${self.barrasSelecionadas.length()} barras selecionadas`);
+    this.barrasSelecionadas.each(function () {
+      self.barrasCopiadas.add(this);
+    });
+  }
+
+  RecortarBarrasSelecionadas() {
+    const self = this;
+    this.barrasRecortadas.clear();
+    console.log(`recortando ${self.barrasSelecionadas.length()} barras selecionadas`);
+
+    this.barrasSelecionadas.each(function () {
+      self.barrasRecortadas.add(this);
+    });
+    this.LimparSelecaoBarras();
+  }
+
+
+  ColarBarras() {
+    const self = this;
+    if (this.barrasCopiadas.length() > 0) {
+      console.log(`colando ${self.barrasCopiadas.length()} barras copiadas`);
+
+      this.barrasCopiadas.each(function () {
+
+      });
+    } else if (this.barrasRecortadas.length() > 0) {
+      console.log(`colando ${self.barrasRecortadas.length()} barras recortadas`);
+
+      this.barrasRecortadas.each(function () {
+      });
+    }
+
+    this.LimparSelecaoBarras();
+
+  }
+
+  podeColar() {
+    return this.barrasRecortadas.length() > 0 || this.barrasCopiadas.length() > 0;
   }
 
   // atualiza o selecionado
@@ -454,7 +568,7 @@ export class DiagramaComponent implements OnInit {
   // limpa a seleção
   LimparSelecaoBarras() {
     const self = this;
-    console.log(`limpando barras ${self.barrasSelecionadas.length()} selecionadas`);
+    console.log(`removendo seleção de ${self.barrasSelecionadas.length()} barras`);
     this.SVGPrincipal.each(function (c) {
       self.RemoverBarraSelecionada(this);
     });
@@ -470,7 +584,7 @@ export class DiagramaComponent implements OnInit {
     interact('.rotacao').draggable({
       onstart: function (event) {
         const id_barra = event.target.parentNode.parentNode.id;
-        grupoBarra = self.dicionarioSVGGrupos.get(id_barra);
+        grupoBarra = self.MapaGruposSVG.get(id_barra);
         const barra = grupoBarra.data('barra') as Barra;
         linhasConectadas = self.linhasConectadasBarra(barra);
       },
@@ -630,7 +744,7 @@ export class DiagramaComponent implements OnInit {
         event.target.classList.remove('nova_linha');
         event.target.classList.add('criarLinha');
         const id_barra = event.target.parentNode.parentNode.id;
-        paraBarra = self.dicionarioSVGGrupos.get(id_barra);
+        paraBarra = self.MapaGruposSVG.get(id_barra);
         self.AdicionarLinha(deBarra.data('barra'), paraBarra.data('barra'), EnumLinhaTipo.reta);
 
       }
@@ -648,7 +762,7 @@ export class DiagramaComponent implements OnInit {
 
     function dragstart(event) {
       const id_barra = event.target.parentNode.parentNode.id;
-      deBarra = self.dicionarioSVGGrupos.get(id_barra);
+      deBarra = self.MapaGruposSVG.get(id_barra);
       const circulo = deBarra.select('.criarLinha');
       if (circulo) {
         const criarLinhaBox = deBarra.select('.criarLinha').bbox();
@@ -693,29 +807,44 @@ export class DiagramaComponent implements OnInit {
   */
   ConfigurarAtalhos() {
     const self = this;
-    $(document).keydown(function (e) {
+    $('#svg_principal').hover(function () {
+      this.focus();
+    }, function () {
+      this.blur();
+    }).keydown(function (e) {
+      switch (e.keyCode) {
+        case 27:
+          console.log('esc');
+          self.LimparSelecaoBarras();
+          break;
+        case 46:
+          console.log('del');
+          self.ExcluirBarrasSelecionadas();
+          break;
+      }
       if (e.ctrlKey) {
-        if (e.keyCode === 65) {
-          self.SVGPrincipal.each(function (c) {
-            const componente: SVG.G = this;
-            if (componente.hasClass('grupoBarra')) {
-              self.AlternarBarraSelecionada(this);
-            }
-          });
-
+        console.log('ctrl');
+        switch (e.keyCode) {
+          case 65: // ctrl a
+            console.log('a');
+            self.SelecionarTodasBarras();
+            break;
+          case 67: // ctrl c
+            console.log('c');
+            self.CopiarBarrasSelecionadas();
+            break;
+          case 88: // ctrl x
+            console.log('x');
+            self.RecortarBarrasSelecionadas();
+            break;
+          case 86: // ctrl v
+            console.log('v');
+            self.ColarBarras();
+            break;
         }
       }
-
     });
-    $(document).keyup(function (e) {
-      if (e.keyCode === 27) {
-        console.log('esc');
-        self.LimparSelecaoBarras();
-      }
-    });
-
   }
-
   // INICIAR FUNÇÕES DE ARRASTAR, MOVIMENTAR E SOLTAR (Drag and Drop)
   HabilitaInteractMovimento() {
     let grupoBarras: SVG.Set, linhas: Array<Linha> = new Array();
@@ -744,7 +873,7 @@ export class DiagramaComponent implements OnInit {
       if (self.barrasSelecionadas.length() > 0) {
         grupoBarras = self.barrasSelecionadas;
       } else {
-        const grupoBarra = self.dicionarioSVGGrupos.get(event.target.id);
+        const grupoBarra = self.MapaGruposSVG.get(event.target.id);
         grupoBarras.add(grupoBarra);
       }
       grupoBarras.each(function (c) {

@@ -19,41 +19,24 @@
 
         <!-- Ações de Copiar/Recortar/Colar/Excluir -->
         <div class="col-2 btn-group mr-3 px-0" role="group">
-          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
-            title="Copiar">
+          <button [disabled]="barrasSelecionadas.length() == 0" (click)="CopiarBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
+            disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Copiar">
             <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png">
           </button>
-          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
-            title="Recortar">
+          <button [disabled]="barrasSelecionadas.length() == 0" (click)="RecortarBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
+            disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Recortar">
             <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png">
           </button>
-          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
-            title="Colar">
+          <button [disabled]="!podeColar()" (click)="ColarBarras()" type="button" class="btn btn-outline-secondary"
+            data-toggle="tooltip" data-html="true" data-placement="top" title="Colar">
             <img src="../../assets/icons/menu-acoes/icons8-colar-32.png">
           </button>
-          <button type="button" class="btn btn-outline-secondary" disabled data-toggle="tooltip" data-html="true" data-placement="top"
-            title="Excluir">
+          <button [disabled]="barrasSelecionadas.length() == 0" (click)="ExcluirBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
+            data-toggle="tooltip" data-html="true" data-placement="top" title="Excluir">
             <img src="../../assets/icons/menu-acoes/icons8-lixo-32.png">
           </button>
         </div>
         <!-- /Ações de Copiar/Recortar/Colar -->
-
-        <!-- Inserir Linha -->
-        <div class="col-1 btn-group mr-3 " role="group">
-          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Linha">
-            <img src="../../assets/icons/menu-acoes/resistor.png">
-          </button>
-          <!-- <button (click)="add('PV')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Slack">
-            <img src="../../assets/icons/menu-acoes/resistor.png">
-          </button>
-          <button (click)="add('PQ')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Carga">
-            <img src="../../assets/icons/menu-acoes/resistor.png">
-          </button>
-          <button (click)="add('VT')" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Inserir Linha">
-            <img src="../../assets/icons/menu-acoes/resistor.png">
-          </button> -->
-        </div>
-        <!-- /Inserir Linha -->
 
 
         <!-- calculos -->
@@ -70,7 +53,7 @@
       <!-- /Menu Superior -->
 
       <!-- Área de Desenho -->
-      <div id="svg_principal" class="shadow-lg bg-white rounded area-draw dropzone-diagram  "></div>
+      <div id="svg_principal" tabindex="0" class="shadow-lg bg-white rounded area-draw dropzone-diagram  "></div>
       <!-- /Área de Desenho -->
     </div>
     <!-- /Diagrama -->
