@@ -70,7 +70,7 @@ export class DiagramaComponent implements OnInit {
     this.DesenharExemplo(3);
 
     this.ExcluirBarra(this.barras[0]);
-    this.ExcluirBarra(this.barras[3]);
+    this.ExcluirBarra(this.barras[2]);
   }
 
   DesenharExemplo(indice: number) {
@@ -158,6 +158,7 @@ export class DiagramaComponent implements OnInit {
     // Grupo do desenhos (circulos, linha, etc)
     const grupoBarraDesenho = this.CriaGrupoBarraDesenho(barra.tipo, this.SVGLateral).rotate(angulo);
     grupoBarra.add(grupoBarraDesenho);
+    grupoBarra.data('angulo', angulo);
   }
 
   /*
@@ -209,6 +210,7 @@ export class DiagramaComponent implements OnInit {
     }
     this.MapaGruposSVG.get(barra.id_barra).remove();
     this.MapaGruposSVG.delete(barra.id_barra);
+    this.barras.splice(this.barras.indexOf(barra), 1);
     // this.DecrementarBarra(barra.tipo);
   }
 
@@ -958,6 +960,16 @@ export class DiagramaComponent implements OnInit {
     })
       .on('dragmove', dragmove)
       .on('dragend', function (event) {
+        const barraGrupo = self.MapaGruposSVG.get(event.target.id);
+        if (barraGrupo) {
+          if (barraGrupo.x() < 0) {
+            barraGrupo.x(10);
+          }
+          if (barraGrupo.y() < 0) {
+            barraGrupo.y(80);
+          }
+        }
+        console.log(self.barras);
         event.target.id = tipo;
       });
   }
