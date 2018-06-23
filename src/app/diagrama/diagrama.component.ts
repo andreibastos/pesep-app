@@ -747,16 +747,13 @@ export class DiagramaComponent implements OnInit {
         endOnly: true,
         elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
       }
-    }).on('dropmove', function (event) {
-      console.log(event.relatedTarget);
+    }).on('dragstart', function (event) {
+      tipo = event.target.id;
+      const barra = self.CriarBarra(tipo);
+      self.AdicionarBarra(barra, -100, event.y0 - 180);
+      event.target.id = barra.id_barra;
+      dragstart(event);
     })
-      .on('dragstart', function (event) {
-        tipo = event.target.id;
-        const barra = self.CriarBarra(tipo);
-        self.AdicionarBarra(barra, -100, event.y0 - 180);
-        event.target.id = barra.id_barra;
-        dragstart(event);
-      })
       .on('dragmove', dragmove)
       .on('dragend', function (event) {
         const grupoBarra = self.dicionarioSVGGrupos.get(event.target.id);
