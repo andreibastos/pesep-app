@@ -64,7 +64,7 @@ export class DiagramaComponent implements OnInit {
     this.HabilitarInteractAdicionarLinha();
 
     // configuração dos atalhos do teclado
-    this.ConfigurarAtalhos();
+    this.ConfigurarAtalhosTeclado();
 
     // desenha um exemplo na tela
     this.DesenharExemplo(3);
@@ -165,6 +165,39 @@ export class DiagramaComponent implements OnInit {
   FUNÇÕES DO SISTEMA ELÉTRICO DE POTÊNCIA
   */
 
+  /*
+    BARRAS
+  */
+  // adicionando barra na tela
+  AdicionarBarra(barra: Barra, posicao_x?: number, posicao_y?: number, angulo: number = 0) {
+    // SVG
+    const grupoBarra = this.CriaGrupoBarra(barra, posicao_x, posicao_y);
+    grupoBarra.data('angulo', angulo);
+
+    // Grupo do desenhos (circulos, linha, etc)
+    const grupoBarraDesenho = this.CriaGrupoBarraDesenho(barra.tipo).rotate(angulo);
+    grupoBarra.add(grupoBarraDesenho);
+
+    // Grupo de tenho (P,Q,V,T)
+    this.AtualizaGrupoBarraTexto(grupoBarra);
+
+    // Grupo de seleção
+    const grupoBarraSelecao = this.CriarGrupoBarraSelecao(grupoBarra);
+    grupoBarra.add(grupoBarraSelecao);
+
+    // Adiciona no dicionário do SVG
+    this.MapaGruposSVG.set(grupoBarra.id(), grupoBarra);
+  }
+
+  // excluindo barra na tela e no mapa de barras
+  ExcluirBarra(barra: Barra) {
+    if (this.MapaGruposSVG.get(barra.id_barra)) {
+      this.ExcluirLinhas(barra);
+      this.RemoverBarra(barra);
+    }
+  }
+
+  // criando barras
   CriarBarra(tipo: EnumBarra): Barra {
     // Sistema Elétrico de Potência
     const barra: Barra = new Barra(tipo); // cria uma nova barra com o tipo associado
@@ -186,6 +219,7 @@ export class DiagramaComponent implements OnInit {
     return barra;
   }
 
+  // copiando uma barra
   CopiarBarra(barra: Barra): Barra {
     const novaBarra = this.CriarBarra(barra.tipo);
     if (novaBarra) {
@@ -204,6 +238,7 @@ export class DiagramaComponent implements OnInit {
     return novaBarra;
   }
 
+  // removendo uma barra
   RemoverBarra(barra: Barra) {
     if (barra.tipo === EnumBarra.Slack) {
       this.slack = null;
@@ -214,47 +249,30 @@ export class DiagramaComponent implements OnInit {
     // this.DecrementarBarra(barra.tipo);
   }
 
-  AdicionarBarra(barra: Barra, posicao_x?: number, posicao_y?: number, angulo: number = 0) {
-    // SVG
-    const grupoBarra = this.CriaGrupoBarra(barra, posicao_x, posicao_y);
-    grupoBarra.data('angulo', angulo);
-
-    // Grupo do desenhos (circulos, linha, etc)
-    const grupoBarraDesenho = this.CriaGrupoBarraDesenho(barra.tipo).rotate(angulo);
-    grupoBarra.add(grupoBarraDesenho);
-
-    // Grupo de tenho (P,Q,V,T)
-    this.AtualizaGrupoBarraTexto(grupoBarra);
-
-    // Grupo de seleção
-    const grupoBarraSelecao = this.CriarGrupoBarraSelecao(grupoBarra);
-    grupoBarra.add(grupoBarraSelecao);
-
-    // Adiciona no dicionário do SVG
-    this.MapaGruposSVG.set(grupoBarra.id(), grupoBarra);
-  }
-
-  ExcluirBarra(barra: Barra) {
-    if (this.MapaGruposSVG.get(barra.id_barra)) {
-      this.ExcluirLinhas(barra);
-      this.RemoverBarra(barra);
-    }
-  }
+  // incremento de barras novas
   IncrementaBarra(tipo: EnumBarra) {
     this.qtdBarrasTipo[tipo]++; // respectivo tipo
     this.qtdBarrasTotal++; // barras total
   }
+
+  // decremetando barras
   DecrementarBarra(tipo: EnumBarra) {
     this.qtdBarrasTipo[tipo]--; // respectivo tipo
     this.qtdBarrasTotal--; // barras total
   }
 
+  /*
+     Linhas
+  */
+
+  // adicionando linhas na tela
   AdicionarLinha(de: Barra, para: Barra, enumLinhaTipo?: EnumLinhaTipo) {
     const linha: Linha = new Linha(de, para);
     this.linhas.push(linha);
     this.RedesenhaLinha(linha, enumLinhaTipo);
   }
 
+  // excluindo linhas na tela
   ExcluirLinhas(barra: Barra) {
     const paraRemover = [];
     this.linhas.forEach((linha) => {
@@ -271,6 +289,7 @@ export class DiagramaComponent implements OnInit {
     });
   }
 
+  // criando polilinhas
   CriarPoliLinha(x, y, d): Array<Array<number>> {
     // cria uma lista de pontos.mapeando o caminho
     const pontos = [];
@@ -286,6 +305,7 @@ export class DiagramaComponent implements OnInit {
     return pontos;
   }
 
+  // redesenhando linha na tela
   RedesenhaLinha(linha: Linha, enumLinhaTipo: EnumLinhaTipo = EnumLinhaTipo.reta) {
     // remover linha existente com o mesmo identificador
     const selecao = this.SVGPrincipal.select(`#${linha.id_linha}`);
@@ -329,6 +349,7 @@ export class DiagramaComponent implements OnInit {
     this.MapaGruposSVG.set(linha.id_linha, grupoLinha);
   }
 
+  // redesenha várias linhas na tela
   RedesenhaLinhas(linhas: Array<Linha>, enumLinhaTipo = EnumLinhaTipo.reta) {
     linhas.forEach(
       linha => {
@@ -337,11 +358,25 @@ export class DiagramaComponent implements OnInit {
     );
   }
 
+  // verifica quais barras estão conectadas em uma barra
+  LinhasConectadasBarra(barra: Barra): Array<Linha> {
+    const linhas = new Array();
+    this.linhas.forEach(
+      linha_usada => {
+        if (barra.id_barra === linha_usada.de.id_barra || barra.id_barra === linha_usada.para.id_barra) {
+          linhas.push(linha_usada);
+        }
+      }
+    );
+    return linhas;
+  }
+
+
   /*
-  FUNÇÕES DO SVG
+   FUNÇÕES DO SVG
   */
 
-  // CRIAÇÃO DE GRUPOS
+  // GRUPOS
 
   // grupo Geral, contém os outros grupos (desenho, texto e seleção)
   CriaGrupoBarra(barra: Barra, posicao_x?: number, posicao_y?: number, SVGUsado = this.SVGPrincipal as SVG.Doc) {
@@ -440,6 +475,7 @@ export class DiagramaComponent implements OnInit {
     return grupo;
   }
 
+  // atualização do tooltip da barra
   AtualizaToolTipBarra(grupoBarra: SVG.G) {
     const barra: Barra = grupoBarra.data('barra') as Barra;
     grupoBarra.data('toggle', 'tooltip');
@@ -448,11 +484,7 @@ export class DiagramaComponent implements OnInit {
     grupoBarra.attr('title', `${barra.nome}`);
   }
 
-  AtualizarDadosBarra() {
-
-  }
-
-  // grupo de texto (P,Q, V, T)
+  // grupo de texto (P,Q, V, T) ...
   AtualizaGrupoBarraTexto(grupoBarra: SVG.G): SVG.G {
     const barra: Barra = grupoBarra.data('barra') as Barra;
     const box = grupoBarra.bbox();
@@ -482,6 +514,7 @@ export class DiagramaComponent implements OnInit {
     return grupoTexto;
   }
 
+  // calcula ângulo de um deltax e deltay, ceil é multiplicidade
   CalcularAngulo(dx, dy, ceil = 1) {
     let m = 0;
     if (dx === 0) {
@@ -525,10 +558,15 @@ export class DiagramaComponent implements OnInit {
     this.barrasSelecionadas.remove(grupoBarra);
   }
 
+  // Ações
+
+  // excluir barra selecionada
   ExcluirBarraSelecionada(grupoBarra: SVG.G) {
     const barra = grupoBarra.data('barra') as Barra;
     this.ExcluirBarra(barra);
   }
+
+  // excluir barras selecionadas
   ExcluirBarrasSelecionadas() {
     const self = this;
     console.log(`excluindo ${self.barrasSelecionadas.length()} barras selecionadas`);
@@ -538,6 +576,7 @@ export class DiagramaComponent implements OnInit {
     this.barrasSelecionadas = this.SVGPrincipal.set();
   }
 
+  // selecionar todas as barras da tela
   SelecionarTodasBarras() {
     const self = this;
     this.SVGPrincipal.each(function (c) {
@@ -548,8 +587,7 @@ export class DiagramaComponent implements OnInit {
     });
   }
 
-
-
+  // "copiar" barras seleciondas
   CopiarBarrasSelecionadas() {
     const self = this;
     this.barrasCopiadas.clear();
@@ -559,6 +597,7 @@ export class DiagramaComponent implements OnInit {
     });
   }
 
+  // "recortar" barras selecionadas
   RecortarBarrasSelecionadas() {
     const self = this;
     this.barrasRecortadas.clear();
@@ -578,38 +617,41 @@ export class DiagramaComponent implements OnInit {
     this.LimparBarrasSelecionadas();
   }
 
-
+  // "colar" barras copiadas ou recortas
   ColarBarras() {
-    const self = this;
-    this.LimparBarrasSelecionadas();
+    if (this.podeColar()) {
+      const self = this;
+      this.LimparBarrasSelecionadas();
 
-    if (this.barrasCopiadas.length() > 0) {
-      console.log(`colando ${self.barrasCopiadas.length()} barras copiadas`);
+      if (this.barrasCopiadas.length() > 0) {
+        console.log(`colando ${self.barrasCopiadas.length()} barras copiadas`);
 
-      this.barrasCopiadas.each(function () {
-        const grupoBarra = this as SVG.G;
-        const barraCopiada: Barra = grupoBarra.data('barra');
-        const novaBarra: Barra = self.CopiarBarra(barraCopiada);
-        if (novaBarra) {
-          self.AdicionarBarra(novaBarra, grupoBarra.x() + 10, grupoBarra.y() + 10, grupoBarra.data('angulo'));
-          const novoGrupoBarra = self.MapaGruposSVG.get(novaBarra.id_barra);
-          self.AdicionarBarraSelecionada(novoGrupoBarra);
-        } else {
-          alert(`só pode ter uma ${barraCopiada.tipo}`);
-        }
-      });
-    } else if (this.barrasRecortadas.length() > 0) {
-      console.log(`colando ${self.barrasRecortadas.length()} barras recortadas`);
+        this.barrasCopiadas.each(function () {
+          const grupoBarra = this as SVG.G;
+          const barraCopiada: Barra = grupoBarra.data('barra');
+          const novaBarra: Barra = self.CopiarBarra(barraCopiada);
+          if (novaBarra) {
+            self.AdicionarBarra(novaBarra, grupoBarra.x() + 10, grupoBarra.y() + 10, grupoBarra.data('angulo'));
+            const novoGrupoBarra = self.MapaGruposSVG.get(novaBarra.id_barra);
+            self.AdicionarBarraSelecionada(novoGrupoBarra);
+          } else {
+            alert(`só pode ter uma ${barraCopiada.tipo}`);
+          }
+        });
+      } else if (this.barrasRecortadas.length() > 0) {
+        console.log(`colando ${self.barrasRecortadas.length()} barras recortadas`);
 
-      this.barrasRecortadas.each(function () {
-        self.SVGPrincipal.add(this);
-        self.MapaGruposSVG.set(this.id(), this);
-      });
-      this.barrasRecortadas = this.SVGPrincipal.set();
+        this.barrasRecortadas.each(function () {
+          self.SVGPrincipal.add(this);
+          self.MapaGruposSVG.set(this.id(), this);
+        });
+        this.barrasRecortadas = this.SVGPrincipal.set();
+      }
+
     }
-
   }
 
+  // verifica se é possivel colar
   podeColar() {
     return this.barrasRecortadas.length() > 0 || this.barrasCopiadas.length() > 0;
   }
@@ -643,6 +685,12 @@ export class DiagramaComponent implements OnInit {
     this.barrasSelecionadas = this.SVGPrincipal.set();
   }
 
+
+  /*
+   Interact.js
+  */
+
+  // rotacionar componentes
   HabilitarInteractRotacao() {
     const self = this;
     let dx, dy;
@@ -654,7 +702,7 @@ export class DiagramaComponent implements OnInit {
         const id_barra = event.target.parentNode.parentNode.id;
         grupoBarra = self.MapaGruposSVG.get(id_barra);
         const barra = grupoBarra.data('barra') as Barra;
-        linhasConectadas = self.linhasConectadasBarra(barra);
+        linhasConectadas = self.LinhasConectadasBarra(barra);
       },
       onmove: function (event) {
         dx = event.clientX0 - event.clientX;
@@ -673,7 +721,7 @@ export class DiagramaComponent implements OnInit {
     });
   }
 
-  // Habilita a seleção, mascara de seleção
+  // seleção e mascara de seleção
   HabilitarInteractSelecao() {
     const self = this;
     let box_x = 1, box_y = 1;
@@ -789,6 +837,7 @@ export class DiagramaComponent implements OnInit {
     }
   }
 
+  // adicionar nova linha, puxando através de um ponto
   HabilitarInteractAdicionarLinha() {
     const self = this;
     let dx, dy, angulo;
@@ -859,62 +908,7 @@ export class DiagramaComponent implements OnInit {
     }
   }
 
-  linhasConectadasBarra(barra: Barra): Array<Linha> {
-    const linhas = new Array();
-    this.linhas.forEach(
-      linha_usada => {
-        if (barra.id_barra === linha_usada.de.id_barra || barra.id_barra === linha_usada.para.id_barra) {
-          linhas.push(linha_usada);
-        }
-      }
-    );
-    return linhas;
-  }
-
-  /*
-  CONFIGURAÇÕES DE ATALHOS
-  */
-  ConfigurarAtalhos() {
-    const self = this;
-    $('#svg_principal').hover(function () {
-      this.focus();
-    }, function () {
-      this.blur();
-    }).keydown(function (e) {
-      switch (e.keyCode) {
-        case 27:
-          console.log('esc');
-          self.LimparBarrasSelecionadas();
-          break;
-        case 46:
-          console.log('del');
-          self.ExcluirBarrasSelecionadas();
-          break;
-      }
-      if (e.ctrlKey) {
-        console.log('ctrl');
-        switch (e.keyCode) {
-          case 65: // ctrl a
-            console.log('a');
-            self.SelecionarTodasBarras();
-            break;
-          case 67: // ctrl c
-            console.log('c');
-            self.CopiarBarrasSelecionadas();
-            break;
-          case 88: // ctrl x
-            console.log('x');
-            self.RecortarBarrasSelecionadas();
-            break;
-          case 86: // ctrl v
-            console.log('v');
-            self.ColarBarras();
-            break;
-        }
-      }
-    });
-  }
-  // INICIAR FUNÇÕES DE ARRASTAR, MOVIMENTAR E SOLTAR (Drag and Drop)
+  // movimentos de arrastar e soltar barras e linhas
   HabilitaInteractMovimento() {
     let grupoBarras: SVG.Set, linhas: Array<Linha> = new Array();
     let tipo;
@@ -952,7 +946,7 @@ export class DiagramaComponent implements OnInit {
       grupoBarras.each(function (c) {
         grupoBarra = this as SVG.G;
         const barra = grupoBarra.data('barra') as Barra;
-        self.linhasConectadasBarra(barra).forEach(linha => {
+        self.LinhasConectadasBarra(barra).forEach(linha => {
           if (linhas.indexOf(linha) === -1) {
             linhas.push(linha);
           }
@@ -998,6 +992,50 @@ export class DiagramaComponent implements OnInit {
         console.log(self.barras);
         event.target.id = tipo;
       });
+  }
+
+  /*
+   Atalhos do teclado
+ */
+  ConfigurarAtalhosTeclado() {
+    const self = this;
+    $('#svg_principal').hover(function () {
+      this.focus();
+    }, function () {
+      this.blur();
+    }).keydown(function (e) {
+      switch (e.keyCode) {
+        case 27:
+          console.log('esc');
+          self.LimparBarrasSelecionadas();
+          break;
+        case 46:
+          console.log('del');
+          self.ExcluirBarrasSelecionadas();
+          break;
+      }
+      if (e.ctrlKey) {
+        console.log('ctrl');
+        switch (e.keyCode) {
+          case 65: // ctrl a
+            console.log('a');
+            self.SelecionarTodasBarras();
+            break;
+          case 67: // ctrl c
+            console.log('c');
+            self.CopiarBarrasSelecionadas();
+            break;
+          case 88: // ctrl x
+            console.log('x');
+            self.RecortarBarrasSelecionadas();
+            break;
+          case 86: // ctrl v
+            console.log('v');
+            self.ColarBarras();
+            break;
+        }
+      }
+    });
   }
 
 }
