@@ -78,14 +78,14 @@ export class DiagramaComponent implements OnInit {
 
 
         this.AdicionarBarra(slack, 300, 100, 90);
-        this.AdicionarBarra(pq1, 300, 600, -90);
-        this.AdicionarBarra(pq2, 900, 100, 90);
-        this.AdicionarBarra(pv, 900, 600, -90);
+        // this.AdicionarBarra(pq1, 300, 600, -90);
+        // this.AdicionarBarra(pq2, 900, 100, 90);
+        // this.AdicionarBarra(pv, 900, 600, -90);
 
-        this.AdicionarLinha(slack, pq1);
-        this.AdicionarLinha(slack, pq2);
-        this.AdicionarLinha(pq1, pv);
-        this.AdicionarLinha(pq2, pv);
+        // this.AdicionarLinha(slack, pq1);
+        // this.AdicionarLinha(slack, pq2);
+        // this.AdicionarLinha(pq1, pv);
+        // this.AdicionarLinha(pq2, pv);
         break;
     }
 
@@ -412,6 +412,7 @@ export class DiagramaComponent implements OnInit {
       grupoBarraSelecao.addClass('selecionado');
     }
     this.barrasSelecionadas.add(grupoBarra);
+    console.log(this.barrasSelecionadas);
   }
 
   // remove grupo da seleção
@@ -531,12 +532,16 @@ export class DiagramaComponent implements OnInit {
           transform_x = dx;
           dx *= -1;
           box_x = -1;
+        } else {
+          box_x = 1;
         }
         // verifica se a distância de y é contrária ao movimento
         if (dy < 0) {
           transform_y = dy;
           dy *= -1;
           box_y = -1;
+        } else {
+          box_y = 1;
         }
         // inverte os eixos, qnd são negativos;
         box.transform({ x: transform_x, y: transform_y });
@@ -560,10 +565,24 @@ export class DiagramaComponent implements OnInit {
         const componente: SVG.G = this;
 
         if (componente.hasClass('grupoBarra')) {
-          if ((componente.cx() > retanguloSelecao.x() && componente.cx() < (retanguloSelecao.x() + retanguloSelecao.width()))
-            || ((componente.cx() > (box.x() - box.width()))) && (componente.cx() < (box.x()))) {
-            if ((componente.cy() > retanguloSelecao.y() && componente.cy() < (retanguloSelecao.y() + retanguloSelecao.height()))
-              || ((componente.cy() > (box.y() - box.height()))) && (componente.cy() < (box.y()))) {
+          if ((
+            (componente.cx() > retanguloSelecao.x()) &&
+            (componente.cx() < (retanguloSelecao.x() + box_x * retanguloSelecao.width()))
+          ) ||
+            (
+              (componente.cx() < retanguloSelecao.x()) &&
+              (componente.cx() > (retanguloSelecao.x() + box_x * retanguloSelecao.width()))
+            )) {
+            if ((
+              (componente.cy() > retanguloSelecao.y())
+              &&
+              (componente.cy() < (retanguloSelecao.y() + box_y * retanguloSelecao.height()))
+            ) ||
+              (
+                (componente.cy() > retanguloSelecao.y() + box_y * retanguloSelecao.height())
+                &&
+                (componente.cy() < retanguloSelecao.y())
+              )) {
               if (!self.barrasSelecionadas.has(componente)) {
                 self.AdicionarBarraSelecionada(componente);
               }
@@ -742,6 +761,7 @@ export class DiagramaComponent implements OnInit {
     }
 
     interact('.componente-lateral').draggable({
+
       inertia: true, // enable inertial throwing
       restrict: {
         endOnly: true,
@@ -761,42 +781,4 @@ export class DiagramaComponent implements OnInit {
       });
   }
 
-  createNode(name: string): SVG.G {
-    const node = this.SVGPrincipal;
-    const group = node.group().size(100, 100);
-    const self = this;
-    if (name === 'PV' || name === 'PV') {
-      const circle = node.circle(50).move(2, 25).fill('#FFF').stroke({ width: 2 }).stroke('#000');
-      const line_horizontal = node.line(52, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
-      const line_vertical = node.line(95, 10, 95, 90).stroke({ width: 5 }).stroke('#000');
-      const text = node.text(name === 'PV' ? '~' : '∞').font({ size: 50, family: 'Times New Roman' }).move(10, 20);
-      group.add(circle);
-      group.add(line_horizontal);
-      group.add(line_vertical);
-      group.add(text);
-
-
-    } else if (name === 'PQ') {
-      const line_horizontal = node.line(20, 50, 95, 50).stroke({ width: 2 }).stroke('#000');
-      const line_vertical = node.line(95, 10, 95, 90).stroke({ width: 5 }).stroke('#000');
-      const triangule = node.path('m25,60l10,-25l10,25l-10,0l-10,0z')
-        .rotate(-90, 25, 60);
-      group.add(line_horizontal);
-      group.add(line_vertical);
-      group.add(triangule);
-
-    }
-    group.addClass('component-simple')
-      .click(function (event) {
-        if (event.ctrlKey || event.shiftKey) {
-          self.AlternarBarraSelecionada(this);
-        } else {
-          self.LimparSelecaoBarras();
-        }
-      })
-      .animate(200)
-      .move(this.SVGPrincipal.width() / 2, this.SVGPrincipal.height() / 2);
-
-    return group;
-  }
 }
