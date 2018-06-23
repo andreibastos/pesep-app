@@ -32,20 +32,20 @@
     stroke-width: 2;
 }
 
-.barra:hover {
+/* .barra:hover { */
     /* fill: blue !important;
     fill-opacity: 1;
     stroke: blue !important;
     transition-duration: 100ms; */
-}
+/* } */
 
-.barra.linhaHorizontal {}
+/* .barra.linhaHorizontal {} */
 
 .barra.linhaVertical {
     stroke-width: 5;
 }
 
-.barra.circulo:hover {}
+/* .barra.circulo:hover {} */
 
 .barra.triangulo {
     fill: black;
