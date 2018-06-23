@@ -281,8 +281,6 @@ export class DiagramaComponent implements OnInit {
         if (barra.id_barra) {
           if (event.ctrlKey || event.shiftKey) {
             self.AlternarBarraSelecionada(this);
-          } else {
-            self.LimparSelecaoBarras();
           }
         }
       });
