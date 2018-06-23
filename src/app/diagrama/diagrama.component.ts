@@ -70,7 +70,8 @@ export class DiagramaComponent implements OnInit {
     this.DesenharExemplo(3);
 
     this.ExcluirBarra(this.barras[0]);
-    this.ExcluirBarra(this.barras[2]);
+    this.ExcluirBarra(this.barras[1]);
+
   }
 
   DesenharExemplo(indice: number) {
@@ -312,9 +313,10 @@ export class DiagramaComponent implements OnInit {
     selecao.each(function () { this.remove(); });
 
     // cria um grupo novo para a linha
-    const grupoLinha = this.SVGPrincipal.group().id(linha.id_linha) as SVG.G;
+    const grupoLinha = this.SVGPrincipal.group().id(linha.id_linha);
+
     let poliLinha: SVG.PolyLine;
-    let impedancia: SVG.Element;
+    const impedancia: SVG.G = grupoLinha.group();
 
     // identifica as ligações da linha (da barra, para barra)
     const deBarra = this.MapaGruposSVG.get(linha.de.id_barra);
@@ -338,13 +340,20 @@ export class DiagramaComponent implements OnInit {
     }
 
     // adiciona impedância
-    impedancia = grupoLinha.rect(60, 20);
-    impedancia.move(delta_x / 2 - impedancia.width() / 2, delta_y / 2 - impedancia.height() / 2);
-    impedancia.rotate(angulo);
+    const rect = impedancia.rect(60, 20).rotate(angulo);
+    impedancia.move(delta_x / 2 - rect.width() / 2, delta_y / 2 - rect.height() / 2)
+      .front();
+
+    const texto = impedancia.group()
+      .text(linha.nome)
+      .dy(rect.height() / 2 + 5);
 
     // adiciona as respectivas classes
     poliLinha.addClass('linha');
-    impedancia.addClass('impedancia');
+    rect.addClass('impedancia');
+    texto.addClass('linha')
+      .addClass('texto');
+
 
     this.MapaGruposSVG.set(linha.id_linha, grupoLinha);
   }
@@ -494,6 +503,11 @@ export class DiagramaComponent implements OnInit {
       .id('nome')
       .dx(box.x)
       .dy(box.width * 1.1);
+
+    grupoTexto.text(barra.id_barra.split('_')[1])
+      .id('id')
+      .dx(box.x - 20)
+      .dy(box.cx - 5);
 
     grupoTexto.text(`P=${barra.pCarga} pu`)
       .id('P')
@@ -843,7 +857,7 @@ export class DiagramaComponent implements OnInit {
   HabilitarInteractAdicionarLinha() {
     const self = this;
     let dx, dy, angulo;
-    const grupoLinha = this.SVGPrincipal.group().id('linha_nova') as SVG.G;
+    let grupoLinha;
     let deBarra: SVG.G, paraBarra: SVG.G;
 
     let polilinha: SVG.PolyLine;
@@ -881,6 +895,7 @@ export class DiagramaComponent implements OnInit {
     });
 
     function dragstart(event) {
+      grupoLinha = self.SVGPrincipal.group().id('linha_nova') as SVG.G;
       const id_barra = event.target.parentNode.parentNode.id;
       deBarra = self.MapaGruposSVG.get(id_barra);
       const circulo = deBarra.select('.criarLinha');
@@ -888,6 +903,7 @@ export class DiagramaComponent implements OnInit {
         const criarLinhaBox = deBarra.select('.criarLinha').bbox();
         grupoLinha.move(criarLinhaBox.cx, criarLinhaBox.cy);
       }
+      console.log(deBarra);
     }
     function dragmove(event) {
       grupoLinha.clear();

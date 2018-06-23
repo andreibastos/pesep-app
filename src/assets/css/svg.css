@@ -21,6 +21,7 @@
     stroke-opacity: 1;
     stroke: black;
 }
+
 .retanguloSelecao:hover {
     fill-opacity: 0.3;
     stroke-width: 2;
@@ -34,10 +35,12 @@
 }
 
 /* .barra:hover { */
-    /* fill: blue !important;
+
+/* fill: blue !important;
     fill-opacity: 1;
     stroke: blue !important;
     transition-duration: 100ms; */
+
 /* } */
 
 /* .barra.linhaHorizontal {} */
@@ -80,8 +83,6 @@
     r: 20;
 }
 
-
-
 .rotacao {
     fill: blue;
     stroke: none;
@@ -102,6 +103,17 @@
 .linha.movimento {
     stroke: blue;
     stroke-width: 1;
+}
+
+.linha.texto {
+    fill: black;
+    fill-opacity: 0.01;
+    stroke: none;
+}
+.linha.texto:hover {
+    fill: black;
+    fill-opacity: 1;
+    stroke: none;
 }
 
 .impedancia {
