@@ -638,6 +638,7 @@ export class DiagramaComponent implements OnInit {
         const angulo = self.CalcularAngulo(dx, dy, ceil);
         const grupoBarraDesenho = grupoBarra.select('.grupoBarraDesenho').first() as SVG.G;
         grupoBarraDesenho.rotate(angulo);
+        grupoBarra.data('angulo', angulo);
         self.RedesenhaLinhas(linhasConectadas);
       }
     });
