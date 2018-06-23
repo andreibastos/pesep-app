@@ -1,8 +1,28 @@
 .selecionado {
-    fill: blue;
-    fill-opacity: 0.1;
+    fill: blue !important;
+    fill-opacity: 1;
     stroke: black;
     stroke-opacity: 0.6;
+    stroke-width: 2;
+}
+
+.grupoBarraSelecao {
+    fill: none;
+    fill-opacity: 0;
+    stroke-width: 5;
+    stroke-opacity: 0;
+}
+
+.selecionado.grupoBarraSelecao {
+    fill: blue !important;
+    fill-opacity: 0.1 !important;
+    stroke-width: 1;
+    stroke-dasharray: 5, 5;
+    stroke-opacity: 1;
+    stroke: black;
+}
+.retanguloSelecao:hover {
+    fill-opacity: 0.2;
     stroke-width: 2;
 }
 
@@ -12,25 +32,24 @@
     stroke-width: 2;
 }
 
-.barra:hover {
+/* .barra:hover { */
     /* fill: blue !important;
     fill-opacity: 1;
     stroke: blue !important;
     transition-duration: 100ms; */
-}
+/* } */
 
-.barra.linhaHorizontal {}
+/* .barra.linhaHorizontal {} */
 
 .barra.linhaVertical {
-    stroke-width: 5 ;
+    stroke-width: 5;
 }
 
-.barra.circulo:hover {}
+/* .barra.circulo:hover {} */
 
 .barra.triangulo {
-    fill:black;
+    fill: black;
 }
-
 
 .barra.texto {
     stroke-width: 1;
@@ -60,21 +79,7 @@
     r: 20;
 }
 
-.retanguloSelecao {
-    fill: none;
-    stroke-width: 5;
-    stroke-opacity: 0;
-    stroke: black;
-}
 
-.retanguloSelecao:hover {
-    /* fill: blue; */
-    /* fill-opacity: 0.1; */
-    stroke-width: 2;
-    stroke-dasharray: 5, 5;
-    stroke-opacity: 1;
-    stroke: black;
-}
 
 .rotacao {
     fill: blue;

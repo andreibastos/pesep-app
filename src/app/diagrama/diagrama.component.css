@@ -21,22 +21,11 @@
   height: 100px;
 }
 
-/* 
-  * Zonas 
-  */
-
-.dropzone {
-  transition: background-color 0.3s;
+#svg_principal {
+  outline: 0 solid;
 }
 
-.dropzone-components {
-  /* background-color: aqua; */
-}
 
-.dropzone-diagram {
-  /* background-color: aqua; */
-  border: 1px rgb(173, 173, 173);
-}
 
 /* 
   * Diagrama
@@ -46,6 +35,8 @@
   height: calc(100vh - 120px);
   box-sizing: border-box;
   z-index: 0;
+  border: 1px rgb(173, 173, 173);
+
 }
 
 .menu-superior {
