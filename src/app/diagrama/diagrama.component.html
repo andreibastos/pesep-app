@@ -20,15 +20,15 @@
         <!-- Ações de Copiar/Recortar/Colar/Excluir -->
         <div class="col-2 btn-group mr-3 px-0" role="group">
           <button [disabled]="barrasSelecionadas.length() == 0" (click)="CopiarBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
-            disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Copiar">
+            data-toggle="tooltip" data-html="true" data-placement="top" title="Copiar">
             <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png">
           </button>
           <button [disabled]="barrasSelecionadas.length() == 0" (click)="RecortarBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
-            disabled data-toggle="tooltip" data-html="true" data-placement="top" title="Recortar">
+            data-toggle="tooltip" data-html="true" data-placement="top" title="Recortar">
             <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png">
           </button>
-          <button [disabled]="!podeColar()" (click)="ColarBarras()" type="button" class="btn btn-outline-secondary"
-            data-toggle="tooltip" data-html="true" data-placement="top" title="Colar">
+          <button [disabled]="!podeColar()" (click)="ColarBarras()" type="button" class="btn btn-outline-secondary" data-toggle="tooltip"
+            data-html="true" data-placement="top" title="Colar">
             <img src="../../assets/icons/menu-acoes/icons8-colar-32.png">
           </button>
           <button [disabled]="barrasSelecionadas.length() == 0" (click)="ExcluirBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"

@@ -224,7 +224,7 @@ export class DiagramaComponent implements OnInit {
     grupoBarra.add(grupoBarraDesenho);
 
     // Grupo de tenho (P,Q,V,T)
-    this.CriaGrupoBarraTexto(grupoBarra);
+    this.AtualizaGrupoBarraTexto(grupoBarra);
 
     // Grupo de seleção
     const grupoBarraSelecao = this.CriarGrupoBarraSelecao(grupoBarra);
@@ -353,7 +353,9 @@ export class DiagramaComponent implements OnInit {
       .data('barra', barra) // adiciona o dado da barra
       .click(function (event) {
         if (barra.id_barra) {
-
+          if (event.ctrlKey || event.shiftKey) {
+            self.AlternarBarraSelecionada(this);
+          }
         }
       }).mouseover(function (event) {
         // console.log('over');
@@ -438,8 +440,20 @@ export class DiagramaComponent implements OnInit {
     return grupo;
   }
 
+  AtualizaToolTipBarra(grupoBarra: SVG.G) {
+    const barra: Barra = grupoBarra.data('barra') as Barra;
+    grupoBarra.data('toggle', 'tooltip');
+    grupoBarra.data('html', 'true');
+    grupoBarra.data('placement', 'true');
+    grupoBarra.attr('title', `${barra.nome}`);
+  }
+
+  AtualizarDadosBarra() {
+
+  }
+
   // grupo de texto (P,Q, V, T)
-  CriaGrupoBarraTexto(grupoBarra: SVG.G): SVG.G {
+  AtualizaGrupoBarraTexto(grupoBarra: SVG.G): SVG.G {
     const barra: Barra = grupoBarra.data('barra') as Barra;
     const box = grupoBarra.bbox();
     const grupoTexto = grupoBarra.group();
@@ -463,6 +477,8 @@ export class DiagramaComponent implements OnInit {
       .id('PV')
       .dy(-box.width * 0.15)
       .dx(box.height * 0.7);
+
+    this.AtualizaToolTipBarra(grupoBarra);
     return grupoTexto;
   }
 
