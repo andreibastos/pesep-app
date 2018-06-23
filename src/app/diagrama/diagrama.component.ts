@@ -353,11 +353,22 @@ export class DiagramaComponent implements OnInit {
       .data('barra', barra) // adiciona o dado da barra
       .click(function (event) {
         if (barra.id_barra) {
-          if (event.ctrlKey || event.shiftKey) {
-            self.AlternarBarraSelecionada(this);
-          }
+
         }
-      });
+      }).mouseover(function (event) {
+        // console.log('over');
+        // if (event.ctrlKey || event.shiftKey) {
+        //   self.AlternarBarraSelecionada(this);
+        // }
+
+      }).mouseout(function (event) {
+        // console.log('out');
+        // if (event.ctrlKey || event.shiftKey) {
+        //   self.AlternarBarraSelecionada(this);
+        // }
+        // self.RemoverBarraSelecionada(this);
+      })
+      ;
 
     if (SVGUsado.id() === 'svg_principal') {
       grupoBarra.addClass('componente-principal');
@@ -905,7 +916,6 @@ export class DiagramaComponent implements OnInit {
       })
       .on('dragstart', dragstart)
       .on('dragmove', dragmove);
-
 
     function dragstart(event) {
       linhas = new Array();
