@@ -185,6 +185,24 @@ export class DiagramaComponent implements OnInit {
     return barra;
   }
 
+  CopiarBarra(barra: Barra): Barra {
+    const novaBarra = this.CriarBarra(barra.tipo);
+    if (novaBarra) {
+      novaBarra.tensao_0 = barra.tensao_0;
+      novaBarra.angulo_0 = barra.angulo_0;
+      novaBarra.pCarga = barra.pCarga;
+      novaBarra.qCarga = barra.qCarga;
+      novaBarra.pGerada = barra.pGerada;
+      novaBarra.qGerada = barra.qGerada;
+      novaBarra.pGeradaMax = barra.pGeradaMax;
+      novaBarra.pGeradaMin = barra.pGeradaMin;
+      novaBarra.qGeradaMax = barra.qGeradaMax;
+      novaBarra.qGeradaMin = barra.qGeradaMin;
+      novaBarra.X = barra.X;
+    }
+    return novaBarra;
+  }
+
   RemoverBarra(barra: Barra) {
     if (barra.tipo === EnumBarra.Slack) {
       this.slack = null;
@@ -197,6 +215,7 @@ export class DiagramaComponent implements OnInit {
   AdicionarBarra(barra: Barra, posicao_x?: number, posicao_y?: number, angulo: number = 0) {
     // SVG
     const grupoBarra = this.CriaGrupoBarra(barra, posicao_x, posicao_y);
+    grupoBarra.data('angulo', angulo);
 
     // Grupo do desenhos (circulos, linha, etc)
     const grupoBarraDesenho = this.CriaGrupoBarraDesenho(barra.tipo).rotate(angulo);
@@ -517,28 +536,48 @@ export class DiagramaComponent implements OnInit {
     console.log(`recortando ${self.barrasSelecionadas.length()} barras selecionadas`);
 
     this.barrasSelecionadas.each(function () {
+      const grupoBarra = this as SVG.G;
+      const barraRecortada = grupoBarra.data('barra');
+
+      // console.log(self.linhasConectadasBarra(barraRecortada));
+      self.ExcluirLinhas(barraRecortada);
       self.barrasRecortadas.add(this);
+      self.MapaGruposSVG.delete(this.id());
+      this.remove();
     });
+    this.barrasCopiadas = this.SVGPrincipal.set();
     this.LimparSelecaoBarras();
   }
 
 
   ColarBarras() {
     const self = this;
+    this.LimparSelecaoBarras();
+
     if (this.barrasCopiadas.length() > 0) {
       console.log(`colando ${self.barrasCopiadas.length()} barras copiadas`);
 
       this.barrasCopiadas.each(function () {
-
+        const grupoBarra = this as SVG.G;
+        const barraCopiada: Barra = grupoBarra.data('barra');
+        const novaBarra: Barra = self.CopiarBarra(barraCopiada);
+        if (novaBarra) {
+          self.AdicionarBarra(novaBarra, grupoBarra.x() + 10, grupoBarra.y() + 10, grupoBarra.data('angulo'));
+          const novoGrupoBarra = self.MapaGruposSVG.get(novaBarra.id_barra);
+          self.AdicionarBarraSelecionada(novoGrupoBarra);
+        } else {
+          alert(`só pode ter uma ${barraCopiada.tipo}`);
+        }
       });
     } else if (this.barrasRecortadas.length() > 0) {
       console.log(`colando ${self.barrasRecortadas.length()} barras recortadas`);
 
       this.barrasRecortadas.each(function () {
+        self.SVGPrincipal.add(this);
+        self.MapaGruposSVG.set(this.id(), this);
       });
+      this.barrasRecortadas = this.SVGPrincipal.set();
     }
-
-    this.LimparSelecaoBarras();
 
   }
 

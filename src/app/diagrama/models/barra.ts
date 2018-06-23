@@ -8,12 +8,12 @@ export class Barra {
     angulo_0 = 0.0;
     pGerada: number;
     qGerada: number;
-    qMinimo: number;
-    qMaximo: number;
     pCarga = 1;
     qCarga = 0;
     pGeradaMin: number;
     pGeradaMax: number;
+    qGeradaMin: number;
+    qGeradaMax: number;
     qShunt: number;
     X: number;
 

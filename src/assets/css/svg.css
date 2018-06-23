@@ -22,8 +22,9 @@
     stroke: black;
 }
 .retanguloSelecao:hover {
-    fill-opacity: 0.2;
+    fill-opacity: 0.3;
     stroke-width: 2;
+    transition-duration: 500ms;
 }
 
 .barra {
