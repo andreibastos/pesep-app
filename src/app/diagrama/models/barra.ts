@@ -20,5 +20,6 @@ export class Barra {
     constructor(tipo: EnumBarra) {
         this.tipo = tipo;
         this.id_barra = tipo.toString();
+        this.nome = this.tipo.toString();
     }
 }

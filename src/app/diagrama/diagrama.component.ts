@@ -159,10 +159,14 @@ export class DiagramaComponent implements OnInit {
     // Sistema Elétrico de Potência
     const barra: Barra = new Barra(tipo); // cria uma nova barra com o tipo associado
     barra.id_barra = `barra_${this.qtdBarrasTotal}`; // atualiza o identificador
-    // barra.nome = `Barra ${this.qtd_barras_total}`; // Atualiza o nome
     barra.nome = `${tipo.toString()} ${this.qtdBarrasTipo[tipo]}`;
     if (tipo === EnumBarra.Slack) {
       barra.nome = `${tipo.toString()}`;
+      if (!this.slack) {
+        this.slack = barra;
+      } else {
+        return null;
+      }
     }
     this.IncrementaBarra(barra.tipo); // incremmenta o numero de barras
     this.barras.push(barra); // adiciona na lista
@@ -690,10 +694,12 @@ export class DiagramaComponent implements OnInit {
       if (e.ctrlKey) {
         if (e.keyCode === 65) {
           self.SVGPrincipal.each(function (c) {
-            if (c > 1) {
+            const componente: SVG.G = this;
+            if (componente.hasClass('grupoBarra')) {
               self.AlternarBarraSelecionada(this);
             }
           });
+
         }
       }
 
@@ -724,10 +730,8 @@ export class DiagramaComponent implements OnInit {
         }
       })
       .on('dragstart', dragstart)
-      .on('dragmove', dragmove)
-      .on('dragend', function (event) {
-        self.RedesenhaLinhas(linhas);
-      });
+      .on('dragmove', dragmove);
+
 
     function dragstart(event) {
       linhas = new Array();
@@ -766,15 +770,17 @@ export class DiagramaComponent implements OnInit {
         elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
       }
     }).on('dragstart', function (event) {
+      grupoBarras = self.SVGLateral.set();
       tipo = event.target.id;
       const barra = self.CriarBarra(tipo);
-      self.AdicionarBarra(barra, -100, event.y0 - 180);
-      event.target.id = barra.id_barra;
-      dragstart(event);
+      if (barra) {
+        self.AdicionarBarra(barra, -100, event.y0 - 180);
+        event.target.id = barra.id_barra;
+        dragstart(event);
+      }
     })
       .on('dragmove', dragmove)
       .on('dragend', function (event) {
-        const grupoBarra = self.dicionarioSVGGrupos.get(event.target.id);
         event.target.id = tipo;
       });
   }
