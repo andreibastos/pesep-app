@@ -6,7 +6,7 @@ export interface IComponente {
     name: string; // nome do componente
     text: string; // texto junto com o componente
     id?: number; // identificação
-    type: EnumBarra; // tipo de componente
+    type: EnumTipoBarra; // tipo de componente
 
     st: any; // set, conjunto;
 
@@ -45,7 +45,7 @@ export class Carga implements IComponente, IBarra {
     qShunt: number;
     xGenerator: number;
     st: any;
-    type: EnumBarra = EnumBarra.PQ;
+    type: EnumTipoBarra = EnumTipoBarra.PQ;
     name = 'Carga';
     text = 'Carga';
     x = 0;
@@ -72,7 +72,7 @@ export class Fonte implements IComponente, IBarra {
     qShunt: number;
     xGenerator: number;
     st: any;
-    type: EnumBarra = EnumBarra.PV;
+    type: EnumTipoBarra = EnumTipoBarra.PV;
     name = 'Fonte';
     text = 'Fonte';
     x = 0;
@@ -100,7 +100,7 @@ export class Gerador implements IComponente, IBarra {
     qShunt: number;
     xGenerator: number;
     st: any;
-    type: EnumBarra = EnumBarra.Slack;
+    type: EnumTipoBarra = EnumTipoBarra.Slack;
     name = 'Gerador';
     text = 'Gerador';
     x = 0;
@@ -111,7 +111,7 @@ export class Gerador implements IComponente, IBarra {
 
 }
 
-export enum EnumBarra {
+export enum EnumTipoBarra {
     PV = 'PV',
     Slack = 'Slack',
     PQ = 'PQ'
@@ -122,3 +122,9 @@ export enum EnumLinhaTipo {
     poliretas,
     curva
 }
+
+export enum EnumCurtoTipo {
+    barra = 'barra',
+    linha = 'linha'
+}
+

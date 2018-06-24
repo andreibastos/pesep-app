@@ -1,29 +1,35 @@
-.selecionado {
-    fill: blue !important;
-    fill-opacity: 1;
-    stroke: black;
-    stroke-opacity: 0.6;
-    stroke-width: 2;
-}
-
 .grupoBarraSelecao {
     fill: none;
-    fill-opacity: 0;
-    stroke-width: 5;
-    stroke-opacity: 0;
-}
-
-.selecionado.grupoBarraSelecao {
-    fill: blue !important;
-    fill-opacity: 0.1 !important;
+    fill-opacity: 0.2;
     stroke-width: 1;
     stroke-dasharray: 5, 5;
-    stroke-opacity: 1;
-    stroke: black;
+    stroke-opacity: 0;
+    stroke: blue;
 }
-.retanguloSelecao:hover {
+
+.grupoBarraSelecao.selecionado {
+    fill: blue !important;
     fill-opacity: 0.2;
-    stroke-width: 2;
+    stroke-opacity: 1;
+}
+
+.retanguloSelecao.active {
+    fill: black !important;
+    stroke: black;
+    stroke-width: 1;
+    stroke-opacity: 1;
+}
+
+.retanguloSelecao:hover {
+    fill-opacity: 0.3;
+    transition-duration: 500ms;
+}
+
+.retanguloSelecao.enter {
+    fill: green !important;
+    stroke: green;
+    stroke-width: 1;
+    stroke-opacity: 1;
 }
 
 .barra {
@@ -32,20 +38,9 @@
     stroke-width: 2;
 }
 
-/* .barra:hover { */
-    /* fill: blue !important;
-    fill-opacity: 1;
-    stroke: blue !important;
-    transition-duration: 100ms; */
-/* } */
-
-/* .barra.linhaHorizontal {} */
-
 .barra.linhaVertical {
     stroke-width: 5;
 }
-
-/* .barra.circulo:hover {} */
 
 .barra.triangulo {
     fill: black;
@@ -73,16 +68,14 @@
 .nova_linha, .nova_linha:hover {
     fill: green;
     fill-opacity: 0.4;
-    stroke: blue;
+    stroke: green;
     stroke-opacity: 0.6;
     stroke-dasharray: 5, 5;
-    r: 20;
+    r: 15;
 }
 
-
-
 .rotacao {
-    fill: blue;
+    fill: green;
     stroke: none;
     fill-opacity: 0.1;
     cursor: url('../icons/menu-acoes/rotate.png'), pointer;
@@ -90,6 +83,8 @@
 
 .rotacao:active, .rotacao:hover {
     fill-opacity: 1;
+    stroke: black;
+    stroke-width: 1;
     r: 10;
 }
 
@@ -98,9 +93,67 @@
     stroke-width: 2;
 }
 
-.linha.movimento {
-    stroke: blue;
+.linha.transmissao {
+    stroke: none;
+    fill: transparent;
+    stroke-width: 2;
+    stroke-dasharray: 5, 5;
+    fill-opacity: 0.2;
+}
+
+.linha.transmissao:hover {
+    stroke: black;
+    stroke-opacity: 0.1;
+    fill: none;
+}
+
+.linha.transmissao.enter {
+    fill: green;
+    stroke: green;
+}
+
+.linha.transmissao.active {
+    fill: red;
+    stroke: red;
+}
+
+.barramento {
+    fill: transparent;
     stroke-width: 1;
+}
+
+.barramento:hover {
+    stroke: none;
+    fill: none;
+}
+
+.barramento.enter {
+    fill: green;
+    fill-opacity: 0.2;
+    stroke: green;
+    stroke-width: 2;
+    stroke-dasharray: 5, 5;
+}
+
+.curtoCircuito line {
+    stroke: black;
+    stroke-width: 2;
+}
+
+.curtoCircuito circle {
+    fill: black;
+}
+
+.linha.texto {
+    fill: black;
+    fill-opacity: 0;
+    stroke: none;
+}
+
+.linha.texto:hover {
+    fill: black;
+    fill-opacity: 1;
+    stroke: none;
 }
 
 .impedancia {
@@ -112,4 +165,11 @@
 .impedancia:hover {
     fill: black;
     transition-duration: 500ms;
+}
+
+.grupoSelecionado {
+    fill: none;
+    stroke: blue;
+    stroke-opacity: 1;
+    stroke-dasharray: 5, 5;
 }
