@@ -170,7 +170,7 @@
 
 .grupoSelecionado {
     fill: none;
-    stroke: blue);
+    stroke: blue;
     stroke-opacity: 1;
     stroke-dasharray: 5, 5;
 }
