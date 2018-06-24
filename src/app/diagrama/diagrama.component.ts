@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { EnumLinhaTipo, EnumCurtoTipo } from './../models/componente';
 import { Component, OnInit } from '@angular/core';
 
@@ -12,6 +13,7 @@ import { SVGIcone } from './svg-icones';
 import { Barra } from './models/barra';
 import { Linha } from './models/linha';
 import { Curto } from './models/curto';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-diagrama',
@@ -21,6 +23,8 @@ import { Curto } from './models/curto';
 
 export class DiagramaComponent implements OnInit {
 
+
+  exemplo: number;
 
   // Elementos do Sistema Elétrico de Potência
   private barras: Array<Barra> = new Array();
@@ -33,7 +37,7 @@ export class DiagramaComponent implements OnInit {
 
   // Controle de identificação
   private qtdBarrasTipo = {};
-  private qtdBarrasTotal = 0;
+  private qtdBarrasTotal = 1;
   enumerador_barra = EnumTipoBarra; // para usar no HTML
 
   // Controle do SVG
@@ -49,13 +53,16 @@ export class DiagramaComponent implements OnInit {
   // Propriedades do Diagrama
   propriedades_diagrama = { visualizar_grade: true, agarrar_grade: false }; // Propriedades do diagrama
 
-  constructor() {
-    this.qtdBarrasTipo[EnumTipoBarra.PV] = 0;
-    this.qtdBarrasTipo[EnumTipoBarra.PQ] = 0;
-    this.qtdBarrasTipo[EnumTipoBarra.Slack] = 0;
+  constructor(private route: ActivatedRoute) {
+    this.qtdBarrasTipo[EnumTipoBarra.PV] = 1;
+    this.qtdBarrasTipo[EnumTipoBarra.PQ] = 1;
+    this.qtdBarrasTipo[EnumTipoBarra.Slack] = 1;
   }
 
   ngOnInit(): void {
+
+
+
     // criação dos elementos na tela
     // divNome = 'draw_inside';
     this.CriarDocumentoSVG('svg_principal');
@@ -72,35 +79,98 @@ export class DiagramaComponent implements OnInit {
     // configuração dos atalhos do teclado
     this.ConfigurarAtalhosTeclado();
 
+    this.route.queryParams.subscribe(
+      (queryParams: any) => {
+        try {
+          this.exemplo = parseInt(queryParams['exemplo'], 10);
+        } catch (e) {
+          this.exemplo = undefined;
+        }
+      }
+    );
     // desenha um exemplo na tela
-    this.DesenharExemplo(3);
-
-    this.ExcluirBarra(this.barras[0]);
-    this.ExcluirBarra(this.barras[1]);
+    if (this.exemplo) {
+      console.log(this.exemplo);
+      this.DesenharExemplo();
+    }
 
   }
 
-  DesenharExemplo(indice: number) {
-    switch (indice) {
-      case 3:
-        const slack = this.CriarBarra(EnumTipoBarra.Slack);
-        const pq1 = this.CriarBarra(EnumTipoBarra.PQ);
-        const pq2 = this.CriarBarra(EnumTipoBarra.PQ);
-        const pv = this.CriarBarra(EnumTipoBarra.PV);
+  DesenharExemplo() {
+    if (this.exemplo === 1) {
+      const barra1 = this.CriarBarra(EnumTipoBarra.PV);
+      const barra2 = this.CriarBarra(EnumTipoBarra.PQ);
+      const barra3 = this.CriarBarra(EnumTipoBarra.PQ);
+      const barra4 = this.CriarBarra(EnumTipoBarra.Slack);
+
+      this.AdicionarBarra(barra1, 300, 100, 90);
+      this.AdicionarBarra(barra2, 900, 100, 90);
+      this.AdicionarBarra(barra4, 300, 600, -90);
+      this.AdicionarBarra(barra3, 900, 600, -90);
+
+      this.AdicionarLinha(barra1, barra2);
+      this.AdicionarLinha(barra1, barra3);
+      this.AdicionarLinha(barra1, barra4);
+
+      this.AdicionarLinha(barra2, barra3);
+
+      this.AdicionarLinha(barra3, barra4);
 
 
-        this.AdicionarBarra(slack, 300, 100, 90);
-        this.AdicionarBarra(pq1, 300, 600, -90);
-        this.AdicionarBarra(pq2, 900, 100, 90);
-        this.AdicionarBarra(pv, 900, 600, -90);
 
-        this.AdicionarLinha(slack, pq1);
-        this.AdicionarLinha(slack, pq2);
-        this.AdicionarLinha(slack, pv);
-        this.AdicionarLinha(pq1, pv);
-        this.AdicionarLinha(pq2, pv);
-        break;
+    } else if (this.exemplo === 2) {
+
+      const barra1 = this.CriarBarra(EnumTipoBarra.Slack);
+      const barra2 = this.CriarBarra(EnumTipoBarra.PQ);
+      const barra3 = this.CriarBarra(EnumTipoBarra.PQ);
+
+      this.AdicionarBarra(barra1, 400, 400);
+      this.AdicionarBarra(barra2, 800, 400, 180);
+      this.AdicionarBarra(barra3, 1200, 400, 180);
+
+      this.AdicionarLinha(barra1, barra2);
+      this.AdicionarLinha(barra2, barra3);
+
+    } else if (this.exemplo === 3) {
+      const barra1 = this.CriarBarra(EnumTipoBarra.Slack);
+      const barra2 = this.CriarBarra(EnumTipoBarra.PQ);
+      const barra3 = this.CriarBarra(EnumTipoBarra.PQ);
+      const barra4 = this.CriarBarra(EnumTipoBarra.PV);
+
+
+      this.AdicionarBarra(barra1, 300, 100, 90);
+      this.AdicionarBarra(barra2, 300, 600, -90);
+      this.AdicionarBarra(barra3, 900, 100, 90);
+      this.AdicionarBarra(barra4, 900, 600, -90);
+
+      this.AdicionarLinha(barra1, barra2);
+      this.AdicionarLinha(barra1, barra3);
+      this.AdicionarLinha(barra2, barra4);
+      this.AdicionarLinha(barra3, barra4);
+    } else if (this.exemplo === 4) {
+      const barra1 = this.CriarBarra(EnumTipoBarra.Slack, 'Birch');
+      const barra2 = this.CriarBarra(EnumTipoBarra.PQ, 'Elm');
+      const barra3 = this.CriarBarra(EnumTipoBarra.PV, 'Mapie');
+      const barra4 = this.CriarBarra(EnumTipoBarra.PQ, 'Oak');
+      const barra5 = this.CriarBarra(EnumTipoBarra.PQ, 'Pine');
+
+
+      this.AdicionarBarra(barra1, 400, 50, 90);
+      this.AdicionarBarra(barra2, 800, 50, 90);
+      this.AdicionarBarra(barra3, 800, 400, -90);
+      this.AdicionarBarra(barra4, 400, 700, -90);
+      this.AdicionarBarra(barra5, 400, 400, -90);
+
+      this.AdicionarLinha(barra1, barra2);
+      this.AdicionarLinha(barra1, barra5);
+      this.AdicionarLinha(barra2, barra3);
+      this.AdicionarLinha(barra3, barra4);
+      this.AdicionarLinha(barra4, barra5);
+      this.AdicionarLinha(barra5, barra3);
+
+
     }
+
 
   }
 
@@ -255,18 +325,22 @@ export class DiagramaComponent implements OnInit {
   }
 
   // criando barras
-  CriarBarra(tipo: EnumTipoBarra): Barra {
+  CriarBarra(tipo: EnumTipoBarra, nome?: string): Barra {
     // Sistema Elétrico de Potência
     const barra: Barra = new Barra(tipo); // cria uma nova barra com o tipo associado
     barra.id_barra = `barra_${this.qtdBarrasTotal}`; // atualiza o identificador
-    barra.nome = `${tipo.toString()} ${this.qtdBarrasTipo[tipo]}`;
+    if (nome) {
+      barra.nome = nome;
+    } else {
+      // barra.nome = `${tipo.toString()} ${this.qtdBarrasTipo[tipo]}`;
+
+    }
     if (tipo === EnumTipoBarra.Slack) {
-      barra.nome = `${tipo.toString()}`;
+      if (!nome) {
+        barra.nome = `${tipo.toString()}`;
+      }
       if (!this.slack) {
         this.slack = barra;
-        // this.SVGLateral.select('#Slack').each(function () {
-        //   this.removeClass('componente-lateral');
-        // });
       } else {
         return null;
       }
@@ -595,30 +669,61 @@ export class DiagramaComponent implements OnInit {
     const box = grupoBarra.bbox();
     const grupoTexto = grupoBarra.group();
     // TEM Q PENSAR ONDE VAI FICAR A POSIÇÃO DE CADA ITEM DA BARRA
-    grupoTexto.text(barra.nome)
-      .id('nome')
-      .dx(box.x)
-      .dy(box.width * 1.1);
+    const options = {
+      family: 'Helvetica',
+      size: 20,
+      archor: 'end',
+      'font-weight': 'bold'
+    };
+
+    grupoTexto.text(barra.tipo)
+      .id('tipo')
+      .cx(box.x2)
+      .cy(box.y2 + 5)
+      .font(options);
 
     grupoTexto.text(barra.id_barra.split('_')[1])
       .id('id')
-      .dx(box.x - 20)
-      .dy(box.cx - 5);
+      .cx(box.x - 10)
+      .dy(box.cy - 5)
+      .font(options);
 
-    grupoTexto.text(`P=${barra.pCarga} pu`)
-      .id('P')
-      .dx(-box.height * 0.1)
-      .dy(-box.width * 0.5);
+    options['font-weight'] = 'normal';
+    grupoTexto.text(barra.nome)
+      .id('nome')
+      .cx(box.x2 + 20)
+      .cy(box.cy)
+      .font(options);
 
-    grupoTexto.text(`Q=${barra.qCarga} pu`)
-      .id('Q')
-      .dx(-box.height * 0.1)
-      .dy(-box.width * 0.3);
 
-    grupoTexto.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
-      .id('PV')
-      .dy(-box.width * 0.15)
-      .dx(box.height * 0.7);
+
+
+    // grupoBarra.rect(box.w, box.h).fill({ opacity: 0.1 });
+
+    // grupoTexto.text(barra.nome)
+    //   .id('nome')
+    //   .dx(box.x)
+    //   .dy(box.width * 1.1);
+
+    // grupoTexto.text(barra.id_barra.split('_')[1])
+    //   .id('id')
+    //   .dx(box.x - 20)
+    //   .dy(box.cx - 5);
+
+    // grupoTexto.text(`P=${barra.pCarga} pu`)
+    //   .id('P')
+    //   .dx(-box.height * 0.1)
+    //   .dy(-box.width * 0.5);
+
+    // grupoTexto.text(`Q=${barra.qCarga} pu`)
+    //   .id('Q')
+    //   .dx(-box.height * 0.1)
+    //   .dy(-box.width * 0.3);
+
+    // grupoTexto.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
+    //   .id('PV')
+    //   .dy(-box.width * 0.15)
+    //   .dx(box.height * 0.7);
 
     this.AtualizaToolTipBarra(grupoBarra);
     return grupoTexto;
@@ -1027,10 +1132,11 @@ export class DiagramaComponent implements OnInit {
   // movimentos de arrastar e soltar barras e linhas
   HabilitaInteractMovimento() {
     let grupoBarras: SVG.Set, linhas: Array<Linha> = new Array();
-    let boxSelecionados: SVG.Element;
     let tipo;
 
     const self = this;
+    let boxSelecionados: SVG.Element = self.SVGPrincipal.rect()
+      .addClass('grupoSelecionado');
     const ceil = 10;
     interact('.componente-principal')
       .draggable({
@@ -1084,12 +1190,15 @@ export class DiagramaComponent implements OnInit {
     }
 
     function dragmove(event) {
+      console.log(grupoBarras);
       grupoBarras.each(function () {
         this.dx(event.dx).dy(event.dy);
       });
-      boxSelecionados.dx(event.dx)
-        .dy(event.dy);
-      self.DesenhaLinhas(linhas);
+      if (boxSelecionados) {
+        boxSelecionados.dx(event.dx)
+          .dy(event.dy);
+        self.DesenhaLinhas(linhas);
+      }
     }
 
     interact('.componente-lateral').draggable({
@@ -1104,6 +1213,7 @@ export class DiagramaComponent implements OnInit {
         grupoBarras = self.SVGLateral.set();
         tipo = event.target.id;
         const barra = self.CriarBarra(tipo);
+        console.log(barra);
         if (barra) {
           self.AdicionarBarra(barra, -100, event.y0 - 180);
           event.target.id = barra.id_barra;
@@ -1179,7 +1289,7 @@ export class DiagramaComponent implements OnInit {
 
   /*
    Atalhos do teclado
- */
+  */
   ConfigurarAtalhosTeclado() {
     const self = this;
     $('#svg_principal').hover(function () {

@@ -3,7 +3,7 @@ import { EnumTipoBarra } from '../../models/componente';
 export class Barra {
     id_barra = 'nova_barra';
     tipo: EnumTipoBarra;
-    nome: string;
+    nome = '';
     tensao_0 = 1.0;
     angulo_0 = 0.0;
     pGerada: number;
@@ -20,6 +20,6 @@ export class Barra {
     constructor(tipo: EnumTipoBarra) {
         this.tipo = tipo;
         this.id_barra = tipo.toString();
-        this.nome = this.tipo.toString();
+        // this.nome = this.tipo.toString();
     }
 }
