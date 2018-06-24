@@ -137,11 +137,10 @@
 
 .curtoCircuito line {
     stroke: black;
-    stroke-width: 10;
+    stroke-width: 2;
 }
 
 .curtoCircuito circle {
-    r: 10;
     fill: black;
 }
 

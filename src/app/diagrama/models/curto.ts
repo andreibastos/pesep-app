@@ -5,7 +5,7 @@ import { EnumCurtoTipo } from '../../models/componente';
 export class Curto {
     linha: Linha;
     barra: Barra;
-    constructor() {
+    constructor(public afastamento = 0.75) {
     }
 }
 

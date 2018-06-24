@@ -375,8 +375,13 @@ export class DiagramaComponent implements OnInit {
     // cria um grupo novo para a linha
     const grupoLinha = this.SVGPrincipal.group().id(linha.id_linha);
 
+    // verificar se existe curto nessa linha
+
+
+
     const poliLinha: SVG.G = grupoLinha.group().addClass('polilinha');
     const impedancia: SVG.G = grupoLinha.group();
+    let grupoCurto: SVG.G;
 
     // identifica as ligações da linha (da barra, para barra)
     const deBarra = this.mapaGruposSVG.get(linha.de.id_barra);
@@ -391,11 +396,11 @@ export class DiagramaComponent implements OnInit {
     const delta_x = paraBarraCriarLinhaBox.cx - deBarraCriaLinhaBox.cx;
     const delta_y = paraBarraCriarLinhaBox.cy - deBarraCriaLinhaBox.cy;
     const angulo = this.CalcularAngulo(delta_x, delta_y);
+    let hipotenusa = Math.hypot(delta_x, delta_y);
 
     // verifica qual é o tipo da linha (reta, polinha ou curva)
     if (enumLinhaTipo === EnumLinhaTipo.reta) {
       const afastamento = 50;
-      let hipotenusa = Math.hypot(delta_x, delta_y);
       if (hipotenusa > afastamento) {
         hipotenusa -= afastamento;
       }
@@ -415,6 +420,22 @@ export class DiagramaComponent implements OnInit {
       poliLinha.polyline(this.CriarPoliLinha(delta_x, delta_y, 15));
     }
 
+    if (this.curto.linha) {
+      if (this.curto.linha.id_linha === linha.id_linha) {
+        grupoCurto = poliLinha.group().addClass('curtoCircuito');
+        const largura = 40;
+        grupoCurto.addClass('curtoCircuito');
+        grupoCurto.line(0, 0, largura, largura);
+        grupoCurto.line(0, largura, largura, 0);
+        grupoCurto.circle(largura / 5)
+          .cx(largura / 2)
+          .cy(largura / 2);
+        grupoCurto.cx(-this.curto.afastamento * hipotenusa * Math.cos(angulo * Math.PI / 180));
+        grupoCurto.cy(-this.curto.afastamento * hipotenusa * Math.sin(angulo * Math.PI / 180));
+        grupoCurto.rotate(angulo);
+      }
+    }
+
     // adiciona impedância
     const rect = impedancia.rect(60, 20).rotate(angulo);
     impedancia.move(delta_x / 2 - rect.width() / 2, delta_y / 2 - rect.height() / 2)
@@ -431,7 +452,6 @@ export class DiagramaComponent implements OnInit {
       .addClass('texto');
 
     this.mapaGruposSVG.set(linha.id_linha, grupoLinha);
-    this.AdicionarCurto();
   }
 
   // redesenha várias linhas na tela
