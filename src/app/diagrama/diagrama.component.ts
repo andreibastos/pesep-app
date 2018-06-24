@@ -1,5 +1,4 @@
 import { ActivatedRoute } from '@angular/router';
-import { EnumLinhaTipo, EnumCurtoTipo } from './../models/componente';
 import { Component, OnInit } from '@angular/core';
 
 // Bibliotecas externas
@@ -8,12 +7,10 @@ import * as interact from 'interactjs';
 import * as SVG from 'svg.js';
 
 // Classes Internas
-import { IComponente, Carga, Fonte, Gerador, EnumTipoBarra } from '../models/componente';
-import { SVGIcone } from './svg-icones';
+import { EnumLinhaTipo, EnumTipoBarra } from './../models/componente';
 import { Barra } from './models/barra';
 import { Linha } from './models/linha';
 import { Curto } from './models/curto';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-diagrama',
