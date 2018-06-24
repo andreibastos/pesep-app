@@ -1,36 +1,23 @@
-.selecionado {
-    fill: rgb(0, 0, 200) !important;
-    fill-opacity: 1;
-    stroke: black;
-    stroke-opacity: 0.6;
-    stroke-width: 2;
-}
-
-.selecionado.grupoBarraSelecao {
-    fill: rgb(0, 0, 200) !important;
-    fill-opacity: 0.2 !important;
-    stroke-width: 1;
-    stroke-dasharray: 5, 5;
-    stroke-opacity: 1;
-    stroke: rgb(0, 0, 200);
-}
-
 .grupoBarraSelecao {
     fill: none;
-    stroke-width: 5;
+    fill-opacity: 0.2;
+    stroke-width: 1;
+    stroke-dasharray: 5, 5;
     stroke-opacity: 0;
+    stroke: blue;
 }
 
-.retanguloSelecao {
+.grupoBarraSelecao.selecionado {
+    fill: blue !important;
     fill-opacity: 0.2;
-    stroke-width: 2;
     stroke-opacity: 1;
-    stroke-dasharray: 5, 5;
 }
 
 .retanguloSelecao.active {
     fill: black !important;
     stroke: black;
+    stroke-width: 1;
+    stroke-opacity: 1;
 }
 
 .retanguloSelecao:hover {
@@ -41,7 +28,8 @@
 .retanguloSelecao.enter {
     fill: green !important;
     stroke: green;
-
+    stroke-width: 1;
+    stroke-opacity: 1;
 }
 
 .barra {
@@ -50,29 +38,12 @@
     stroke-width: 2;
 }
 
-/* .barra:hover { */
-
-/* fill:  rgb(0, 0, 200) !important;
-    fill-opacity: 1;
-    stroke:  rgb(0, 0, 200) !important;
-    transition-duration: 100ms; */
-
-/* } */
-
-/* .barra.linhaHorizontal {} */
-
 .barra.linhaVertical {
     stroke-width: 5;
 }
 
-/* .barra.circulo:hover {} */
-
 .barra.triangulo {
     fill: black;
-}
-
-.grupoBarraSelecao.enter {
-    fill: blue !important;
 }
 
 .barra.texto {
@@ -90,7 +61,7 @@
 .criarLinha:hover {
     cursor: nwse-resize;
     r: 10;
-    fill: rgb(0, 0, 200);
+    fill: blue;
     transition-duration: 500ms;
 }
 
@@ -100,7 +71,7 @@
     stroke: green;
     stroke-opacity: 0.6;
     stroke-dasharray: 5, 5;
-    r: 50;
+    r: 15;
 }
 
 .rotacao {
@@ -112,6 +83,8 @@
 
 .rotacao:active, .rotacao:hover {
     fill-opacity: 1;
+    stroke: black;
+    stroke-width: 1;
     r: 10;
 }
 
@@ -168,18 +141,13 @@
 }
 
 .curtoCircuito circle {
-    r: 5;
-    fill: red;
-}
-
-.linha.movimento {
-    stroke: rgb(0, 0, 200);
-    stroke-width: 1;
+    r: 10;
+    fill: black;
 }
 
 .linha.texto {
     fill: black;
-    fill-opacity: 0.01;
+    fill-opacity: 0;
     stroke: none;
 }
 
@@ -202,7 +170,7 @@
 
 .grupoSelecionado {
     fill: none;
-    stroke: rgb(0, 0, 200);
+    stroke: blue);
     stroke-opacity: 1;
     stroke-dasharray: 5, 5;
 }

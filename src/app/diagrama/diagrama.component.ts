@@ -154,6 +154,7 @@ export class DiagramaComponent implements OnInit {
     grupoCurto.line(0, largura, largura, 0);
     grupoCurto.circle(10).cx(largura / 2).cy(largura / 2);
     grupoCurto.y(400);
+    grupoCurto.cx(SVGUsado.width() / 2);
     // grupoCurto.scale(0.5);
     const box = grupoCurto.bbox();
     grupoCurto.rect(box.w, box.y).fill('transparent');
@@ -162,7 +163,8 @@ export class DiagramaComponent implements OnInit {
 
   CriarBarraFixa(enumBarra: EnumTipoBarra, angulo = 0) {
     const barra = new Barra(enumBarra);
-    const x = 10;
+    const x = this.SVGLateral.width() / 4;
+
     let y = 50;
     switch (enumBarra) {
       case EnumTipoBarra.Slack:
@@ -370,12 +372,13 @@ export class DiagramaComponent implements OnInit {
 
     // verifica qual é o tipo da linha (reta, polinha ou curva)
     if (enumLinhaTipo === EnumLinhaTipo.reta) {
-      console.log();
-      const hipotenusa = Math.hypot(delta_x, delta_y);
+      const afastamento = 50;
+      const hipotenusa = Math.hypot(delta_x, delta_y) - afastamento;
       const altura = 25;
       poliLinha.rect(hipotenusa, altura)
+        .dx(afastamento / 2)
         .dy(-altura / 2)
-        .rotate(angulo, altura / 2, -altura / 2)
+        .rotate(angulo, -afastamento, -altura / 2)
         .translate(delta_x, delta_y)
         .addClass('linha')
         .addClass('transmissao');
@@ -915,14 +918,11 @@ export class DiagramaComponent implements OnInit {
         accept: '.criarLinha',
         ondragenter: function (event) {
           event.target.classList.remove('criarLinha');
-          event.target.classList.add('nova_linha');
         },
         ondragleave: function (event) {
-          event.target.classList.remove('nova_linha');
           event.target.classList.add('criarLinha');
         },
         ondrop: function (event) {
-          event.target.classList.remove('nova_linha');
           event.target.classList.add('criarLinha');
 
           const id_barra = event.target.parentNode.parentNode.id;
