@@ -126,3 +126,10 @@
     fill: black;
     transition-duration: 500ms;
 }
+
+.grupoSelecionado {
+    fill: none;
+    stroke: blue;
+    stroke-opacity: 1;
+    stroke-dasharray: 5,5;
+}

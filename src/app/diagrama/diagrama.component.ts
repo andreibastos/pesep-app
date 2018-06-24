@@ -743,7 +743,7 @@ export class DiagramaComponent implements OnInit {
     let box_x = 1, box_y = 1;
     let box: SVG.Element, x = 0, y = 0, dx, dy;
     this.SVGPrincipal.rect(this.SVGPrincipal.width(), this.SVGPrincipal.height())
-      .fill({ color: 'transparent' })
+      .fill({ color: 'white', opacity: 0 })
       .id('mask_selection');
     interact('#mask_selection').draggable({
       onstart: function (event) {
@@ -930,6 +930,7 @@ export class DiagramaComponent implements OnInit {
   // movimentos de arrastar e soltar barras e linhas
   HabilitaInteractMovimento() {
     let grupoBarras: SVG.Set, linhas: Array<Linha> = new Array();
+    let grupoSelecionado: SVG.Element;
     let tipo;
 
     const self = this;
@@ -944,9 +945,14 @@ export class DiagramaComponent implements OnInit {
         }
       })
       .on('dragstart', dragstart)
-      .on('dragmove', dragmove);
+      .on('dragmove', dragmove)
+      .on('dragend', function () {
+        grupoSelecionado.remove();
+      });
 
     function dragstart(event) {
+      grupoSelecionado = self.SVGPrincipal.rect()
+        .addClass('grupoSelecionado');
       linhas = new Array();
 
       grupoBarras = self.SVGPrincipal.set();
@@ -958,6 +964,13 @@ export class DiagramaComponent implements OnInit {
         if (!self.barrasSelecionadas.has(grupoBarra)) { // caso pegue uma barra q não está na seleção
           self.LimparBarrasSelecionadas();
           grupoBarras.add(grupoBarra);
+        } else {
+          console.log('ARRASTANDO O GRUPO');
+          const box = grupoBarras.bbox();
+          grupoSelecionado
+            .width(box.width)
+            .height(box.height)
+            .move(box.x, box.y);
         }
       } else {
         grupoBarras.add(grupoBarra);
@@ -977,6 +990,8 @@ export class DiagramaComponent implements OnInit {
       grupoBarras.each(function () {
         this.dx(event.dx).dy(event.dy);
       });
+      grupoSelecionado.dx(event.dx)
+        .dy(event.dy);
       self.RedesenhaLinhas(linhas);
     }
 
@@ -1010,7 +1025,17 @@ export class DiagramaComponent implements OnInit {
         }
         console.log(self.barras);
         event.target.id = tipo;
+        grupoSelecionado.remove();
       });
+    interact('.grupoSelecionado').draggable({
+      restrict: {
+        restriction: document.getElementById(this.SVGPrincipal.id()),
+        endOnly: true,
+        elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+      }
+    }).on('dragmove', function () {
+      console.log('movendo');
+    });
   }
 
   /*
