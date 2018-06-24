@@ -9,13 +9,12 @@
   <div class="row">
     <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item p-2">
       <div class="card h-100">
-        <!-- <a href="#"> -->
-        <img class="card-img-top" src="../../assets/images/exemplos/5.png" alt="">
-        <!-- </a> -->
+        <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:1}">
+          <img class="card-img-top" src="../../assets/images/exemplos/5.png" alt="">
+        </a>
         <div class="card-body">
           <h4 class="card-title">
-            <a data-toggle="modal"  data-target="#exampleModalCenter" routerLinkActive="active" [routerLink]="['/exemplos']">Exemplo 5</a>
-
+            <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:1}">Exemplo 1</a>
           </h4>
           <p class="card-text">Fundamentos de Sistemas Elétricos de Potência - Zanetta - 2006</p>
           <a href="../../assets/download/exemplo-5.zip" class="btn btn-primary"> download</a>
@@ -24,12 +23,12 @@
     </div>
     <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item p-2">
       <div class="card h-100">
-        <a href="#">
+        <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:2}">
           <img class="card-img-top" src="../../assets/images/exemplos/6.png" alt="">
         </a>
         <div class="card-body">
           <h4 class="card-title">
-            <a href="#">Exemplo 6</a>
+            <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:2}">Exemplo 2</a>
           </h4>
           <p class="card-text">Fundamentos de Sistemas Elétricos de Potência - Zanetta - 2006
           </p>
@@ -39,12 +38,12 @@
     </div>
     <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item p-2">
       <div class="card h-100">
-        <a href="#">
+        <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:3}">
           <img class="card-img-top" src="../../assets/images/exemplos/7.png" alt="">
         </a>
         <div class="card-body">
           <h4 class="card-title">
-            <a href="#">Exemplo 7</a>
+            <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:3}">Exemplo 3</a>
           </h4>
           <p class="card-text"> Fluxo de carga em redes de energia elétrica - Monticelli - 1983</p>
           <a href="../../assets/download/exemplo-7.zip" class="btn btn-primary"> download</a>
@@ -53,12 +52,12 @@
     </div>
     <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item p-2">
       <div class="card h-100">
-        <a href="#">
+        <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:4}">
           <img class="card-img-top" src="../../assets/images/exemplos/8.png" alt="">
         </a>
         <div class="card-body">
           <h4 class="card-title">
-            <a href="#">Exemplo 8.1</a>
+            <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:4}">Exemplo 4</a>
           </h4>
           <p class="card-text">Elementos de Análise de Sistemas Elétricos de Potência - Steverson - 1982</p>
           <a href="../../assets/download/exemplo-8.zip" class="btn btn-primary"> download</a>
@@ -67,13 +66,16 @@
     </div>
     <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item p-2">
       <div class="card h-100">
+        <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:5}">
+
           <img class="card-img-top" src="../../assets/images/exemplos/9.png" alt="">
+        </a>
         <div class="card-body">
           <h4 class="card-title">
-            <a href="#">Exemplo 9.2</a>
+            <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:5}">Exemplo 5</a>
           </h4>
           <p class="card-text">Power System Analysis - Grainer e Steverson - 1994 </p>
-          <a href="../../assets/download/exemplo-9.zip" class="btn btn-primary">  download</a>
+          <a href="../../assets/download/exemplo-9.zip" class="btn btn-primary"> download</a>
         </div>
       </div>
     </div>
@@ -92,6 +94,6 @@
 <div class="modal fade my-5" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
   aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <app-exemplos-modal ></app-exemplos-modal>      
+    <app-exemplos-modal></app-exemplos-modal>
   </div>
 </div>
