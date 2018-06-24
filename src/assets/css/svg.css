@@ -1,5 +1,5 @@
 .selecionado {
-    fill: blue !important;
+    fill:  rgb(0, 0, 200) !important;
     fill-opacity: 1;
     stroke: black;
     stroke-opacity: 0.6;
@@ -14,12 +14,12 @@
 }
 
 .selecionado.grupoBarraSelecao {
-    fill: blue !important;
-    fill-opacity: 0.1 !important;
+    fill: rgb(0, 0, 200) !important;
+    fill-opacity: 0.2 !important;
     stroke-width: 1;
     stroke-dasharray: 5, 5;
     stroke-opacity: 1;
-    stroke: black;
+    stroke:  rgb(0, 0, 200);
 }
 
 .retanguloSelecao:hover {
@@ -36,9 +36,9 @@
 
 /* .barra:hover { */
 
-/* fill: blue !important;
+/* fill:  rgb(0, 0, 200) !important;
     fill-opacity: 1;
-    stroke: blue !important;
+    stroke:  rgb(0, 0, 200) !important;
     transition-duration: 100ms; */
 
 /* } */
@@ -70,21 +70,21 @@
 .criarLinha:hover {
     cursor: nwse-resize;
     r: 10;
-    fill: blue;
+    fill:  rgb(0, 0, 200);
     transition-duration: 500ms;
 }
 
 .nova_linha, .nova_linha:hover {
-    fill: green;
+    fill:  green;
     fill-opacity: 0.4;
-    stroke: blue;
+    stroke:  green;
     stroke-opacity: 0.6;
     stroke-dasharray: 5, 5;
     r: 20;
 }
 
 .rotacao {
-    fill: blue;
+    fill:  green;
     stroke: none;
     fill-opacity: 0.1;
     cursor: url('../icons/menu-acoes/rotate.png'), pointer;
@@ -101,7 +101,7 @@
 }
 
 .linha.movimento {
-    stroke: blue;
+    stroke:  rgb(0, 0, 200);
     stroke-width: 1;
 }
 
@@ -129,7 +129,7 @@
 
 .grupoSelecionado {
     fill: none;
-    stroke: blue;
+    stroke:  rgb(0, 0, 200);
     stroke-opacity: 1;
     stroke-dasharray: 5,5;
 }
