@@ -1075,34 +1075,51 @@ export class DiagramaComponent implements OnInit {
     const self = this;
     let dx, dy, angulo;
     let grupoLinha;
+    let retanguloSelecao: SVG.Element;
     let deBarra: SVG.G, paraBarra: SVG.G;
 
     let polilinha: SVG.PolyLine;
     let impedancia: SVG.Element;
 
-    interact('.criarLinha')
+    interact('.retanguloSelecao')
       .dropzone({
         accept: '.criarLinha',
         ondragenter: function (event) {
-          event.target.classList.remove('criarLinha');
+          event.target.classList.add('enter');
+          event.target.classList.remove('active');
+
         },
         ondragleave: function (event) {
-          event.target.classList.add('criarLinha');
+          event.target.classList.remove('enter');
+          event.target.classList.add('active');
         },
         ondrop: function (event) {
-          event.target.classList.add('criarLinha');
-
-          const id_barra = event.target.parentNode.parentNode.id;
-          paraBarra = self.mapaGruposSVG.get(id_barra);
-          self.AdicionarLinha(deBarra.data('barra'), paraBarra.data('barra'), EnumLinhaTipo.reta);
+          const id_barra_para = event.target.parentNode.parentNode.id;
+          paraBarra = self.mapaGruposSVG.get(id_barra_para);
+          if (deBarra.id() !== paraBarra.id()) {
+            self.AdicionarLinha(deBarra.data('barra'), paraBarra.data('barra'), EnumLinhaTipo.reta);
+          }
+          event.target.classList.remove('active');
+          event.target.classList.remove('enter');
+          retanguloSelecao.addClass('retanguloSelecao');
         },
         ondropactivate: function (event) {
-          event.target.classList.add('nova_linha');
+
+          const grupoBarra = self.mapaGruposSVG.get(deBarra.id());
+          const grupoSelecao = grupoBarra.last() as SVG.G;
+          retanguloSelecao = grupoSelecao.last();
+          retanguloSelecao.removeClass('retanguloSelecao');
+
+          event.target.classList.add('active');
+          event.target.classList.remove('enter');
         },
         ondropdeactivate: function (event) {
-          event.target.classList.remove('nova_linha');
+          event.target.classList.remove('active');
+          event.target.classList.remove('enter');
         }
-      })
+      });
+
+    interact('.criarLinha')
       .draggable({
         onstart: dragstart,
         onmove: dragmove,
