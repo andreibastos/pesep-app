@@ -1190,7 +1190,6 @@ export class DiagramaComponent implements OnInit {
     }
 
     function dragmove(event) {
-      console.log(grupoBarras);
       grupoBarras.each(function () {
         this.dx(event.dx).dy(event.dy);
       });
@@ -1213,11 +1212,13 @@ export class DiagramaComponent implements OnInit {
         grupoBarras = self.SVGLateral.set();
         tipo = event.target.id;
         const barra = self.CriarBarra(tipo);
-        console.log(barra);
         if (barra) {
           self.AdicionarBarra(barra, -100, event.y0 - 180);
           event.target.id = barra.id_barra;
           dragstart(event);
+        } else {
+          // alert(`só pode ter uma ${tipo}`);
+
         }
       })
       .on('dragmove', dragmove)
