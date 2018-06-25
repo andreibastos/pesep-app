@@ -213,8 +213,8 @@ export class DiagramaComponent implements OnInit {
 
       this.SVGLateral = SVG(SVGNome)
         .id('svg_lateral')
-        .addClass('svg_area')
-        .size(width, height);
+        // .addClass('svg_area')
+        .size(width, height - 100);
     }
 
   }
@@ -689,8 +689,8 @@ export class DiagramaComponent implements OnInit {
 
     const box = grupoBarra.get(0).bbox();
     const grupoTexto = grupoBarra.group()
-    .id('grupoBarraTexto')
-    .backward();
+      .id('grupoBarraTexto')
+      .backward();
     const options = {
       family: 'Helvetica',
       size: 20,
