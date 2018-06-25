@@ -6,20 +6,21 @@ export class Barra {
     nome = '';
     tensao_0 = 1.0;
     angulo_0 = 0.0;
-    pGerada: number;
-    qGerada: number;
+    pGerada = 0;
+    qGerada = 0;
     pCarga = 1;
     qCarga = 0;
-    pGeradaMin: number;
-    pGeradaMax: number;
-    qGeradaMin: number;
-    qGeradaMax: number;
-    qShunt: number;
-    X: number;
+    pGeradaMin = 0;
+    pGeradaMax = 0;
+    qGeradaMin = 0;
+    qGeradaMax = 0;
+    qShunt = 0;
+    X = 0;
 
     constructor(tipo: EnumTipoBarra) {
         this.tipo = tipo;
         this.id_barra = tipo.toString();
-        // this.nome = this.tipo.toString();
+
     }
+
 }
