@@ -175,15 +175,9 @@ export class DiagramaComponent implements OnInit {
   }
 
   AtualizarBarras(barrasAtualizadas: Array<Barra>) {
-    console.log(this.mapaBarras);
-    console.log(barrasAtualizadas);
     barrasAtualizadas.forEach(barra => {
       this.mapaBarras.set(barra.id_barra, barra);
       const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
-      grupoBarra.each(function () {
-        console.log(this.id());
-      });
-      // console.log(grupoBarra.select('#grupoBarraTexto'));
       this.AtualizaGrupoBarraTexto(grupoBarra);
     });
 
@@ -1148,7 +1142,7 @@ export class DiagramaComponent implements OnInit {
     const self = this;
     let dx, dy, angulo;
     let grupoLinha;
-    let retanguloSelecao: SVG.Element;
+    let retanguloSelecaoRelatedTarget: SVG.Element;
     let deBarra: SVG.G, paraBarra: SVG.G;
 
     let polilinha: SVG.PolyLine;
@@ -1176,15 +1170,13 @@ export class DiagramaComponent implements OnInit {
           }
           event.target.classList.remove('active');
           event.target.classList.remove('enter');
-          retanguloSelecao.addClass('retanguloSelecao');
+          retanguloSelecaoRelatedTarget.addClass('retanguloSelecao');
         },
         ondropactivate: function (event) {
-
-          const grupoBarra = self.mapaGruposSVG.get(deBarra.id());
-          const grupoSelecao = grupoBarra.last() as SVG.G;
-          retanguloSelecao = grupoSelecao.last();
-          retanguloSelecao.removeClass('retanguloSelecao');
-
+          const grupoBarraRelatedTarget = self.mapaGruposSVG.get(deBarra.id());
+          const grupoSelecaoRelatedTarget = grupoBarraRelatedTarget.last() as SVG.G;
+          retanguloSelecaoRelatedTarget = grupoSelecaoRelatedTarget.last();
+          retanguloSelecaoRelatedTarget.removeClass('retanguloSelecao');
           event.target.classList.add('active');
           event.target.classList.remove('enter');
         },
@@ -1232,8 +1224,9 @@ export class DiagramaComponent implements OnInit {
       impedancia.rotate(angulo, impedancia.cx(), impedancia.cy());
     }
     function dragend(event) {
-      // grupoLinha.clear();
       grupoLinha.remove();
+      retanguloSelecaoRelatedTarget.addClass('retanguloSelecao');
+
     }
   }
 
