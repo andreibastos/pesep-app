@@ -172,6 +172,13 @@ export class DiagramaComponent implements OnInit {
 
   }
 
+  AtualizarBarras(barrasAtualizadas: Array<Barra>) {
+    barrasAtualizadas.forEach(barra => {
+      this.mapaBarras.set(barra.id_barra, barra);
+    });
+    console.log(this.mapaBarras);
+  }
+
   CriarDocumentoSVG(SVGNome: string) {
     const divDesenho = document.getElementById(SVGNome);
     // Obtém as medidas da tela

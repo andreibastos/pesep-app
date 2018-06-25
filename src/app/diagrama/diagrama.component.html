@@ -78,7 +78,7 @@
         </div>
 
         <div *ngIf="BarrasSelecionadas().length > 0" class="justify-content-center">
-          <app-barra-form  > </app-barra-form>
+          <app-barra-form (barrasEnviadas)="AtualizarBarras($event)" [barrasRecebidas]="BarrasSelecionadas()"> </app-barra-form>
         </div>
       </div>
       <!-- /Propriedades -->
