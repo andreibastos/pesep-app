@@ -1,5 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 
 // Bibliotecas externas
 import * as $ from 'jquery';
@@ -95,6 +95,15 @@ export class DiagramaComponent implements OnInit {
       this.DesenharExemplo();
     }
   }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    // console.log(event.target.innerWidth);
+    // const width = event.target.innerWidth;
+    // const height = event.target.innerHeight;
+    this.AtualizarDocumentoSVG();
+  }
+
 
   DesenharExemplo() {
     const height = this.SVGPrincipal.height();
@@ -223,6 +232,15 @@ export class DiagramaComponent implements OnInit {
         // .addClass('svg_area')
         .size(width, height - 100);
     }
+
+  }
+
+  AtualizarDocumentoSVG() {
+    const divDesenho = document.getElementById('svg_principal');
+    // Obtém as medidas da tela
+    const height = divDesenho.clientHeight;
+    const width = divDesenho.clientWidth;
+    this.SVGPrincipal.size(width, height);
 
   }
 
@@ -1254,8 +1272,11 @@ export class DiagramaComponent implements OnInit {
       .on('dragmove', dragmove)
       .on('dragend', function () {
         boxSelecionados.remove();
-      });
-
+      })
+      .on('tap', clique);
+    function clique(e) {
+      self.AdicionarBarraSelecionada(self.mapaGruposSVG.get(e.currentTarget.id));
+    }
     function dragstart(event) {
       boxSelecionados = self.SVGPrincipal.rect()
         .addClass('grupoSelecionado');
@@ -1435,6 +1456,7 @@ export class DiagramaComponent implements OnInit {
         }
       }
     });
+
   }
 
 }
