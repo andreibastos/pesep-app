@@ -1,3 +1,4 @@
+import { MathPowerService } from './../testes-rapidos/testes-rapidos.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, HostListener } from '@angular/core';
 
@@ -11,6 +12,7 @@ import { EnumLinhaTipo, EnumTipoBarra } from './../models/componente';
 import { Barra } from './models/barra';
 import { Linha } from './models/linha';
 import { Curto } from './models/curto';
+import { Sistema } from './models/sistema';
 
 @Component({
   selector: 'app-diagrama',
@@ -31,6 +33,8 @@ export class DiagramaComponent implements OnInit {
   private mapaBarras: Map<string, Barra> = new Map();
   private mapaLinhas: Map<string, Linha> = new Map();
   linhaSelecionada: Linha = null;
+
+  calculandoFluxo = false;
 
   // Controle de identificação
   private qtdBarrasTipo = {};
@@ -54,7 +58,7 @@ export class DiagramaComponent implements OnInit {
   // Propriedades do Diagrama
   propriedades_diagrama = { visualizar_grade: true, agarrar_grade: false }; // Propriedades do diagrama
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute, private mathPowerService: MathPowerService) {
     this.qtdBarrasTipo[EnumTipoBarra.PV] = 1;
     this.qtdBarrasTipo[EnumTipoBarra.PQ] = 1;
     this.qtdBarrasTipo[EnumTipoBarra.Slack] = 1;
@@ -102,6 +106,28 @@ export class DiagramaComponent implements OnInit {
     // const width = event.target.innerWidth;
     // const height = event.target.innerHeight;
     this.AtualizarDocumentoSVG();
+  }
+
+  CalcularFluxo() {
+    const linhas = [];
+    const barras = [];
+
+    this.mapaBarras.forEach(barra => {
+      barras.push(barra);
+    });
+
+    this.mapaLinhas.forEach(linha => {
+      linhas.push(linha);
+    });
+
+    const sistema: Sistema = new Sistema(linhas, barras, this.mathPowerService);
+
+    sistema.CalcularFluxo();
+
+
+    this.calculandoFluxo = true;
+
+    // this.calculandoFluxo = false;
   }
 
 
@@ -183,6 +209,19 @@ export class DiagramaComponent implements OnInit {
     }
 
 
+  }
+
+  PodeRealizarFluxo(): boolean {
+    const quantidadeBarras = this.mapaBarras.size;
+    const quantidadeLinhas = this.mapaLinhas.size;
+
+    if (quantidadeLinhas >= (quantidadeBarras - 1) && quantidadeLinhas > 0) {
+      if (this.slack) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   AtualizarBarras(barrasAtualizadas: Array<Barra>) {
@@ -509,22 +548,22 @@ export class DiagramaComponent implements OnInit {
     const delta_x = paraBarraCriarLinhaBox.cx - deBarraCriaLinhaBox.cx;
     const delta_y = paraBarraCriarLinhaBox.cy - deBarraCriaLinhaBox.cy;
     const angulo = this.CalcularAngulo(delta_x, delta_y);
-    let hipotenusa = Math.hypot(delta_x, delta_y);
+    // let hipotenusa = Math.hypot(delta_x, delta_y);
 
     // verifica qual é o tipo da linha (reta, polinha ou curva)
     if (enumLinhaTipo === EnumLinhaTipo.reta) {
-      const afastamento = 50;
-      if (hipotenusa > afastamento) {
-        hipotenusa -= afastamento;
-      }
-      const altura = 25;
-      poliLinha.rect(hipotenusa, altura)
-        .dx(afastamento / 2)
-        .dy(-altura / 2)
-        .rotate(angulo, -afastamento, -altura / 2)
-        .translate(delta_x, delta_y)
-        .addClass('linha')
-        .addClass('transmissao');
+      // const afastamento = 50;
+      // if (hipotenusa > afastamento) {
+      //   hipotenusa -= afastamento;
+      // }
+      // const altura = 25;
+      // poliLinha.rect(hipotenusa, altura)
+      //   .dx(afastamento / 2)
+      //   .dy(-altura / 2)
+      //   .rotate(angulo, -afastamento, -altura / 2)
+      //   .translate(delta_x, delta_y)
+      //   .addClass('linha')
+      //   .addClass('transmissao');
       poliLinha.polyline([[0, 0], [delta_x, delta_y]])
         .addClass('linha');
       grupoLinha.data('angulo', angulo)

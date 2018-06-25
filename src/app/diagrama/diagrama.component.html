@@ -37,10 +37,12 @@
 
         <!-- calculos -->
         <div class="col-7 btn-group justify-content-end d-flex " role="group">
-          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Calcular Fluxo de Potência">
+          <button id="btn_fluxo" (click)="CalcularFluxo()" [disabled]="!PodeRealizarFluxo()" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true"
+            data-placement="top" title="Calcular Fluxo de Potência">
             <img src="../../assets/icons/menu-acoes/flow.png" width="32px" height="32px">
           </button>
-          <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top" title="Calcular Curto Circuito">
+          <button disabled type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top"
+            title="Calcular Curto Circuito">
             <img src="../../assets/icons/menu-acoes/short.png" width="32px" height="32px">
           </button>
         </div>

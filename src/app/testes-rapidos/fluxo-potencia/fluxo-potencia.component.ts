@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Fluxo } from '../../models/fluxo';
-import { TestesRapidosService } from './../testes-rapidos.service';
+import { MathPowerService } from './../testes-rapidos.service';
 
 @Component({
   selector: 'app-fluxo-potencia',
@@ -19,7 +19,7 @@ export class FluxoPotenciaComponent implements OnInit {
   system: any;
 
 
-  constructor(private testesRapidosService: TestesRapidosService) {
+  constructor(private mathPowerService: MathPowerService) {
   }
 
   ngOnInit() {
@@ -28,7 +28,7 @@ export class FluxoPotenciaComponent implements OnInit {
 
   CalculePowerFlow() {
 
-    this.testesRapidosService.calcular(this.system, 'power_flow').then(
+    this.mathPowerService.calcular(this.system, 'power_flow').then(
       result => {
         this.fluxo = result['power_flow'];
         this.result = result;

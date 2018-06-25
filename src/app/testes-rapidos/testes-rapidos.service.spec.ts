@@ -1,15 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { TestesRapidosService } from './testes-rapidos.service';
+import { MathPowerService } from './testes-rapidos.service';
 
 describe('TestesRapidosService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TestesRapidosService]
+      providers: [MathPowerService]
     });
   });
 
-  it('should be created', inject([TestesRapidosService], (service: TestesRapidosService) => {
+  it('should be created', inject([MathPowerService], (service: MathPowerService) => {
     expect(service).toBeTruthy();
   }));
 });
