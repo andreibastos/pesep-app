@@ -3,15 +3,15 @@
   <div class="row mt-5">
     <!-- Componentes  -->
     <div class="col-1 p-0 m-0 border ">
-      <div id="svg_lateral" class="sidebar mx-0 p-0">
+      <div id="svg_lateral" class="sidebar">
       </div>
     </div>
     <!-- /Componentes  -->
 
     <!-- Diagrama -->
-    <div class="col-10 mt-1 mb-0 ">
+    <div class="col-10">
       <!-- Menu Superior -->
-      <div class="row menu-superior  bg-white border  mb-2  p-0 m-0">
+      <div class="row menu-superior bg-white border mb-1 mx-0 px-0">
 
         <!-- Ações de Copiar/Recortar/Colar/Excluir -->
         <div class="col-2 btn-group mr-3 px-0" role="group">
@@ -49,7 +49,7 @@
       <!-- /Menu Superior -->
 
       <!-- Área de Desenho -->
-      <div id="svg_principal" tabindex="0" class="shadow-lg bg-white border rounded area-draw"></div>
+      <div id="svg_principal" tabindex="0" class="row mx-0 px-0 shadow-lg bg-white border rounded area-draw"></div>
       <!-- /Área de Desenho -->
     </div>
     <!-- /Diagrama -->
@@ -57,7 +57,8 @@
     <!-- Propriedades -->
     <div class="col-1 m-0 p-0 border">
       <div class="propriety">
-        <div *ngIf="BarrasSelecionadas().length == 0 && LinhaSelecionada()" class="justify-content-center m-0 p-0">
+        <!-- Diagrama -->
+        <div *ngIf="BarrasSelecionadas().length == 0 && !LinhaSelecionada()" class="justify-content-center m-0 p-0">
           <p class="h5 "> Propriedades</p>
           <div class="row p-0 m-0 border">
             <div class="m-2 custom-control custom-checkbox">
@@ -72,17 +73,21 @@
             </div>
           </div>
         </div>
+        <!-- /Diagrama -->
 
+        <!-- Barras -->
         <div *ngIf="BarrasSelecionadas().length > 0" class="m-0 p-0 justify-content-center">
           <app-barra-form (barrasEnviadas)="AtualizarBarras($event)" [barrasRecebidas]="BarrasSelecionadas()"> </app-barra-form>
         </div>
+        <!-- /Barras -->
 
-        <div *ngIf="!LinhaSelecionada()" class="m-0 p-0 justify-content-center">
+        <!-- Linha -->
+        <div *ngIf="LinhaSelecionada()" class="m-0 p-0 justify-content-center">
           <app-linha-form (linhaEnviada)="AtualizarLinha($event)" [linhaRecebida]="linhaSelecionada"> </app-linha-form>
         </div>
-      </div>
-      <!-- /Propriedades -->
+        <!-- /Linha -->
 
+      </div>
     </div>
     <!-- /Propriedades -->
   </div>

@@ -97,16 +97,19 @@ export class DiagramaComponent implements OnInit {
   }
 
   DesenharExemplo() {
+    const height = this.SVGPrincipal.height();
+    const width = this.SVGPrincipal.width();
+
     if (this.exemplo === 1) {
       const barra1 = this.CriarBarra(EnumTipoBarra.PV);
       const barra2 = this.CriarBarra(EnumTipoBarra.PQ);
       const barra3 = this.CriarBarra(EnumTipoBarra.PQ);
       const barra4 = this.CriarBarra(EnumTipoBarra.Slack);
 
-      this.AdicionarBarra(barra1, 300, 100, 90);
-      this.AdicionarBarra(barra2, 900, 100, 90);
-      this.AdicionarBarra(barra4, 300, 600, -90);
-      this.AdicionarBarra(barra3, 900, 600, -90);
+      this.AdicionarBarra(barra1, width * 0.2, height * 0.1, 90);
+      this.AdicionarBarra(barra2, width * 0.8, height * 0.1, 90);
+      this.AdicionarBarra(barra4, width * 0.2, height * 0.8, -90);
+      this.AdicionarBarra(barra3, width * 0.8, height * 0.8, -90);
 
       this.AdicionarLinha(barra1, barra2);
       this.AdicionarLinha(barra1, barra3);
@@ -124,9 +127,9 @@ export class DiagramaComponent implements OnInit {
       const barra2 = this.CriarBarra(EnumTipoBarra.PQ);
       const barra3 = this.CriarBarra(EnumTipoBarra.PQ);
 
-      this.AdicionarBarra(barra1, 400, 400);
-      this.AdicionarBarra(barra2, 800, 400, 180);
-      this.AdicionarBarra(barra3, 1200, 400, 180);
+      this.AdicionarBarra(barra1, width * 0.2, height * 0.3);
+      this.AdicionarBarra(barra2, width * 0.5, height * 0.3, 180);
+      this.AdicionarBarra(barra3, width * 0.8, height * 0.3, 180);
 
       this.AdicionarLinha(barra1, barra2);
       this.AdicionarLinha(barra2, barra3);
@@ -138,10 +141,10 @@ export class DiagramaComponent implements OnInit {
       const barra4 = this.CriarBarra(EnumTipoBarra.PV);
 
 
-      this.AdicionarBarra(barra1, 300, 100, 90);
-      this.AdicionarBarra(barra2, 300, 600, -90);
-      this.AdicionarBarra(barra3, 900, 100, 90);
-      this.AdicionarBarra(barra4, 900, 600, -90);
+      this.AdicionarBarra(barra1, width * 0.3, width * 0.05, 90);
+      this.AdicionarBarra(barra2, width * 0.3, height * 0.8, -90);
+      this.AdicionarBarra(barra3, width * 0.7, width * 0.05, 90);
+      this.AdicionarBarra(barra4, width * 0.7, height * 0.8, -90);
 
       this.AdicionarLinha(barra1, barra2);
       this.AdicionarLinha(barra1, barra3);
@@ -155,11 +158,11 @@ export class DiagramaComponent implements OnInit {
       const barra5 = this.CriarBarra(EnumTipoBarra.PQ, 'Pine');
 
 
-      this.AdicionarBarra(barra1, 400, 50, 90);
-      this.AdicionarBarra(barra2, 800, 50, 90);
-      this.AdicionarBarra(barra3, 800, 400, -90);
-      this.AdicionarBarra(barra4, 400, 700, -90);
-      this.AdicionarBarra(barra5, 400, 400, -90);
+      this.AdicionarBarra(barra1, width * 0.2, height * 0.01, 90);
+      this.AdicionarBarra(barra2, width * 0.8, height * 0.01, 90);
+      this.AdicionarBarra(barra3, width * 0.8, height * 0.4, -90);
+      this.AdicionarBarra(barra4, width * 0.2, height * 0.8, -90);
+      this.AdicionarBarra(barra5, width * 0.2, height * 0.4, -90);
 
       this.AdicionarLinha(barra1, barra2);
       this.AdicionarLinha(barra1, barra5);
@@ -167,7 +170,6 @@ export class DiagramaComponent implements OnInit {
       this.AdicionarLinha(barra3, barra4);
       this.AdicionarLinha(barra4, barra5);
       this.AdicionarLinha(barra5, barra3);
-
 
     }
 
@@ -208,7 +210,7 @@ export class DiagramaComponent implements OnInit {
       this.SVGPrincipal = SVG(SVGNome)
         .id('svg_principal')
         .addClass('svg_area')
-        .size(width, height);
+        .size(width, height).viewbox(0, 0, width, height);
       this.SVGPrincipal.node.appendChild(styleSvg);
       this.barrasSelecionadasSVG = this.SVGPrincipal.set();
       this.barrasCopiadasSVG = this.SVGPrincipal.set();
@@ -857,7 +859,7 @@ export class DiagramaComponent implements OnInit {
   }
 
   LinhaSelecionada(): boolean {
-    return this.linhaSelecionada === null;
+    return this.linhaSelecionada !== null;
   }
 
   // "copiar" barras seleciondas
@@ -1281,12 +1283,14 @@ export class DiagramaComponent implements OnInit {
       }
       grupoBarras.each(function (c) {
         grupoBarra = this as SVG.G;
-        const barra = self.getBarra(grupoBarra.id());
-        self.LinhasConectadasBarra(barra).forEach(linha => {
-          if (linhas.indexOf(linha) === -1) {
-            linhas.push(linha);
-          }
-        });
+        if (grupoBarra) {
+          const barra = self.getBarra(grupoBarra.id());
+          self.LinhasConectadasBarra(barra).forEach(linha => {
+            if (linhas.indexOf(linha) === -1) {
+              linhas.push(linha);
+            }
+          });
+        }
       });
     }
 
