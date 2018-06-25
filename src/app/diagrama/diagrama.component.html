@@ -19,11 +19,11 @@
 
         <!-- Ações de Copiar/Recortar/Colar/Excluir -->
         <div class="col-2 btn-group mr-3 px-0" role="group">
-          <button [disabled]="barrasSelecionadas.length() == 0" (click)="CopiarBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
+          <button [disabled]="BarrasSelecionadas().length == 0" (click)="CopiarBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
             data-toggle="tooltip" data-html="true" data-placement="top" title="Copiar">
             <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png">
           </button>
-          <button [disabled]="barrasSelecionadas.length() == 0" (click)="RecortarBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
+          <button [disabled]="BarrasSelecionadas().length == 0" (click)="RecortarBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
             data-toggle="tooltip" data-html="true" data-placement="top" title="Recortar">
             <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png">
           </button>
@@ -31,7 +31,7 @@
             data-html="true" data-placement="top" title="Colar">
             <img src="../../assets/icons/menu-acoes/icons8-colar-32.png">
           </button>
-          <button [disabled]="barrasSelecionadas.length() == 0" (click)="ExcluirBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
+          <button [disabled]="BarrasSelecionadas().length == 0" (click)="ExcluirBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
             data-toggle="tooltip" data-html="true" data-placement="top" title="Excluir">
             <img src="../../assets/icons/menu-acoes/icons8-lixo-32.png">
           </button>
@@ -61,7 +61,7 @@
     <!-- Propriedades -->
     <div class="col-1 p-0 border">
       <div class="propriety">
-        <div *ngIf="barrasSelecionadas.length() == 0" class="justify-content-center">
+        <div *ngIf="BarrasSelecionadas().length == 0" class="justify-content-center">
           <p class="h5 "> Propriedades</p>
           <div class="row p-0 m-0 border">
             <div class="m-2 custom-control custom-checkbox">
@@ -77,42 +77,8 @@
           </div>
         </div>
 
-        <div *ngIf="barrasSelecionadas.length() > 0" class="justify-content-center">
-          <div *ngIf="barraSelecionada">
-            <div class="row p-0 m-0">
-              <p>Editar Barra</p>
-            </div>
-            <!-- <form> -->
-              <div class="form-row">
-                <div class="form-group col-md-12">
-                  <label for="input_nome_barra">Nome</label>
-                  <input type="text" class="form-control" id="input_nome_barra" value="{{barraSelecionada.nome}}" placeholder="barra_1">
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="input_P_barra">P</label>
-                  <input type="text" class="form-control" id="input_P_barra" value="{{barraSelecionada.pCarga}}" placeholder="1 pu">
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="input_Q_barra">Q</label>
-                  <input type="text" class="form-control" id="input_Q_barra" value="{{barraSelecionada.qCarga}}" placeholder="0 pu">
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="input_V_barra">V</label>
-                  <input type="text" class="form-control" id="input_V_barra" value="{{barraSelecionada.tensao_0}}" placeholder="1 pu">
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="input_T_barra">T</label>
-                  <input type="text" class="form-control" id="input_T_barra" value="{{barraSelecionada.angulo_0}}" placeholder="0 pu">
-                </div>
-              </div>
-            <!-- </form> -->
-          </div>
+        <div *ngIf="BarrasSelecionadas().length > 0" class="justify-content-center">
+          <app-barra-form (barrasEnviadas)="AtualizarBarras($event)" [barrasRecebidas]="BarrasSelecionadas()"> </app-barra-form>
         </div>
       </div>
       <!-- /Propriedades -->
