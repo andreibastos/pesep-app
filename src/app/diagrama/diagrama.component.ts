@@ -24,11 +24,10 @@ export class DiagramaComponent implements OnInit {
   exemplo: number;
 
   // Elementos do Sistema Elétrico de Potência
-  private barras: Array<Barra> = new Array();
-  private linhas: Array<Linha> = new Array();
-  private curto: Curto = new Curto();
+  // private curto: Curto = new Curto();
   private slack: Barra = null;
 
+  // Dicionários para busca mais rápidas
   private mapaBarras: Map<string, Barra> = new Map();
   private mapaLinhas: Map<string, Linha> = new Map();
 
@@ -40,12 +39,14 @@ export class DiagramaComponent implements OnInit {
   // Controle do SVG
   SVGPrincipal: SVG.Doc;
   SVGLateral: SVG.Doc;
-
   mapaGruposSVG: Map<string, SVG.G> = new Map();
-  barrasSelecionadas: SVG.Set;
-  barrasCopiadas: SVG.Set;
-  barrasRecortadas: SVG.Set;
-  barraSelecionada: SVG.G;
+
+  // controle de seleção
+  private barrasSelecionadasSVG: SVG.Set;
+
+  // controle de copiar/recortar
+  barrasCopiadasSVG: SVG.Set;
+  barrasRecortadasSVG: SVG.Set;
 
   // Propriedades do Diagrama
   propriedades_diagrama = { visualizar_grade: true, agarrar_grade: false }; // Propriedades do diagrama
@@ -171,6 +172,13 @@ export class DiagramaComponent implements OnInit {
 
   }
 
+  AtualizarBarras(barrasAtualizadas: Array<Barra>) {
+    barrasAtualizadas.forEach(barra => {
+      this.mapaBarras.set(barra.id_barra, barra);
+    });
+    console.log(this.mapaBarras);
+  }
+
   CriarDocumentoSVG(SVGNome: string) {
     const divDesenho = document.getElementById(SVGNome);
     // Obtém as medidas da tela
@@ -189,9 +197,9 @@ export class DiagramaComponent implements OnInit {
         .addClass('svg_area')
         .size(width, height);
       this.SVGPrincipal.node.appendChild(styleSvg);
-      this.barrasSelecionadas = this.SVGPrincipal.set();
-      this.barrasCopiadas = this.SVGPrincipal.set();
-      this.barrasRecortadas = this.SVGPrincipal.set();
+      this.barrasSelecionadasSVG = this.SVGPrincipal.set();
+      this.barrasCopiadasSVG = this.SVGPrincipal.set();
+      this.barrasRecortadasSVG = this.SVGPrincipal.set();
 
     } else if (SVGNome === 'svg_lateral') {
 
@@ -269,24 +277,24 @@ export class DiagramaComponent implements OnInit {
     CURTOS
   */
 
-  AdicionarCurto() {
+  // AdicionarCurto() {
 
-    const self = this;
-    const curto: Curto = this.curto;
-    if (curto.linha) {
-      const grupoLinha = this.mapaGruposSVG.get(`${curto.linha.id_linha}`);
-      grupoLinha.select('.polilinha').each(function () {
-        const grupoCurto = self.CriarCurtoCircuito();
-        const grupoPolilinha = this.add(grupoCurto) as SVG.G;
-        const rect = grupoPolilinha.get(1);
-        grupoCurto.cx(rect.cx() - 20).cy(rect.cy());
-      });
+  //   const self = this;
+  //   const curto: Curto = this.curto;
+  //   if (curto.linha) {
+  //     const grupoLinha = this.mapaGruposSVG.get(`${curto.linha.id_linha}`);
+  //     grupoLinha.select('.polilinha').each(function () {
+  //       const grupoCurto = self.CriarCurtoCircuito();
+  //       const grupoPolilinha = this.add(grupoCurto) as SVG.G;
+  //       const rect = grupoPolilinha.get(1);
+  //       grupoCurto.cx(rect.cx() - 20).cy(rect.cy());
+  //     });
 
-    } else if (curto.barra) {
-      const grupoBarra = this.mapaGruposSVG.get(`${curto.barra.id_barra}`);
-      // console.log(`adicionando curto na ${curto.barra.nome}`);
-    }
-  }
+  //   } else if (curto.barra) {
+  //     const grupoBarra = this.mapaGruposSVG.get(`${curto.barra.id_barra}`);
+  //     // console.log(`adicionando curto na ${curto.barra.nome}`);
+  //   }
+  // }
 
 
   /*
@@ -319,6 +327,7 @@ export class DiagramaComponent implements OnInit {
       this.ExcluirLinhas(barra);
       this.RemoverBarra(barra);
     }
+
   }
 
   // criando barras
@@ -343,7 +352,6 @@ export class DiagramaComponent implements OnInit {
       }
     }
     this.IncrementaBarra(barra.tipo); // incremmenta o numero de barras
-    this.barras.push(barra); // adiciona na lista
     this.mapaBarras.set(barra.id_barra, barra); // adiciona no mapa de barras
     return barra;
   }
@@ -369,12 +377,13 @@ export class DiagramaComponent implements OnInit {
 
   // removendo uma barra
   RemoverBarra(barra: Barra) {
+    console.log(barra.tipo === EnumTipoBarra.Slack);
+
     if (barra.tipo === EnumTipoBarra.Slack) {
       this.slack = null;
     }
     this.mapaGruposSVG.get(barra.id_barra).remove();
     this.mapaGruposSVG.delete(barra.id_barra);
-    this.barras.splice(this.barras.indexOf(barra), 1);
     this.mapaBarras.delete(barra.id_barra);
     // this.DecrementarBarra(barra.tipo);
   }
@@ -398,27 +407,26 @@ export class DiagramaComponent implements OnInit {
   // adicionando linhas na tela
   AdicionarLinha(de: Barra, para: Barra, enumLinhaTipo?: EnumLinhaTipo) {
     const linha: Linha = new Linha(de, para);
-    this.linhas.push(linha);
     this.mapaLinhas.set(linha.id_linha, linha);
     this.DesenhaLinha(linha, enumLinhaTipo);
   }
 
   // excluindo linhas na tela
   ExcluirLinhas(barra: Barra) {
-    const paraRemover = [];
-    this.linhas.forEach((linha) => {
+    const paraRemover: Array<Linha> = new Array();
+    this.mapaLinhas.forEach((linha) => {
       if (linha.de.id_barra === barra.id_barra || linha.para.id_barra === barra.id_barra) {
         this.mapaGruposSVG.get(linha.id_linha).remove();
-        this.mapaGruposSVG.delete(linha.id_linha);
         paraRemover.push(linha);
       }
     });
     console.log(`excluindo ${paraRemover.length} linhas associadas a barra ${barra.id_barra}`);
 
     paraRemover.forEach(linha => {
-      this.linhas.splice(this.linhas.indexOf(linha), 1);
-      this.mapaLinhas.delete(linha.id);
+      this.mapaLinhas.delete(linha.id_linha);
+      this.mapaGruposSVG.delete(linha.id_linha);
     });
+
   }
 
   // criando polilinhas
@@ -452,7 +460,7 @@ export class DiagramaComponent implements OnInit {
 
     const poliLinha: SVG.G = grupoLinha.group().addClass('polilinha');
     const impedancia: SVG.G = grupoLinha.group();
-    let grupoCurto: SVG.G;
+    // let grupoCurto: SVG.G;
 
     // identifica as ligações da linha (da barra, para barra)
     const deBarra = this.mapaGruposSVG.get(linha.de.id_barra);
@@ -491,21 +499,21 @@ export class DiagramaComponent implements OnInit {
       poliLinha.polyline(this.CriarPoliLinha(delta_x, delta_y, 15));
     }
 
-    if (this.curto.linha) {
-      if (this.curto.linha.id_linha === linha.id_linha) {
-        grupoCurto = poliLinha.group().addClass('curtoCircuito');
-        const largura = 40;
-        grupoCurto.addClass('curtoCircuito');
-        grupoCurto.line(0, 0, largura, largura);
-        grupoCurto.line(0, largura, largura, 0);
-        grupoCurto.circle(largura / 5)
-          .cx(largura / 2)
-          .cy(largura / 2);
-        grupoCurto.cx(-this.curto.afastamento * hipotenusa * Math.cos(angulo * Math.PI / 180));
-        grupoCurto.cy(-this.curto.afastamento * hipotenusa * Math.sin(angulo * Math.PI / 180));
-        grupoCurto.rotate(angulo);
-      }
-    }
+    // if (this.curto.linha) {
+    //   if (this.curto.linha.id_linha === linha.id_linha) {
+    //     grupoCurto = poliLinha.group().addClass('curtoCircuito');
+    //     const largura = 40;
+    //     grupoCurto.addClass('curtoCircuito');
+    //     grupoCurto.line(0, 0, largura, largura);
+    //     grupoCurto.line(0, largura, largura, 0);
+    //     grupoCurto.circle(largura / 5)
+    //       .cx(largura / 2)
+    //       .cy(largura / 2);
+    //     grupoCurto.cx(-this.curto.afastamento * hipotenusa * Math.cos(angulo * Math.PI / 180));
+    //     grupoCurto.cy(-this.curto.afastamento * hipotenusa * Math.sin(angulo * Math.PI / 180));
+    //     grupoCurto.rotate(angulo);
+    //   }
+    // }
 
     // adiciona impedância
     const rect = impedancia.rect(60, 20).rotate(angulo);
@@ -537,7 +545,7 @@ export class DiagramaComponent implements OnInit {
   // verifica quais barras estão conectadas em uma barra
   LinhasConectadasBarra(barra: Barra): Array<Linha> {
     const linhas = new Array();
-    this.linhas.forEach(
+    this.mapaLinhas.forEach(
       linha_usada => {
         if (barra.id_barra === linha_usada.de.id_barra || barra.id_barra === linha_usada.para.id_barra) {
           linhas.push(linha_usada);
@@ -755,7 +763,7 @@ export class DiagramaComponent implements OnInit {
     if (grupoBarraSelecao) {
       grupoBarraSelecao.addClass('selecionado');
     }
-    this.barrasSelecionadas.add(grupoBarra);
+    this.barrasSelecionadasSVG.add(grupoBarra);
   }
 
   // remove grupo da seleção
@@ -767,7 +775,7 @@ export class DiagramaComponent implements OnInit {
     if (grupoBarraSelecao) {
       grupoBarraSelecao.removeClass('selecionado');
     }
-    this.barrasSelecionadas.remove(grupoBarra);
+    this.barrasSelecionadasSVG.remove(grupoBarra);
   }
 
   // Ações
@@ -781,11 +789,11 @@ export class DiagramaComponent implements OnInit {
   // excluir barras selecionadas
   ExcluirBarrasSelecionadas() {
     const self = this;
-    console.log(`excluindo ${self.barrasSelecionadas.length()} barras selecionadas`);
-    this.barrasSelecionadas.each(function () {
+    console.log(`excluindo ${self.barrasSelecionadasSVG.length()} barras selecionadas`);
+    this.barrasSelecionadasSVG.each(function () {
       self.ExcluirBarraSelecionada(this);
     });
-    this.barrasSelecionadas = this.SVGPrincipal.set();
+    this.barrasSelecionadasSVG = this.SVGPrincipal.set();
   }
 
   // selecionar todas as barras da tela
@@ -799,33 +807,45 @@ export class DiagramaComponent implements OnInit {
     });
   }
 
+  BarrasSelecionadas(): Array<Barra> {
+    const self = this;
+    const barrasSelecionadas: Array<Barra> = new Array();
+    if (this.barrasSelecionadasSVG.length() > 0) {
+      this.barrasSelecionadasSVG.each(function () {
+        barrasSelecionadas.push(self.mapaBarras.get(this.id()));
+      });
+    }
+    return barrasSelecionadas;
+  }
+
   // "copiar" barras seleciondas
   CopiarBarrasSelecionadas() {
     const self = this;
-    this.barrasCopiadas.clear();
-    console.log(`copiando ${self.barrasSelecionadas.length()} barras selecionadas`);
-    this.barrasSelecionadas.each(function () {
-      self.barrasCopiadas.add(this);
+    this.barrasCopiadasSVG.clear();
+    console.log(`copiando ${self.barrasSelecionadasSVG.length()} barras selecionadas`);
+    this.barrasSelecionadasSVG.each(function () {
+      self.barrasCopiadasSVG.add(this);
     });
   }
 
   // "recortar" barras selecionadas
   RecortarBarrasSelecionadas() {
     const self = this;
-    this.barrasRecortadas.clear();
-    console.log(`recortando ${self.barrasSelecionadas.length()} barras selecionadas`);
+    this.barrasRecortadasSVG.clear();
+    console.log(`recortando ${self.barrasSelecionadasSVG.length()} barras selecionadas`);
 
-    this.barrasSelecionadas.each(function () {
+    this.barrasSelecionadasSVG.each(function () {
       const grupoBarra = this as SVG.G;
-      const barraRecortada = grupoBarra.data('barra');
-
-      // console.log(self.linhasConectadasBarra(barraRecortada));
+      const barraRecortada: Barra = grupoBarra.data('barra');
       self.ExcluirLinhas(barraRecortada);
-      self.barrasRecortadas.add(this);
-      self.mapaGruposSVG.delete(this.id());
+      // self.ExcluirBarra(barraRecortada);
+      if (barraRecortada.tipo === EnumTipoBarra.Slack) {
+        self.slack = null;
+      }
+      self.barrasRecortadasSVG.add(this);
       this.remove();
     });
-    this.barrasCopiadas = this.SVGPrincipal.set();
+    this.barrasCopiadasSVG = this.SVGPrincipal.set();
     this.LimparBarrasSelecionadas();
   }
 
@@ -835,13 +855,14 @@ export class DiagramaComponent implements OnInit {
       const self = this;
       this.LimparBarrasSelecionadas();
 
-      if (this.barrasCopiadas.length() > 0) {
-        console.log(`colando ${self.barrasCopiadas.length()} barras copiadas`);
+      if (this.barrasCopiadasSVG.length() > 0) {
+        console.log(`colando ${self.barrasCopiadasSVG.length()} barras copiadas`);
 
-        this.barrasCopiadas.each(function () {
+        this.barrasCopiadasSVG.each(function () {
           const grupoBarra = this as SVG.G;
           const barraCopiada: Barra = grupoBarra.data('barra');
           const novaBarra: Barra = self.CopiarBarra(barraCopiada);
+          console.log(novaBarra);
           if (novaBarra) {
             self.AdicionarBarra(novaBarra, grupoBarra.x() + 10, grupoBarra.y() + 10, grupoBarra.data('angulo'));
             const novoGrupoBarra = self.mapaGruposSVG.get(novaBarra.id_barra);
@@ -850,16 +871,30 @@ export class DiagramaComponent implements OnInit {
             alert(`só pode ter uma ${barraCopiada.tipo}`);
           }
         });
-      } else if (this.barrasRecortadas.length() > 0) {
-        console.log(`colando ${self.barrasRecortadas.length()} barras recortadas`);
+      } else if (this.barrasRecortadasSVG.length() > 0) {
+        console.log(`colando ${self.barrasRecortadasSVG.length()} barras recortadas`);
 
-        this.barrasRecortadas.each(function () {
-          self.SVGPrincipal.add(this);
-          self.mapaGruposSVG.set(this.id(), this);
-          self.AdicionarBarraSelecionada(this);
+        this.barrasRecortadasSVG.each(function () {
+          const grupoBarra = this as SVG.G;
+          const barraColada: Barra = grupoBarra.data('barra');
+          if (barraColada.tipo === EnumTipoBarra.Slack) {
+            if (self.slack) {
+
+            } else {
+              self.slack = barraColada;
+              self.SVGPrincipal.add(this);
+              self.mapaGruposSVG.set(this.id(), this);
+              self.AdicionarBarraSelecionada(this);
+            }
+          } else {
+
+            self.SVGPrincipal.add(this);
+            self.mapaGruposSVG.set(this.id(), this);
+            self.AdicionarBarraSelecionada(this);
+          }
 
         });
-        this.barrasRecortadas = this.SVGPrincipal.set();
+        this.barrasRecortadasSVG = this.SVGPrincipal.set();
       }
 
     }
@@ -867,36 +902,27 @@ export class DiagramaComponent implements OnInit {
 
   // verifica se é possivel colar
   podeColar() {
-    return this.barrasRecortadas.length() > 0 || this.barrasCopiadas.length() > 0;
+    return this.barrasRecortadasSVG.length() > 0 || this.barrasCopiadasSVG.length() > 0;
   }
 
-  // atualiza o selecionado
-  AtualizarBarraSelecionada() {
-    if (this.barrasSelecionadas.length() === 1) {
-      this.barraSelecionada = this.barrasSelecionadas.get(0).data('barra');
-    } else {
-      this.barraSelecionada = null;
-    }
-  }
 
   // muda o item selecionado, (se está selecionado passa a não ser, e vice versa)
   AlternarBarraSelecionada(grupo: SVG.G) {
-    if (this.barrasSelecionadas.has(grupo)) {
+    if (this.barrasSelecionadasSVG.has(grupo)) {
       this.RemoverBarraSelecionada(grupo);
     } else {
       this.AdicionarBarraSelecionada(grupo);
     }
-    this.AtualizarBarraSelecionada();
   }
 
   // limpa a seleção
   LimparBarrasSelecionadas() {
     const self = this;
-    console.log(`removendo seleção de ${self.barrasSelecionadas.length()} barras`);
+    console.log(`removendo seleção de ${self.barrasSelecionadasSVG.length()} barras`);
     this.SVGPrincipal.each(function (c) {
       self.RemoverBarraSelecionada(this);
     });
-    this.barrasSelecionadas = this.SVGPrincipal.set();
+    this.barrasSelecionadasSVG = this.SVGPrincipal.set();
   }
 
 
@@ -1033,16 +1059,16 @@ export class DiagramaComponent implements OnInit {
                 &&
                 (componente.cy() < retanguloSelecao.y())
               )) {
-              if (!self.barrasSelecionadas.has(componente)) {
+              if (!self.barrasSelecionadasSVG.has(componente)) {
                 self.AdicionarBarraSelecionada(componente);
               }
             } else {
-              if (self.barrasSelecionadas.has(componente)) {
+              if (self.barrasSelecionadasSVG.has(componente)) {
                 self.RemoverBarraSelecionada(componente);
               }
             }
           } else {
-            if (self.barrasSelecionadas.has(componente)) {
+            if (self.barrasSelecionadasSVG.has(componente)) {
               self.RemoverBarraSelecionada(componente);
             }
           }
@@ -1056,34 +1082,51 @@ export class DiagramaComponent implements OnInit {
     const self = this;
     let dx, dy, angulo;
     let grupoLinha;
+    let retanguloSelecao: SVG.Element;
     let deBarra: SVG.G, paraBarra: SVG.G;
 
     let polilinha: SVG.PolyLine;
     let impedancia: SVG.Element;
 
-    interact('.criarLinha')
+    interact('.retanguloSelecao')
       .dropzone({
         accept: '.criarLinha',
         ondragenter: function (event) {
-          event.target.classList.remove('criarLinha');
+          event.target.classList.add('enter');
+          event.target.classList.remove('active');
+
         },
         ondragleave: function (event) {
-          event.target.classList.add('criarLinha');
+          event.target.classList.remove('enter');
+          event.target.classList.add('active');
         },
         ondrop: function (event) {
-          event.target.classList.add('criarLinha');
-
-          const id_barra = event.target.parentNode.parentNode.id;
-          paraBarra = self.mapaGruposSVG.get(id_barra);
-          self.AdicionarLinha(deBarra.data('barra'), paraBarra.data('barra'), EnumLinhaTipo.reta);
+          const id_barra_para = event.target.parentNode.parentNode.id;
+          paraBarra = self.mapaGruposSVG.get(id_barra_para);
+          if (deBarra.id() !== paraBarra.id()) {
+            self.AdicionarLinha(deBarra.data('barra'), paraBarra.data('barra'), EnumLinhaTipo.reta);
+          }
+          event.target.classList.remove('active');
+          event.target.classList.remove('enter');
+          retanguloSelecao.addClass('retanguloSelecao');
         },
         ondropactivate: function (event) {
-          event.target.classList.add('nova_linha');
+
+          const grupoBarra = self.mapaGruposSVG.get(deBarra.id());
+          const grupoSelecao = grupoBarra.last() as SVG.G;
+          retanguloSelecao = grupoSelecao.last();
+          retanguloSelecao.removeClass('retanguloSelecao');
+
+          event.target.classList.add('active');
+          event.target.classList.remove('enter');
         },
         ondropdeactivate: function (event) {
-          event.target.classList.remove('nova_linha');
+          event.target.classList.remove('active');
+          event.target.classList.remove('enter');
         }
-      })
+      });
+
+    interact('.criarLinha')
       .draggable({
         onstart: dragstart,
         onmove: dragmove,
@@ -1159,9 +1202,9 @@ export class DiagramaComponent implements OnInit {
       let grupoBarra = self.mapaGruposSVG.get(event.target.id);
 
 
-      if (self.barrasSelecionadas.length() > 0) {
-        grupoBarras = self.barrasSelecionadas;
-        if (!self.barrasSelecionadas.has(grupoBarra)) { // caso pegue uma barra q não está na seleção
+      if (self.barrasSelecionadasSVG.length() > 0) {
+        grupoBarras = self.barrasSelecionadasSVG;
+        if (!self.barrasSelecionadasSVG.has(grupoBarra)) { // caso pegue uma barra q não está na seleção
           self.LimparBarrasSelecionadas();
           grupoBarras.add(grupoBarra);
         } else {
@@ -1215,7 +1258,7 @@ export class DiagramaComponent implements OnInit {
           dragstart(event);
         } else {
           // alert(`só pode ter uma ${tipo}`);
-
+          console.log(self.slack);
         }
       })
       .on('dragmove', dragmove)
@@ -1268,9 +1311,9 @@ export class DiagramaComponent implements OnInit {
         event.target.classList.remove('enter');
         event.target.classList.remove('active');
         const id_elemento: string = event.target.parentNode.parentNode.id;
-        self.curto.barra = self.mapaBarras.get(id_elemento);
-        self.curto.linha = self.mapaLinhas.get(id_elemento);
-        self.AdicionarCurto();
+        // self.curto.barra = self.mapaBarras.get(id_elemento);
+        // self.curto.linha = self.mapaLinhas.get(id_elemento);
+        // self.AdicionarCurto();
       },
       ondropactivate: function (event) {
         event.target.classList.add('active');

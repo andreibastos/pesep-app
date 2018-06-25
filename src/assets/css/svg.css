@@ -14,14 +14,14 @@
 }
 
 .retanguloSelecao.active {
-    fill: black !important;
-    stroke: black;
+    fill: green !important;
+    stroke: green;
     stroke-width: 1;
-    stroke-opacity: 1;
+    stroke-opacity: 0.5;
 }
 
 .retanguloSelecao:hover {
-    fill-opacity: 0.3;
+    fill-opacity: 0.5;
     transition-duration: 500ms;
 }
 
@@ -30,6 +30,8 @@
     stroke: green;
     stroke-width: 1;
     stroke-opacity: 1;
+    transition-duration: 500ms;
+
 }
 
 .barra {
