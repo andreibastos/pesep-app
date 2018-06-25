@@ -30,6 +30,7 @@ export class DiagramaComponent implements OnInit {
   // Dicionários para busca mais rápidas
   private mapaBarras: Map<string, Barra> = new Map();
   private mapaLinhas: Map<string, Linha> = new Map();
+  linhaSelecionada: Linha = null;
 
   // Controle de identificação
   private qtdBarrasTipo = {};
@@ -43,6 +44,8 @@ export class DiagramaComponent implements OnInit {
 
   // controle de seleção
   private barrasSelecionadasSVG: SVG.Set;
+  private linhasSelecionadasSVG: SVG.Set;
+
 
   // controle de copiar/recortar
   barrasCopiadasSVG: SVG.Set;
@@ -184,9 +187,17 @@ export class DiagramaComponent implements OnInit {
       this.AtualizaGrupoBarraTexto(grupoBarra);
     });
 
-    this.LimparBarrasSelecionadas();
+    this.LimparSelecionados();
   }
+  AtualizarLinha(linhaAtualizada: Linha) {
 
+    linhaAtualizada.de = this.linhaSelecionada.de;
+    linhaAtualizada.para = this.linhaSelecionada.para;
+
+    this.mapaLinhas.set(linhaAtualizada.id_linha, linhaAtualizada);
+    this.linhaSelecionada = null;
+    this.DesenhaLinha(linhaAtualizada);
+  }
   CriarDocumentoSVG(SVGNome: string) {
     const divDesenho = document.getElementById(SVGNome);
     // Obtém as medidas da tela
@@ -455,6 +466,7 @@ export class DiagramaComponent implements OnInit {
 
   // redesenhando linha na tela
   DesenhaLinha(linha: Linha, enumLinhaTipo: EnumLinhaTipo = EnumLinhaTipo.reta) {
+    const self = this;
     // remover linha existente com o mesmo identificador
     const selecao = this.SVGPrincipal.select(`#${linha.id_linha}`);
     selecao.each(function () { this.remove(); });
@@ -501,7 +513,11 @@ export class DiagramaComponent implements OnInit {
         .addClass('transmissao');
       poliLinha.polyline([[0, 0], [delta_x, delta_y]])
         .addClass('linha');
-      grupoLinha.data('angulo', angulo);
+      grupoLinha.data('angulo', angulo)
+        .click(function () {
+          self.AlternarLinhaSelecionada(grupoLinha);
+        }
+        ).style({ 'cursor': 'pointer' });
 
     } else if (enumLinhaTipo === EnumLinhaTipo.poliretas) {
       poliLinha.polyline(this.CriarPoliLinha(delta_x, delta_y, 15));
@@ -783,6 +799,17 @@ export class DiagramaComponent implements OnInit {
     this.barrasSelecionadasSVG.add(grupoBarra);
   }
 
+  AdicionarLinhaSelecionada(grupoLinha: SVG.G) {
+    if (!grupoLinha.hasClass('grupoLinha')) {
+      return;
+    }
+    const grupoLinhaSelecao = grupoLinha.get(2) as SVG.G;
+    if (grupoLinhaSelecao) {
+      grupoLinhaSelecao.addClass('selecionado');
+    }
+    this.linhasSelecionadasSVG.add(grupoLinha);
+  }
+
   // remove grupo da seleção
   RemoverBarraSelecionada(grupoBarra: SVG.G) {
     if (!grupoBarra.hasClass('grupoBarra')) {
@@ -835,6 +862,10 @@ export class DiagramaComponent implements OnInit {
     return barrasSelecionadas;
   }
 
+  LinhaSelecionada(): boolean {
+    return this.linhaSelecionada === null;
+  }
+
   // "copiar" barras seleciondas
   CopiarBarrasSelecionadas() {
     const self = this;
@@ -862,14 +893,14 @@ export class DiagramaComponent implements OnInit {
       this.remove();
     });
     this.barrasCopiadasSVG = this.SVGPrincipal.set();
-    this.LimparBarrasSelecionadas();
+    this.LimparSelecionados();
   }
 
   // "colar" barras copiadas ou recortas
   ColarBarras() {
     if (this.podeColar()) {
       const self = this;
-      this.LimparBarrasSelecionadas();
+      this.LimparSelecionados();
 
       if (this.barrasCopiadasSVG.length() > 0) {
         console.log(`colando ${self.barrasCopiadasSVG.length()} barras copiadas`);
@@ -931,6 +962,16 @@ export class DiagramaComponent implements OnInit {
     }
   }
 
+  AlternarLinhaSelecionada(grupo: SVG.G) {
+    const linha = this.mapaLinhas.get(grupo.id());
+    if (this.linhaSelecionada === linha) {
+      this.linhaSelecionada = null;
+    } else {
+      this.linhaSelecionada = null;
+      this.linhaSelecionada = linha;
+    }
+  }
+
   // limpa a seleção
   LimparBarrasSelecionadas() {
     const self = this;
@@ -939,6 +980,15 @@ export class DiagramaComponent implements OnInit {
       self.RemoverBarraSelecionada(this);
     });
     this.barrasSelecionadasSVG = this.SVGPrincipal.set();
+  }
+
+  LimparLinhasSelecionadas() {
+    this.linhaSelecionada = null;
+  }
+
+  LimparSelecionados() {
+    this.LimparBarrasSelecionadas();
+    this.LimparLinhasSelecionadas();
   }
 
 
@@ -1050,7 +1100,7 @@ export class DiagramaComponent implements OnInit {
       restrict: {
         restriction: document.getElementById(this.SVGPrincipal.id()),
       }
-    }).styleCursor(false).on('tap', function () { console.log('tap'); self.LimparBarrasSelecionadas(); });
+    }).styleCursor(false).on('tap', function () { console.log('tap'); self.LimparSelecionados(); });
 
     function verificaBarrasNaSelecao(retanguloSelecao: SVG.Element) {
       self.SVGPrincipal.each(function (c) {
@@ -1223,7 +1273,7 @@ export class DiagramaComponent implements OnInit {
       if (self.barrasSelecionadasSVG.length() > 0) {
         grupoBarras = self.barrasSelecionadasSVG;
         if (!self.barrasSelecionadasSVG.has(grupoBarra)) { // caso pegue uma barra q não está na seleção
-          self.LimparBarrasSelecionadas();
+          self.LimparSelecionados();
           grupoBarras.add(grupoBarra);
         } else {
           console.log('arrastando grupo');
@@ -1359,7 +1409,7 @@ export class DiagramaComponent implements OnInit {
       switch (e.keyCode) {
         case 27:
           console.log('esc');
-          self.LimparBarrasSelecionadas();
+          self.LimparSelecionados();
           break;
         case 46:
           console.log('del');

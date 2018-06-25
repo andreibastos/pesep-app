@@ -20,13 +20,7 @@ export class BarraFormComponent implements OnInit {
   constructor(private formBuild: FormBuilder) { }
 
   ngOnInit() {
-    console.log(this.regex);
-    this.formulario = new FormGroup({
-      nome: new FormControl('Barra')
-    });
-
     const barra: Barra = this.barrasRecebidas[0];
-
     this.CriarFormulario(barra);
   }
 
@@ -38,7 +32,6 @@ export class BarraFormComponent implements OnInit {
 
 
   AtualizarBarraComFormulario(barra: Barra): Barra {
-    // console.log(barra);
     const novaBarra: Barra = new Barra(barra.tipo);
     Object.keys(this.formulario.controls).forEach(campo => {
       novaBarra[campo] = this.formulario.get(campo).value;

@@ -57,7 +57,7 @@
     <!-- Propriedades -->
     <div class="col-1 m-0 p-0 border">
       <div class="propriety">
-        <div *ngIf="BarrasSelecionadas().length == 0" class="justify-content-center m-0 p-0">
+        <div *ngIf="BarrasSelecionadas().length == 0 && LinhaSelecionada()" class="justify-content-center m-0 p-0">
           <p class="h5 "> Propriedades</p>
           <div class="row p-0 m-0 border">
             <div class="m-2 custom-control custom-checkbox">
@@ -75,6 +75,10 @@
 
         <div *ngIf="BarrasSelecionadas().length > 0" class="m-0 p-0 justify-content-center">
           <app-barra-form (barrasEnviadas)="AtualizarBarras($event)" [barrasRecebidas]="BarrasSelecionadas()"> </app-barra-form>
+        </div>
+
+        <div *ngIf="!LinhaSelecionada()" class="m-0 p-0 justify-content-center">
+          <app-linha-form (linhaEnviada)="AtualizarLinha($event)" [linhaRecebida]="linhaSelecionada"> </app-linha-form>
         </div>
       </div>
       <!-- /Propriedades -->

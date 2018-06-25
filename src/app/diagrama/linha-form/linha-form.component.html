@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-12">
+    <p class="m-2 p-0">Alterando Barra</p>
+    <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <div class="form-group col-md-12" [ngClass]="AplicaCSSError('id_linha')">
+          <label>ID</label>
+          <input type="text" class="form-control" placeholder="barra_1" formControlName="id_linha">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-12" [ngClass]="AplicaCSSError('nome')">
+          <label>Nome</label>
+          <input type="text" class="form-control" placeholder="linha 0,0" formControlName="nome">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="col-12" for="">Impedância</label>
+        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('R')">
+          <label>r</label>
+          <input type="number" class="form-control" placeholder="1.0" formControlName="R">
+        </div>
+
+        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('X')">
+          <label>x</label>
+          <input type="number" class="form-control" placeholder="0.0" formControlName="X">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="col-12" for="">Transformador</label>
+        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('TAP')">
+          <label>Tap</label>
+          <input type="number" class="form-control" placeholder="1.0" formControlName="TAP">
+        </div>
+
+        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('A')">
+          <label>Ângulo</label>
+          <input type="number" class="form-control" placeholder="0.0" formControlName="A">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary mb-2">Atualizar</button>
+
+    </form>
+  </div>
+</div>
