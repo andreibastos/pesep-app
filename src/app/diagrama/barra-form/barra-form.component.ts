@@ -16,11 +16,11 @@ export class BarraFormComponent implements OnInit {
   @Output() barrasEnviadas: EventEmitter<Array<Barra>> = new EventEmitter();
   private barrasAtualizadas: Array<Barra> = new Array();
 
-
+  private regex = /\d/g;
   constructor(private formBuild: FormBuilder) { }
 
   ngOnInit() {
-
+    console.log(this.regex);
     this.formulario = new FormGroup({
       nome: new FormControl('Barra')
     });
@@ -38,71 +38,81 @@ export class BarraFormComponent implements OnInit {
 
 
   AtualizarBarraComFormulario(barra: Barra): Barra {
+    // console.log(barra);
+    const novaBarra: Barra = new Barra(barra.tipo);
     Object.keys(this.formulario.controls).forEach(campo => {
-      barra[campo] = this.formulario.value[campo];
+      novaBarra[campo] = this.formulario.get(campo).value;
     });
-    return barra;
+    return novaBarra;
   }
 
   onSubmit() {
-    console.log(this.formulario.value);
-    console.log(this.barrasRecebidas);
-    // if (this.formulario.valid)
-    const barra = this.AtualizarBarraComFormulario(this.barrasRecebidas[0]);
-    this.barrasAtualizadas.push(barra);
-    // this.AtualizarBarras();
+    if (this.formulario.valid) {
+      const barra = this.AtualizarBarraComFormulario(this.barrasRecebidas[0]);
+      this.barrasAtualizadas.push(barra);
+      this.barrasEnviadas.emit(this.barrasAtualizadas);
+      this.barrasAtualizadas = new Array();
+    } else {
+      console.log(this.formulario);
+    }
 
-    this.barrasEnviadas.emit(this.barrasAtualizadas);
   }
 
   CriarFormulario(barra: Barra) {
     this.formulario = this.formBuild.group({
-      id_barra: [barra.id_barra],
+      id_barra: barra.id_barra,
       nome: [barra.nome, Validators.maxLength(10)],
       tipoBarra: [barra.tipo, Validators.required],
       tensao: [barra.tensao_0, [
         Validators.max(1.1),
-        Validators.min(0.9),
-        Validators.pattern(new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g))]],
+        Validators.min(0.9)
+        ]],
       angulo: [barra.angulo_0, [
         Validators.max(360),
-        Validators.min(-360),
-        Validators.pattern(new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g))]],
+        Validators.min(-360)
+        ]],
       pGerada: [barra.pGerada, [
         Validators.max(10),
-        Validators.min(0),
-        Validators.pattern(new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g))]
+        Validators.min(0)
+        ]
       ],
       qGerada: [barra.qGerada, [
         Validators.max(10),
-        Validators.min(0),
-        Validators.pattern(new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g))]],
+        Validators.min(0)
+        ]],
       pCarga: [barra.pCarga, [
         Validators.max(10),
-        Validators.min(0),
-        Validators.pattern(new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g))]],
+        Validators.min(0)
+        ]],
       qCarga: [barra.qCarga, [
         Validators.max(10),
-        Validators.min(0),
-        Validators.pattern(new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g))]],
+        Validators.min(0)
+        ]],
       pGeradaMin: [barra.pGeradaMin, [
         Validators.max(10),
-        Validators.min(0),
-        Validators.pattern(new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g))]],
+        Validators.min(0)
+        ]],
       pGeradaMax: [barra.pGeradaMax, [
         Validators.max(10),
-        Validators.min(0),
-        Validators.pattern(new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g))]],
+        Validators.min(0)
+        ]],
       qGeradaMin: [barra.qGeradaMin, [
         Validators.max(10),
-        Validators.min(0),
-        Validators.pattern(new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g))]],
+        Validators.min(0)
+        ]],
       qGeradaMax: [barra.qGeradaMax, [
         Validators.max(10),
+        Validators.min(0)
+        ]],
+      qShunt: [barra.qShunt, [
         Validators.min(0),
-        Validators.pattern(new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g))]],
-      qShunt: [barra.qShunt, Validators.pattern(new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g))],
-      X: [barra.X, Validators.pattern(new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g))]
+        Validators.max(10)
+        ]
+      ],
+      X: [barra.X, [
+        Validators.min(0),
+        Validators.max(10)
+        ]]
     });
     this.formulario.controls['id_barra'].disable();
     this.formulario.controls['tipoBarra'].disable();
