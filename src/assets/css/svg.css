@@ -55,6 +55,19 @@
     font-size: 50px;
     color: black;
 }
+.fluxo {
+    stroke-width: 1.5; 
+    stroke:black;
+}
+
+.fluxo.triangulo {
+    fill: blue;
+}
+.fluxo.linha {
+    /* fill: red; */
+    stroke:red;
+
+}
 
 .criarLinha {
     fill: black;

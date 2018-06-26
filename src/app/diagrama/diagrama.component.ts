@@ -36,8 +36,6 @@ export class DiagramaComponent implements OnInit {
   private mapaLinhas: Map<string, Linha> = new Map();
   linhaSelecionada: Linha = null;
 
-  calculandoFluxo = false;
-
   // Controle de identificação
   private qtdBarrasTipo = {};
   private qtdBarrasTotal = 1;
@@ -110,19 +108,24 @@ export class DiagramaComponent implements OnInit {
     this.AtualizarDocumentoSVG();
   }
 
-  CalcularFluxo() {
-    const linhas = [];
-    const barras = [];
-
-    this.mapaBarras.forEach(barra => {
-      barras.push(barra);
-    });
-
+  getLinhas(): Array<Linha> {
+    const linhas = new Array();
     this.mapaLinhas.forEach(linha => {
       linhas.push(linha);
     });
+    return linhas;
+  }
 
-    const sistema: Sistema = new Sistema(linhas, barras, this.mathPowerService);
+  getBarras(): Array<Barra> {
+    const barras = new Array();
+    this.mapaBarras.forEach(barra => {
+      barras.push(barra);
+    });
+    return barras;
+  }
+
+  CalcularFluxo() {
+    const sistema: Sistema = new Sistema(this.getLinhas(), this.getBarras(), this.mathPowerService);
 
     // peda para calcular o fluxo
     sistema.CalcularFluxo();
@@ -134,6 +137,7 @@ export class DiagramaComponent implements OnInit {
   chegouFluxo(fluxos: Array<Fluxo>) {
     this.fluxos = fluxos;
     console.log(fluxos);
+    this.DesenhaLinhas(this.getLinhas());
   }
 
 
@@ -455,15 +459,13 @@ export class DiagramaComponent implements OnInit {
 
   // removendo uma barra
   RemoverBarra(barra: Barra) {
-    console.log(barra.tipo === EnumTipoBarra.Slack);
-
     if (barra.tipo === EnumTipoBarra.Slack) {
       this.slack = null;
     }
     this.mapaGruposSVG.get(barra.id_barra).remove();
     this.mapaGruposSVG.delete(barra.id_barra);
     this.mapaBarras.delete(barra.id_barra);
-    // this.DecrementarBarra(barra.tipo);
+    this.DecrementarBarra(barra.tipo);
   }
 
   // incremento de barras novas
@@ -521,6 +523,19 @@ export class DiagramaComponent implements OnInit {
       pontos.push(pontos[index]);
     }
     return pontos;
+  }
+
+  criarSeta(comprimento, largura, angulo = 0): SVG.G {
+    const grupoSeta = this.SVGPrincipal.group();
+    const polygon = grupoSeta.polygon([[0, 0], [largura, 0], [largura / 2, largura / 2], [0, 0]])
+      .rotate(-90)
+      .addClass('fluxo')
+      .addClass('triangulo');
+    grupoSeta.line(-comprimento, 0, 0, 0).move(polygon.cx() - comprimento, polygon.cy())
+      .addClass('fluxo')
+      .addClass('linha').backward();
+    grupoSeta.rotate(angulo);
+    return grupoSeta;
   }
 
   // redesenhando linha na tela
@@ -598,6 +613,8 @@ export class DiagramaComponent implements OnInit {
     //   }
     // }
 
+
+
     // adiciona impedância
     const rect = impedancia.rect(60, 20).rotate(angulo);
     impedancia.move(delta_x / 2 - rect.width() / 2, delta_y / 2 - rect.height() / 2)
@@ -606,6 +623,26 @@ export class DiagramaComponent implements OnInit {
     const texto = impedancia.group()
       .text(linha.nome)
       .dy(rect.height() / 2 + 5);
+
+    if (this.fluxos) {
+      this.fluxos.forEach(fluxo => {
+        if (fluxo.de.id_barra === linha.de.id_barra && fluxo.para.id_barra) {
+          console.log(fluxo.de.id_barra, fluxo.para.id_barra);
+          let sentido = 0;
+          if (fluxo.de.id_barra.split('_')[1] > fluxo.para.id_barra.split('_')[1]) {
+            sentido = 180;
+          }
+          const grupoSeta = this.criarSeta(50, 20, sentido);
+          impedancia.group()
+            .add(grupoSeta)
+            .backward()
+            .rotate(angulo)
+            .cx(rect.cx());
+        }
+      });
+    }
+
+    console.log(grupoLinha.last());
 
     // adiciona as respectivas classes
     poliLinha.addClass('linha');
