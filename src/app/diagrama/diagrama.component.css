@@ -38,7 +38,7 @@
   background-color: rgba(230, 230, 230, 0.856);
 }
 
-.propriety:hover {
+.propriety:hover, .propriety.active   {
   float: right;
   width: 300px;
   transition: width 2s;

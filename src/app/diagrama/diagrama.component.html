@@ -37,8 +37,8 @@
 
         <!-- calculos -->
         <div class="col-7 btn-group justify-content-end d-flex " role="group">
-          <button id="btn_fluxo" (click)="CalcularFluxo()" [disabled]="!PodeRealizarFluxo()" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true"
-            data-placement="top" title="Calcular Fluxo de Potência">
+          <button id="btn_fluxo" (click)="CalcularFluxo()" [disabled]="!PodeRealizarFluxo()" type="button" class="btn btn-outline-secondary"
+            data-toggle="tooltip" data-html="true" data-placement="top" title="Calcular Fluxo de Potência">
             <img src="../../assets/icons/menu-acoes/flow.png" width="32px" height="32px">
           </button>
           <button disabled type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top"
@@ -58,7 +58,8 @@
 
     <!-- Propriedades -->
     <div class="col-1 m-0 p-0 border">
-      <div class="propriety">
+      <div [class.active]="
+        BarrasSelecionadas().length > 0 || LinhaSelecionada()" class="propriety">
         <!-- Diagrama -->
         <div *ngIf="BarrasSelecionadas().length == 0 && !LinhaSelecionada()" class="justify-content-center m-0 p-0">
           <p class="h5 "> Propriedades</p>
