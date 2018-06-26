@@ -23,22 +23,51 @@ export class Sistema {
     }
 
     toTable(field: string, withHeader = true): any[] {
-        const array = [];
-        if (withHeader) {
-            let header = [];
-            if (field === 'linhas') {
-                header = Linha.header;
-            } else if (field === 'fluxos') {
-                header = Fluxo.header;
-            } else if (field === 'barras') {
-                header = Barra.header;
+        let array = [];
+        if (field !== 'fluxos') {
+            if (withHeader) {
+                let header = [];
+                if (field === 'linhas') {
+                    header = Linha.header;
+                } else if (field === 'fluxos') {
+                    header = Fluxo.header;
+                } else if (field === 'barras') {
+                    header = Barra.header;
+                }
+                array.push(header);
             }
-            array.push(header);
+            this[field].forEach(row => {
+                array.push(row.toArray());
+            });
+        } else {
+            array = this.fluxosToTable();
         }
-        this[field].forEach(row => {
-            array.push(row.toArray());
-        });
+
         return array;
+    }
+
+
+    fluxosToTable() {
+        const dataTable = [];
+        const n_row = 11;
+        const tabela = [];
+        tabela.push(['ID', 'Nome', 'Tensão', 'Ângulo', 'P Gerada', 'Q Gerada', 'P Carga', 'Q Carga', 'Para', 'P Fluxo', 'Q Fluxo']);
+        this.fluxos.forEach(fluxo => {
+            let row = Array(n_row);
+            row.fill('');
+
+            if (!dataTable.includes(fluxo.de.id_barra)) {
+                dataTable.push(fluxo.de.id_barra);
+                row = fluxo.toDeArray();
+                tabela.push(row);
+            } else {
+                row[8] = fluxo.para.id_barra;
+                row[9] = fluxo.pFluxo;
+                row[10] = fluxo.qFluxo;
+                tabela.push(row);
+            }
+        });
+        return tabela;
     }
 
     CriarFluxos(fluxoPotencia) {
@@ -75,6 +104,7 @@ export class Sistema {
             }
         });
         this.calculandoFluxo.emit(this.fluxos);
+        this.fluxosToTable();
     }
 
     CriarMatrizSusceptancia(susceptancias: any[], linhas: any[], colunas: any[]) {
