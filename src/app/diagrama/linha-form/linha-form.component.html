@@ -40,6 +40,23 @@
           <label>Ângulo</label>
           <input type="number" class="form-control" placeholder="0.0" formControlName="A">
         </div>
+
+        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('tipo_trafo')">
+          <label>Tipo Transformador</label>
+          <input type="number" class="form-control" placeholder="0.0" formControlName="tipo_trafo">
+        </div>
+
+        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('reatancia_trafo')">
+          <label>Reatância Transformador</label>
+          <input type="number" class="form-control" placeholder="0.0" formControlName="reatancia_trafo">
+        </div>
+
+        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('resistencia_zero')">
+          <label>Resistência Zero</label>
+          <input type="number" class="form-control" placeholder="0.0" formControlName="resistencia_zero">
+        </div>
+
+
       </div>
       <button type="submit" class="btn btn-primary mb-2">Atualizar</button>
 
