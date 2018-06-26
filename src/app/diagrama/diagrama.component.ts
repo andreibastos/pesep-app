@@ -31,6 +31,8 @@ export class DiagramaComponent implements OnInit {
   private slack: Barra = null;
   fluxos: Array<Fluxo> = [];
 
+  sistema: Sistema;
+
   // Dicionários para busca mais rápidas
   private mapaBarras: Map<string, Barra> = new Map();
   private mapaLinhas: Map<string, Linha> = new Map();
@@ -98,6 +100,14 @@ export class DiagramaComponent implements OnInit {
       console.log(this.exemplo);
       this.DesenharExemplo();
     }
+
+
+    this.sistema = new Sistema(this.getLinhas(), this.getBarras(), this.mathPowerService);
+
+    $('#resultados').on('hidden.bs.modal', function (e) {
+      // console.log(e);
+      console.log('iu');
+    });
   }
 
   @HostListener('window:resize', ['$event'])
@@ -108,9 +118,15 @@ export class DiagramaComponent implements OnInit {
     this.AtualizarDocumentoSVG();
   }
 
-  VisualizarSistema() {
-    console.log(this.getBarras());
+  AtualizarSistema() {
+
+    // Alterar, colocar barras e linhas no sistema
+    this.sistema.linhas  = this.getLinhas();
+    this.sistema.barras  = this.getBarras();
+
+    console.log(this.sistema);
   }
+
 
   getLinhas(): Array<Linha> {
     const linhas = new Array();
@@ -129,18 +145,16 @@ export class DiagramaComponent implements OnInit {
   }
 
   CalcularFluxo() {
-    const sistema: Sistema = new Sistema(this.getLinhas(), this.getBarras(), this.mathPowerService);
-
     // peda para calcular o fluxo
-    sistema.CalcularFluxo();
+    this.sistema.CalcularFluxo();
 
     // se inscreve no fluxo
-    sistema.calculandoFluxo.subscribe(fluxos => this.chegouFluxo(fluxos));
+    this.sistema.calculandoFluxo.subscribe(fluxos => this.chegouFluxo(fluxos));
   }
 
   chegouFluxo(fluxos: Array<Fluxo>) {
-    this.fluxos = fluxos;
-    console.log(fluxos);
+    // this.fluxos = fluxos;
+    // console.log(fluxos);
     this.DesenhaLinhas(this.getLinhas());
   }
 

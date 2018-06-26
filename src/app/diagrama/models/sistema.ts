@@ -10,7 +10,7 @@ export class Sistema {
     @Output()
     calculandoFluxo: EventEmitter<Array<Fluxo>> = new EventEmitter();
 
-    constructor(private linhas: Array<Linha>, private barras: Array<Barra>, private mathPowerService: MathPowerService) {
+    constructor(public linhas: Array<Linha>, public barras: Array<Barra>, private mathPowerService?: MathPowerService) {
 
     }
 
