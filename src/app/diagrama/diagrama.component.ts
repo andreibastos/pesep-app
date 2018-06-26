@@ -627,7 +627,7 @@ export class DiagramaComponent implements OnInit {
     if (this.fluxos) {
       this.fluxos.forEach(fluxo => {
         if (fluxo.de.id_barra === linha.de.id_barra && fluxo.para.id_barra) {
-          console.log(fluxo.de.id_barra, fluxo.para.id_barra);
+          // console.log(fluxo.de.id_barra, fluxo.para.id_barra);
           let sentido = 0;
           if (fluxo.de.id_barra.split('_')[1] > fluxo.para.id_barra.split('_')[1]) {
             sentido = 180;
@@ -642,7 +642,6 @@ export class DiagramaComponent implements OnInit {
       });
     }
 
-    console.log(grupoLinha.last());
 
     // adiciona as respectivas classes
     poliLinha.addClass('linha');
