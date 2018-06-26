@@ -108,6 +108,10 @@ export class DiagramaComponent implements OnInit {
     this.AtualizarDocumentoSVG();
   }
 
+  VisualizarSistema() {
+    console.log(this.getBarras());
+  }
+
   getLinhas(): Array<Linha> {
     const linhas = new Array();
     this.mapaLinhas.forEach(linha => {
