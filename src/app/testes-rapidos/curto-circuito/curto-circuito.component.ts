@@ -1,4 +1,4 @@
-import { TestesRapidosService } from './../testes-rapidos.service';
+import { MathPowerService } from './../testes-rapidos.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -12,7 +12,7 @@ export class CurtoCircuitoComponent implements OnInit {
   canCalcule = false;
   arquivos = [];
 
-  constructor(private testesRapidosService: TestesRapidosService) { }
+  constructor(private testesRapidosService: MathPowerService) { }
 
   ngOnInit() {
   }
@@ -24,7 +24,7 @@ export class CurtoCircuitoComponent implements OnInit {
   }
 
   CalculeShort() {
-    this.testesRapidosService.calcular(this.arquivos, 'short').then(
+    this.testesRapidosService.calcule(this.arquivos, 'short').then(
       result => {
         console.log(result);
       }
