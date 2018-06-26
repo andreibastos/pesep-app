@@ -627,12 +627,16 @@ export class DiagramaComponent implements OnInit {
     if (this.fluxos) {
       this.fluxos.forEach(fluxo => {
         if (fluxo.de.id_barra === linha.de.id_barra && fluxo.para.id_barra) {
-          // console.log(fluxo.de.id_barra, fluxo.para.id_barra);
+          console.log(fluxo.de.id_barra, fluxo.para.id_barra);
           let sentido = 0;
           if (fluxo.de.id_barra.split('_')[1] > fluxo.para.id_barra.split('_')[1]) {
             sentido = 180;
           }
-          const grupoSeta = this.criarSeta(50, 20, sentido);
+          const grupoSeta = this.criarSeta(50, 20);
+          console.log(fluxo.pFluxo, fluxo.qFluxo);
+          impedancia.text(`P=${fluxo.pFluxo} pu`)
+            // .dx(fluxo.para.id_barra.split('_')[1] * 20)
+            // .dy(fluxo.para.id_barra.split('_')[1] * 20);
           impedancia.group()
             .add(grupoSeta)
             .backward()
