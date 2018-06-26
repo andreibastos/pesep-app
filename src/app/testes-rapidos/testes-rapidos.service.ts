@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { Http, Headers, RequestOptions, Response, RequestMethod } from '@angular/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MathPowerService {
 
-  url = 'http://0.0.0.0:5000/calcule/';
-
-
-  body: any[];
+  private url = 'http://0.0.0.0:5000/calcule/';
+  private body: any[];
 
   constructor(private http: Http) { }
 
@@ -17,24 +15,21 @@ export class MathPowerService {
     return this.url + method;
   }
 
-
-  calcular(system, method): Promise<any> {
+  calcule(system, method): Promise<any> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
-    const options = new RequestOptions({ headers: headers });
+    const options = new RequestOptions({ headers: headers, method: RequestMethod.Post });
     return this.http.post(this.getUrl(method), system, options).toPromise()
-      .then(this.extractData)
+      .then(this.handleDataPromisse)
       .catch(this.handleErrorPromise)
       ;
   }
 
-  private extractData(res: Response) {
+  private handleDataPromisse(res: Response) {
     const body = res.json();
-    // console.log(body, 'body');
     return body || [];
   }
 
   private handleErrorPromise(error: Response | any) {
-    // console.error(error.message || error);
     return Promise.reject(error.message || error);
   }
 }

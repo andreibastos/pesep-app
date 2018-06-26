@@ -113,8 +113,8 @@ export class Gerador implements IComponente, IBarra {
 
 export enum EnumTipoBarra {
     PV = 'PV',
-    Slack = 'Slack',
-    PQ = 'PQ'
+    PQ = 'PQ',
+    Slack = 'Slack'
 }
 
 export enum EnumLinhaTipo {

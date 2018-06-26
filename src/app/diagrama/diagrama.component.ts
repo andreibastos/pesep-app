@@ -11,6 +11,7 @@ import * as SVG from 'svg.js';
 import { EnumLinhaTipo, EnumTipoBarra } from './../models/componente';
 import { Barra } from './models/barra';
 import { Linha } from './models/linha';
+import { Fluxo } from './models/fluxo';
 import { Curto } from './models/curto';
 import { Sistema } from './models/sistema';
 
@@ -28,6 +29,7 @@ export class DiagramaComponent implements OnInit {
   // Elementos do Sistema Elétrico de Potência
   // private curto: Curto = new Curto();
   private slack: Barra = null;
+  fluxos: Array<Fluxo> = [];
 
   // Dicionários para busca mais rápidas
   private mapaBarras: Map<string, Barra> = new Map();
@@ -122,12 +124,16 @@ export class DiagramaComponent implements OnInit {
 
     const sistema: Sistema = new Sistema(linhas, barras, this.mathPowerService);
 
+    // peda para calcular o fluxo
     sistema.CalcularFluxo();
 
+    // se inscreve no fluxo
+    sistema.calculandoFluxo.subscribe(fluxos => this.chegouFluxo(fluxos));
+  }
 
-    this.calculandoFluxo = true;
-
-    // this.calculandoFluxo = false;
+  chegouFluxo(fluxos: Array<Fluxo>) {
+    this.fluxos = fluxos;
+    console.log(fluxos);
   }
 
 

@@ -28,7 +28,7 @@ export class FluxoPotenciaComponent implements OnInit {
 
   CalculePowerFlow() {
 
-    this.mathPowerService.calcular(this.system, 'power_flow').then(
+    this.mathPowerService.calcule(this.system, 'power_flow').then(
       result => {
         this.fluxo = result['power_flow'];
         this.result = result;

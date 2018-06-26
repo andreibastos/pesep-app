@@ -24,7 +24,7 @@ export class CurtoCircuitoComponent implements OnInit {
   }
 
   CalculeShort() {
-    this.testesRapidosService.calcular(this.arquivos, 'short').then(
+    this.testesRapidosService.calcule(this.arquivos, 'short').then(
       result => {
         console.log(result);
       }
