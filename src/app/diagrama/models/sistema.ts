@@ -15,23 +15,36 @@ export class Sistema {
     }
 
     toObjectArray(): any {
-        const sistemaObject = {};
-        sistemaObject['linhas'] = [];
-        sistemaObject['barras'] = [];
-        this.linhas.forEach(linha => {
-            sistemaObject['linhas'].push(linha.toArray());
+        const objectArray = {};
+        ['linhas', 'barras'].forEach((key) => {
+            objectArray[key] = this.toTable(key, false);
         });
-        this.barras.forEach(barra => {
-            sistemaObject['barras'].push(barra.toArray());
-        });
-        return sistemaObject;
+        return objectArray;
     }
 
-    CriarFluxos(linhas) {
-        const self = this;
+    toTable(field: string, withHeader = true): any[] {
+        const array = [];
+        if (withHeader) {
+            let header = [];
+            if (field === 'linhas') {
+                header = Linha.header;
+            } else if (field === 'fluxos') {
+                header = Fluxo.header;
+            } else if (field === 'barras') {
+                header = Barra.header;
+            }
+            array.push(header);
+        }
+        this[field].forEach(row => {
+            array.push(row.toArray());
+        });
+        return array;
+    }
+
+    CriarFluxos(fluxoPotencia) {
         let header = [];
         let de_anterior, de_atual, para_atual = null;
-        linhas.forEach((linha, index) => {
+        fluxoPotencia.forEach((linha, index) => {
             if (index === 0) {
                 header = linha;
             } else {
@@ -74,18 +87,17 @@ export class Sistema {
             }
             matriz[linha][coluna] = parseFloat(susceptancia);
         });
-        // console.log(matriz);
     }
 
     CalcularFluxo() {
         this.mathPowerService.calcule(this.toObjectArray(), 'power_flow').then(
             result => {
                 const power_flow = result['power_flow'];
-                const susceptance = result['susceptance'][0][0].split(' ');
-                const lines = result['lines'][0][0].split(' ');
-                const columns = result['columns'][0][0].split(' ');
                 this.CriarFluxos(power_flow);
-                this.CriarMatrizSusceptancia(susceptance, lines, columns);
+                // const susceptance = result['susceptance'][0][0].split(' ');
+                // const lines = result['lines'][0][0].split(' ');
+                // const columns = result['columns'][0][0].split(' ');
+                // this.CriarMatrizSusceptancia(susceptance, lines, columns);
 
             }
         ).catch(

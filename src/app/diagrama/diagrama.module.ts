@@ -5,7 +5,6 @@ import { BarraFormComponent } from './barra-form/barra-form.component';
 import { LinhaFormComponent } from './linha-form/linha-form.component';
 import { ResultadosComponent } from './resultados/resultados.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TabelaComponent } from '../shared/tabela/tabela.component';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -18,9 +17,7 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    SharedModule 
+    SharedModule
   ],
 })
-
-// ler https://angular-2-training-book.rangle.io/handout/modules/shared-di-tree.html
 export class DiagramaModule { }

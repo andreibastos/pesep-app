@@ -18,12 +18,12 @@ export class ResultadosComponent implements OnInit {
   selecionado: any[];
 
   ngOnInit() {
-
+    this.TrocarNav(this.nav_active);
   }
 
-  TrocarNav(nome: string) {
-    this.nav_active = nome;
-    console.log(this.sistema[nome]);
+  TrocarNav(campo: string) {
+    this.nav_active = campo;
+    this.selecionado = this.sistema.toTable(campo);
   }
 
 }

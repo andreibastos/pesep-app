@@ -104,10 +104,6 @@ export class DiagramaComponent implements OnInit {
 
     this.sistema = new Sistema(this.getLinhas(), this.getBarras(), this.mathPowerService);
 
-    $('#resultados').on('hidden.bs.modal', function (e) {
-      // console.log(e);
-      console.log('iu');
-    });
   }
 
   @HostListener('window:resize', ['$event'])
@@ -121,10 +117,9 @@ export class DiagramaComponent implements OnInit {
   AtualizarSistema() {
 
     // Alterar, colocar barras e linhas no sistema
-    this.sistema.linhas  = this.getLinhas();
-    this.sistema.barras  = this.getBarras();
+    this.sistema.linhas = this.getLinhas();
+    this.sistema.barras = this.getBarras();
 
-    console.log(this.sistema);
   }
 
 
@@ -154,6 +149,7 @@ export class DiagramaComponent implements OnInit {
 
   chegouFluxo(fluxos: Array<Fluxo>) {
     // this.fluxos = fluxos;
+    console.log('chegou novos fluxos');
     // console.log(fluxos);
     this.DesenhaLinhas(this.getLinhas());
   }
