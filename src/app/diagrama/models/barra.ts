@@ -1,6 +1,24 @@
 import { EnumTipoBarra } from '../../models/componente';
 
 export class Barra {
+
+    static header = ['Item',
+        'Tipo',
+        'Nome',
+        'Tensão Inicial (pu)',
+        'Ângulo Inicial (θ)',
+        'Potência Ativa Gerada (pu)',
+        'Potência Reativa Gerada (pu)',
+        'Potência Reativa Mínima (pu)',
+        'Potência Reativa Máxima (pu)',
+        'Potência Ativa Carga (pu)',
+        'Potência Reativa Carga (pu)',
+        'Potência Ativa Gerada Mínima (pu)',
+        'Potência Ativa Gerada Máxima (pu)',
+        'Potência Reativa Shunt (pu)',
+        'Reatância Interna (x)'
+    ];
+
     id_barra = 'nova_barra';
     tipo: EnumTipoBarra;
     nome = '';

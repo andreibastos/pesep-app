@@ -9,29 +9,74 @@ export class Sistema {
 
     @Output()
     calculandoFluxo: EventEmitter<Array<Fluxo>> = new EventEmitter();
+    
+    @Output()
+    errorHandler: EventEmitter<string> = new EventEmitter();
 
-    constructor(private linhas: Array<Linha>, private barras: Array<Barra>, private mathPowerService: MathPowerService) {
+    constructor(public linhas: Array<Linha>, public barras: Array<Barra>, private mathPowerService?: MathPowerService) {
 
     }
 
     toObjectArray(): any {
-        const sistemaObject = {};
-        sistemaObject['linhas'] = [];
-        sistemaObject['barras'] = [];
-        this.linhas.forEach(linha => {
-            sistemaObject['linhas'].push(linha.toArray());
+        const objectArray = {};
+        ['linhas', 'barras'].forEach((key) => {
+            objectArray[key] = this.toTable(key, false);
         });
-        this.barras.forEach(barra => {
-            sistemaObject['barras'].push(barra.toArray());
-        });
-        return sistemaObject;
+        return objectArray;
     }
 
-    CriarFluxos(linhas) {
-        const self = this;
+    toTable(field: string, withHeader = true): any[] {
+        let array = [];
+        if (field !== 'fluxos') {
+            if (withHeader) {
+                let header = [];
+                if (field === 'linhas') {
+                    header = Linha.header;
+                } else if (field === 'fluxos') {
+                    header = Fluxo.header;
+                } else if (field === 'barras') {
+                    header = Barra.header;
+                }
+                array.push(header);
+            }
+            this[field].forEach(row => {
+                array.push(row.toArray());
+            });
+        } else {
+            array = this.fluxosToTable();
+        }
+
+        return array;
+    }
+
+
+    fluxosToTable() {
+        const dataTable = [];
+        const n_row = 11;
+        const tabela = [];
+        tabela.push(['ID', 'Nome', 'Tensão', 'Ângulo', 'P Gerada', 'Q Gerada', 'P Carga', 'Q Carga', 'Para', 'P Fluxo', 'Q Fluxo']);
+        this.fluxos.forEach(fluxo => {
+            let row = Array(n_row);
+            row.fill('');
+
+            if (!dataTable.includes(fluxo.de.id_barra)) {
+                dataTable.push(fluxo.de.id_barra);
+                row = fluxo.toDeArray();
+                tabela.push(row);
+            } else {
+                row[8] = fluxo.para.id_barra;
+                row[9] = fluxo.pFluxo;
+                row[10] = fluxo.qFluxo;
+                tabela.push(row);
+            }
+        });
+        return tabela;
+    }
+
+    CriarFluxos(fluxoPotencia) {
         let header = [];
         let de_anterior, de_atual, para_atual = null;
-        linhas.forEach((linha, index) => {
+        fluxoPotencia.forEach((linha, index) => {
             if (index === 0) {
                 header = linha;
             } else {
@@ -62,6 +107,7 @@ export class Sistema {
             }
         });
         this.calculandoFluxo.emit(this.fluxos);
+        this.fluxosToTable();
     }
 
     CriarMatrizSusceptancia(susceptancias: any[], linhas: any[], colunas: any[]) {
@@ -74,23 +120,23 @@ export class Sistema {
             }
             matriz[linha][coluna] = parseFloat(susceptancia);
         });
-        // console.log(matriz);
     }
 
     CalcularFluxo() {
+        const self = this;
         this.mathPowerService.calcule(this.toObjectArray(), 'power_flow').then(
             result => {
                 const power_flow = result['power_flow'];
-                const susceptance = result['susceptance'][0][0].split(' ');
-                const lines = result['lines'][0][0].split(' ');
-                const columns = result['columns'][0][0].split(' ');
                 this.CriarFluxos(power_flow);
-                this.CriarMatrizSusceptancia(susceptance, lines, columns);
+                // const susceptance = result['susceptance'][0][0].split(' ');
+                // const lines = result['lines'][0][0].split(' ');
+                // const columns = result['columns'][0][0].split(' ');
+                // this.CriarMatrizSusceptancia(susceptance, lines, columns);
 
             }
         ).catch(
             function (e) {
-                console.log(e);
+                self.errorHandler.emit(e);
             }
         );
     }

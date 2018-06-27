@@ -8,10 +8,11 @@ import { Component, OnInit, Input } from '@angular/core';
 export class TabelaComponent implements OnInit {
 
 
-  @Input() array;
+  @Input() table;
   constructor() { }
 
   ngOnInit() {
+    console.log(this.table);
   }
 
 }
