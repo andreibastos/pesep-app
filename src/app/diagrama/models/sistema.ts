@@ -74,6 +74,7 @@ export class Sistema {
     }
 
     CriarFluxos(fluxoPotencia) {
+        this.fluxos = [];
         let header = [];
         let de_anterior, de_atual, para_atual = null;
         fluxoPotencia.forEach((linha, index) => {
@@ -106,6 +107,7 @@ export class Sistema {
                 }
             }
         });
+        console.log(this.fluxos);
         this.calculandoFluxo.emit(this.fluxos);
         this.fluxosToTable();
     }
