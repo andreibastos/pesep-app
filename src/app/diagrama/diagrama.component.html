@@ -72,7 +72,7 @@
     <!-- Propriedades -->
     <div class="col-1 m-0 p-0 border">
       <div [class.active]="
-        BarrasSelecionadas().length > 0 || LinhaSelecionada()" class="propriety">
+        BarrasSelecionadas().length == 1 || LinhaSelecionada()" class="propriety">
         <!-- Diagrama -->
         <div *ngIf="BarrasSelecionadas().length == 0 && !LinhaSelecionada()" class="justify-content-center m-0 p-0">
           <p class="h5 "> Propriedades</p>
@@ -92,7 +92,7 @@
         <!-- /Diagrama -->
 
         <!-- Barras -->
-        <div *ngIf="BarrasSelecionadas().length > 0" class="m-0 p-0 justify-content-center">
+        <div *ngIf="BarrasSelecionadas().length == 1" class="m-0 p-0 justify-content-center">
           <app-barra-form (barrasEnviadas)="AtualizarBarras($event)" [barrasRecebidas]="BarrasSelecionadas()"> </app-barra-form>
         </div>
         <!-- /Barras -->
