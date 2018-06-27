@@ -2,7 +2,8 @@
    * Sidebar
 */
 .sidebar {
-  height: calc(100vh - 60px);
+  height: calc(100vh - 50px);
+  max-height: calc(100vh - 48);
   min-width: 120px;
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
   background-color: rgba(230, 230, 230, 0.856)
@@ -34,12 +35,15 @@
   */
 
 .propriety {
-  height: calc(100vh - 60px);
+  height: calc(100vh - 50px);
+  max-height: calc(100vh - 50px);
+  float: right;
+
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
   background-color: rgba(230, 230, 230, 0.856);
 }
 
 .propriety.active   {
-  float: right;
   width: 300px;
   transition: width 2s;
 }
