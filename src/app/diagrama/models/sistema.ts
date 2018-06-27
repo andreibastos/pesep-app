@@ -9,6 +9,9 @@ export class Sistema {
 
     @Output()
     calculandoFluxo: EventEmitter<Array<Fluxo>> = new EventEmitter();
+    
+    @Output()
+    errorHandler: EventEmitter<string> = new EventEmitter();
 
     constructor(public linhas: Array<Linha>, public barras: Array<Barra>, private mathPowerService?: MathPowerService) {
 
@@ -120,6 +123,7 @@ export class Sistema {
     }
 
     CalcularFluxo() {
+        const self = this;
         this.mathPowerService.calcule(this.toObjectArray(), 'power_flow').then(
             result => {
                 const power_flow = result['power_flow'];
@@ -132,7 +136,7 @@ export class Sistema {
             }
         ).catch(
             function (e) {
-                console.log(e);
+                self.errorHandler.emit(e);
             }
         );
     }

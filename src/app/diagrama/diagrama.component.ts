@@ -37,6 +37,7 @@ export class DiagramaComponent implements OnInit {
   sistema: Sistema;
 
   openModal = false;
+  logs = [];
 
   // Dicionários para busca mais rápidas
   private mapaBarras: Map<string, Barra> = new Map();
@@ -72,8 +73,6 @@ export class DiagramaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-
 
     // criação dos elementos na tela
     // divNome = 'draw_inside';
@@ -126,6 +125,8 @@ export class DiagramaComponent implements OnInit {
     this.EventoModal();
 
     this.openModal = true;
+
+    this.criarAlerta('titulo', 'mensagem', 'sucesso');
   }
 
   EventoModal() {
@@ -133,6 +134,13 @@ export class DiagramaComponent implements OnInit {
     $('#resultados').on('hidden.bs.modal', function (e) {
       self.openModal = false;
     });
+  }
+
+  criarAlerta(titulo, mensagem, tipo) {
+    const mapaTipos = { 'atencao': 'alert-warning', 'sucesso': 'alert-success', 'perigo': 'alert-danger' };
+    const log = { titulo: titulo, mensagem: mensagem, classe: mapaTipos[tipo] };
+    this.logs.pop();
+    this.logs.push(log);
   }
 
 
@@ -158,14 +166,20 @@ export class DiagramaComponent implements OnInit {
 
     // se inscreve no fluxo
     this.sistema.calculandoFluxo.subscribe(fluxos => this.chegouFluxo(fluxos));
+    this.sistema.errorHandler.subscribe(error => this.errorServidor(error));
   }
 
   chegouFluxo(fluxos: Array<Fluxo>) {
-    // this.fluxos = fluxos;
-    // console.log('chegou novos fluxos');
-    // console.log(fluxos);
+    this.criarAlerta('Fluxo de Potência', 'concluído', 'sucesso');
     this.DesenhaLinhas(this.getLinhas());
   }
+
+  errorServidor(mensagem) {
+    console.log(mensagem);
+    this.criarAlerta('Fluxo de Potência', 'Não possível conectar ao servidor', 'perigo');
+  }
+
+
 
 
   DesenharExemplo() {
@@ -1041,7 +1055,7 @@ export class DiagramaComponent implements OnInit {
             const novoGrupoBarra = self.mapaGruposSVG.get(novaBarra.id_barra);
             self.AdicionarBarraSelecionada(novoGrupoBarra);
           } else {
-            alert(`só pode ter uma ${barraCopiada.tipo}`);
+            self.criarAlerta('Sistema', `Só pode ter uma ${barraCopiada.tipo}`, 'perigo');
           }
         });
       } else if (this.barrasRecortadasSVG.length() > 0) {
@@ -1457,6 +1471,8 @@ export class DiagramaComponent implements OnInit {
         } else {
           // alert(`só pode ter uma ${tipo}`);
           // console.log(self.slack);
+          self.criarAlerta('Sistema', `Só pode ter uma ${tipo}`, 'perigo');
+
         }
       })
       .on('dragmove', dragmove)

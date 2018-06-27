@@ -30,9 +30,4 @@ export class ResultadosComponent implements OnInit {
   Exportar() {
     ExportDownload.export(this.selecionado, this.nav_active);
   }
-
-  atualizarSistema(event) {
-    console.log(event);
-  }
-
 }
