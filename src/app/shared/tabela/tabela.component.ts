@@ -9,6 +9,9 @@ export class TabelaComponent implements OnInit {
 
 
   @Input() table;
+
+  @Input()
+  striped = true;
   constructor() { }
 
   ngOnInit() {

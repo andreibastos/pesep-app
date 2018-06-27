@@ -18,15 +18,26 @@ export class Fluxo {
     }
 
     toDeArray(): any[] {
-        const array = [];
-        array.push(this.de.id_barra.split('_')[1]);
-        array.push(this.de.nome);
-        array.push(this.de.tensao_0);
-        array.push(this.de.angulo_0);
-        array.push(this.de.pGerada);
-        array.push(this.de.qGerada);
-        array.push(this.de.pCarga);
-        array.push(this.de.qCarga);
+        const array = Array(11);
+        array.fill('');
+        array[0] = this.de.id;
+        array[1] = this.de.nome;
+        array[2] = this.de.tensao_0;
+        array[3] = this.de.angulo_0;
+        array[4] = this.de.pGerada;
+        array[5] = this.de.qGerada;
+        array[6] = this.de.pCarga;
+        array[7] = this.de.qCarga;
         return array;
+    }
+
+    toParaArray(): any[] {
+        const array = Array(11);
+        array.fill('');
+        array[8] = this.para.id;
+        array[9] = this.pFluxo;
+        array[10] = this.qFluxo;
+        return array;
+
     }
 }

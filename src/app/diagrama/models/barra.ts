@@ -72,4 +72,8 @@ export class Barra {
         array.push(this.X);
         return array;
     }
+
+    get id(): string {
+        return this.id_barra.split('_')[1];
+    }
 }

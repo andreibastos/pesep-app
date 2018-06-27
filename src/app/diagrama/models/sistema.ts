@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { Linha } from './linha';
 import { Barra } from './barra';
 import { MathPowerService } from './../../testes-rapidos/testes-rapidos.service';
@@ -51,25 +52,24 @@ export class Sistema {
 
 
     fluxosToTable() {
-        const dataTable = [];
+        const dataTable = {};
         const n_row = 11;
         const tabela = [];
         tabela.push(['ID', 'Nome', 'Tensão', 'Ângulo', 'P Gerada', 'Q Gerada', 'P Carga', 'Q Carga', 'Para', 'P Fluxo', 'Q Fluxo']);
         this.fluxos.forEach(fluxo => {
-            let row = Array(n_row);
-            row.fill('');
-
-            if (!dataTable.includes(fluxo.de.id_barra)) {
-                dataTable.push(fluxo.de.id_barra);
-                row = fluxo.toDeArray();
-                tabela.push(row);
-            } else {
-                row[8] = fluxo.para.id_barra;
-                row[9] = fluxo.pFluxo;
-                row[10] = fluxo.qFluxo;
-                tabela.push(row);
+            if (!dataTable[fluxo.de.id_barra]) {
+                dataTable[fluxo.de.id_barra] = [];
+                dataTable[fluxo.de.id_barra].push(fluxo.toDeArray());
             }
+            dataTable[fluxo.de.id_barra].push(fluxo.toParaArray());
         });
+        Object.keys(dataTable).forEach(key => {
+            dataTable[key].forEach(array => {
+                tabela.push(array);
+            });
+        });
+
+        console.log(tabela);
         return tabela;
     }
 

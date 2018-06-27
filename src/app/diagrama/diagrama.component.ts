@@ -171,10 +171,10 @@ export class DiagramaComponent implements OnInit {
   chegouFluxo(fluxos: Array<Fluxo>) {
     this.criarAlerta('Fluxo de Potência', 'concluído', 'sucesso');
     this.DesenhaLinhas(this.getLinhas());
+    console.log(this.sistema);
   }
 
   errorServidor(mensagem) {
-    console.log(mensagem);
     this.criarAlerta('Fluxo de Potência', 'Não possível conectar ao servidor', 'perigo');
   }
 

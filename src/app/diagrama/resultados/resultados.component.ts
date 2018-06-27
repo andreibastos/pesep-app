@@ -15,6 +15,7 @@ export class ResultadosComponent implements OnInit {
   sistema: Sistema;
 
   nav_active = 'linhas';
+  striped = true;
 
   selecionado: any[];
 
@@ -25,6 +26,7 @@ export class ResultadosComponent implements OnInit {
   TrocarNav(campo: string) {
     this.nav_active = campo;
     this.selecionado = this.sistema.toTable(campo);
+    this.striped = 'fluxos' !== campo;
   }
 
   Exportar() {
