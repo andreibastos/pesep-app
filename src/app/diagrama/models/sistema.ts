@@ -53,7 +53,6 @@ export class Sistema {
 
     fluxosToTable() {
         const dataTable = {};
-        const n_row = 11;
         const tabela = [];
         tabela.push(['ID', 'Nome', 'Tensão', 'Ângulo', 'P Gerada', 'Q Gerada', 'P Carga', 'Q Carga', 'Para', 'P Fluxo', 'Q Fluxo']);
         this.fluxos.forEach(fluxo => {
@@ -68,8 +67,6 @@ export class Sistema {
                 tabela.push(array);
             });
         });
-
-        console.log(tabela);
         return tabela;
     }
 
@@ -107,9 +104,7 @@ export class Sistema {
                 }
             }
         });
-        console.log(this.fluxos);
         this.calculandoFluxo.emit(this.fluxos);
-        this.fluxosToTable();
     }
 
     CriarMatrizSusceptancia(susceptancias: any[], linhas: any[], colunas: any[]) {
