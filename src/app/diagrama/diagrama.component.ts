@@ -126,7 +126,6 @@ export class DiagramaComponent implements OnInit {
 
     this.openModal = true;
 
-    this.criarAlerta('titulo', 'mensagem', 'sucesso');
   }
 
   EventoModal() {

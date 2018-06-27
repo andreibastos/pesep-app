@@ -9,7 +9,7 @@ export class Sistema {
 
     @Output()
     calculandoFluxo: EventEmitter<Array<Fluxo>> = new EventEmitter();
-    
+
     @Output()
     errorHandler: EventEmitter<string> = new EventEmitter();
 
