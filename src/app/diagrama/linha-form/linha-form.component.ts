@@ -57,6 +57,22 @@ export class LinhaFormComponent implements OnInit {
         Validators.min(0)
       ]
       ],
+      tipo_trafo: [linha.tipo_trafo, [
+        Validators.max(3),
+        Validators.min(1)
+      ]
+      ],
+      resistencia_zero: [linha.resistencia_zero, [
+        Validators.max(5),
+        Validators.min(0)
+      ]
+      ],
+      reatancia_trafo: [linha.reatancia_trafo, [
+        Validators.max(5),
+        Validators.min(0)
+      ]
+      ],
+
       de: [linha.de.id_barra],
       para: [linha.para.id_barra]
 

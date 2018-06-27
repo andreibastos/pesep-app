@@ -1,0 +1,8 @@
+.body {
+    overflow-y: auto;
+}
+
+.content {
+    min-width: 100vw;
+    min-height: 80vh
+}

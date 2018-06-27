@@ -1,4 +1,3 @@
-import { TabelaComponent } from './tabela/tabela.component';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
@@ -13,6 +12,7 @@ import { FluxoArquivosComponent } from './fluxo-arquivos/fluxo-arquivos.componen
 import { FluxoManualComponent } from './fluxo-manual/fluxo-manual.component';
 import { TestesRapidosRoutingModule } from './testes-rapidos.routing.module';
 import { CurtoArquivosComponent } from './curto-arquivos/curto-arquivos.component';
+import { TabelaComponent } from './tabela/tabela.component';
 
 @NgModule({
   imports: [
@@ -32,9 +32,9 @@ import { CurtoArquivosComponent } from './curto-arquivos/curto-arquivos.componen
     CurtoArquivosComponent,
     FluxoManualComponent,
     TabelaComponent
-  ]
-
-
-
+  ],
+  exports: [
+    TabelaComponent
+  ],
 })
 export class TestesRapidosModule { }

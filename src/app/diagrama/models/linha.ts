@@ -1,6 +1,9 @@
+import { IComponente } from './componente';
 import { Barra } from './barra';
 
 export class Linha {
+    static header = ['ID', 'de', 'para', 'r', 'x', 'Tap', 'Ângulo', 'Tipo de Trafo', 'Resistência Zero', 'Reatância do Trafo'];
+
     id_linha: string;
     nome = 'Linha';
     R = 0;
@@ -22,7 +25,6 @@ export class Linha {
 
     toArray(): any[] {
         const array = [];
-        // array.push(this.id_linha);
         array.push(this.id_linha.split('_')[1]);
         array.push(this.de.id_barra.split('_')[1]);
         array.push(this.para.id_barra.split('_')[1]);
@@ -30,9 +32,9 @@ export class Linha {
         array.push(this.X);
         array.push(this.TAP);
         array.push(this.A);
+        array.push(this.tipo_trafo);
         array.push(this.resistencia_zero);
         array.push(this.reatancia_trafo);
-        array.push(this.tipo_trafo);
         return array;
     }
 }

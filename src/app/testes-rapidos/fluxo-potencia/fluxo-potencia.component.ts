@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Fluxo } from '../../models/fluxo';
 import { MathPowerService } from './../testes-rapidos.service';
+import { ExportDownload } from '../../utils/export';
 
 @Component({
   selector: 'app-fluxo-potencia',
@@ -41,27 +42,21 @@ export class FluxoPotenciaComponent implements OnInit {
     let data;
     switch (file) {
       case 'fluxo.csv':
-        data = this.arrayToTxt(this.result['power_flow']);
+        data = this.result['power_flow'];
         break;
       case 'susceptancia.txt':
-        data = this.arrayToTxt(this.result['susceptance']);
+        data = this.result['susceptance'];
         break;
       case 'linhas.txt':
-        data = this.arrayToTxt(this.result['lines']);
+        data = this.result['lines'];
         break;
       case 'colunas.txt':
-        data = this.arrayToTxt(this.result['columns']);
+        data = this.result['columns'];
         break;
     }
-    const a = document.createElement('a');
-    a.setAttribute('style', 'display:none;');
-    document.body.appendChild(a);
-    const blob = new Blob([data], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    a.href = url;
-    a.download = `${file}`; /* your file name*/
-    a.click();
-    return 'success';
+
+    ExportDownload.export(data, file);
+
   }
 
   escolherOpcao(opcao) {
@@ -78,15 +73,4 @@ export class FluxoPotenciaComponent implements OnInit {
 
   }
 
-  arrayToTxt(array) {
-    let str = '';
-    array.forEach(row => {
-      row.forEach(column => {
-        str += column + ',';
-      });
-      str = str.slice(0, -1);
-      str += '\n';
-    });
-    return str;
-  }
 }

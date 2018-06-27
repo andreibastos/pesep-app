@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-12">
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered text-center  table-sm">
+          <thead>
+            <tr>
+              <th *ngFor="let column of table[0] " scope="col">{{column}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of table | slice:1">
+              <td *ngFor="let column of row"> {{ column }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
