@@ -479,7 +479,7 @@ export class DiagramaComponent implements OnInit {
     this.mapaGruposSVG.get(barra.id_barra).remove();
     this.mapaGruposSVG.delete(barra.id_barra);
     this.mapaBarras.delete(barra.id_barra);
-    this.DecrementarBarra(barra.tipo);
+    // this.DecrementarBarra(barra.tipo);
   }
 
   // incremento de barras novas
