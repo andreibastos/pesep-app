@@ -48,20 +48,20 @@
         </div>
         <!-- calculos -->
 
-        <!-- calculos -->
+        <!-- Informações do Sistema -->
         <div class="col-6 px-0 btn-group justify-content-end d-flex " role="group">
           <button id="btn_resultados" (click)="AtualizarSistema()"  type="button" class="btn btn-outline-secondary"
             data-toggle="tooltip" data-toggle="modal" data-target="#resultados" data-html="true" data-placement="top" title="Informarções do Sistema">
             <img src="../../assets/icons/menu-acoes/resultados.png" width="32px" height="32px">
           </button>
         </div>
-        <!-- calculos -->
+        <!-- Informações do Sistema -->
 
       </div>
       <!-- /Menu Superior -->
 
       <!-- Modal -->
-      <app-resultados [(sistema)]="sistema" class="modal fade" id="resultados" tabindex="-1" role="dialog" aria-hidden="true"></app-resultados>
+      <app-resultados *ngIf="openModal" [sistema]="sistema" class="modal fade" id="resultados" tabindex="-1" role="dialog" aria-hidden="true"></app-resultados>
 
       <!-- Área de Desenho -->
       <div id="svg_principal" tabindex="0" class="row mx-0 px-0 shadow-lg bg-white border rounded area-draw"></div>

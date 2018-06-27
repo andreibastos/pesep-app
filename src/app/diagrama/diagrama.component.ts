@@ -1,11 +1,14 @@
 import { MathPowerService } from './../testes-rapidos/testes-rapidos.service';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, Output, EventEmitter } from '@angular/core';
 
 // Bibliotecas externas
-import * as $ from 'jquery';
+// import * as $ from 'jquery';
 import * as interact from 'interactjs';
 import * as SVG from 'svg.js';
+
+
+declare var $: any;
 
 // Classes Internas
 import { EnumLinhaTipo, EnumTipoBarra } from './../models/componente';
@@ -32,6 +35,8 @@ export class DiagramaComponent implements OnInit {
   fluxos: Array<Fluxo> = [];
 
   sistema: Sistema;
+
+  openModal = false;
 
   // Dicionários para busca mais rápidas
   private mapaBarras: Map<string, Barra> = new Map();
@@ -97,7 +102,6 @@ export class DiagramaComponent implements OnInit {
     );
     // desenha um exemplo na tela
     if (this.exemplo) {
-      console.log(this.exemplo);
       this.DesenharExemplo();
     }
 
@@ -115,11 +119,20 @@ export class DiagramaComponent implements OnInit {
   }
 
   AtualizarSistema() {
-
     // Alterar, colocar barras e linhas no sistema
     this.sistema.linhas = this.getLinhas();
     this.sistema.barras = this.getBarras();
 
+    this.EventoModal();
+
+    this.openModal = true;
+  }
+
+  EventoModal() {
+    const self = this;
+    $('#resultados').on('hidden.bs.modal', function (e) {
+      self.openModal = false;
+    });
   }
 
 
@@ -149,7 +162,7 @@ export class DiagramaComponent implements OnInit {
 
   chegouFluxo(fluxos: Array<Fluxo>) {
     // this.fluxos = fluxos;
-    console.log('chegou novos fluxos');
+    // console.log('chegou novos fluxos');
     // console.log(fluxos);
     this.DesenhaLinhas(this.getLinhas());
   }
@@ -1443,7 +1456,7 @@ export class DiagramaComponent implements OnInit {
           dragstart(event);
         } else {
           // alert(`só pode ter uma ${tipo}`);
-          console.log(self.slack);
+          // console.log(self.slack);
         }
       })
       .on('dragmove', dragmove)
