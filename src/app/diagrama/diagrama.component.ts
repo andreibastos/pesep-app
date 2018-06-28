@@ -44,6 +44,7 @@ export class DiagramaComponent implements OnInit {
   // Controle de identificação
   private qtdBarrasTipo = {};
   private qtdBarrasTotal = 1;
+  private qtdLinhasTotal = 1;
   enumerador_barra = EnumTipoBarra; // para usar no HTML
 
   // Controle do SVG
@@ -526,8 +527,10 @@ export class DiagramaComponent implements OnInit {
   // adicionando linhas na tela
   AdicionarLinha(de: Barra, para: Barra, enumLinhaTipo?: EnumLinhaTipo) {
     const linha: Linha = new Linha(de, para);
+    linha.id_linha = this.qtdLinhasTotal.toString();
     this.mapaLinhas.set(linha.id_linha, linha);
     this.DesenhaLinha(linha, enumLinhaTipo);
+    this.qtdLinhasTotal++;
   }
 
   // excluindo linhas na tela
