@@ -26,9 +26,6 @@ import { Sistema } from './models/sistema';
 
 export class DiagramaComponent implements OnInit {
 
-
-  exemplo: number;
-
   // Elementos do Sistema Elétrico de Potência
   // private curto: Curto = new Curto();
   private slack: Barra = null;
@@ -90,24 +87,13 @@ export class DiagramaComponent implements OnInit {
     // configuração dos atalhos do teclado
     this.ConfigurarAtalhosTeclado();
 
-    this.route.queryParams.subscribe(
-      (queryParams: any) => {
-        try {
-          this.exemplo = parseInt(queryParams['exemplo'], 10);
-        } catch (e) {
-          this.exemplo = undefined;
-        }
-      }
-    );
-    // desenha um exemplo na tela
-    if (this.exemplo) {
-      this.DesenharExemplo();
-    }
-
+    this.DesenharExemplo();
 
     this.sistema = new Sistema(this.getLinhas(), this.getBarras(), this.mathPowerService);
 
   }
+
+
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -125,6 +111,8 @@ export class DiagramaComponent implements OnInit {
     this.EventoModal();
 
     this.openModal = true;
+
+    this.SVGPrincipal.fire('updateText', { some: 'data' });
 
   }
 
@@ -182,10 +170,21 @@ export class DiagramaComponent implements OnInit {
 
 
   DesenharExemplo() {
+    let exemplo;
+    this.route.queryParams.subscribe(
+      (queryParams: any) => {
+        try {
+          exemplo = parseInt(queryParams['exemplo'], 10);
+        } catch (e) {
+          exemplo = undefined;
+        }
+      }
+    );
+
     const height = this.SVGPrincipal.height();
     const width = this.SVGPrincipal.width();
 
-    if (this.exemplo === 1) {
+    if (exemplo === 1) {
       const barra1 = this.CriarBarra(EnumTipoBarra.PV);
       const barra2 = this.CriarBarra(EnumTipoBarra.PQ);
       const barra3 = this.CriarBarra(EnumTipoBarra.PQ);
@@ -206,7 +205,7 @@ export class DiagramaComponent implements OnInit {
 
 
 
-    } else if (this.exemplo === 2) {
+    } else if (exemplo === 2) {
 
       const barra1 = this.CriarBarra(EnumTipoBarra.Slack);
       const barra2 = this.CriarBarra(EnumTipoBarra.PQ);
@@ -219,7 +218,7 @@ export class DiagramaComponent implements OnInit {
       this.AdicionarLinha(barra1, barra2);
       this.AdicionarLinha(barra2, barra3);
 
-    } else if (this.exemplo === 3) {
+    } else if (exemplo === 3) {
       const barra1 = this.CriarBarra(EnumTipoBarra.Slack);
       const barra2 = this.CriarBarra(EnumTipoBarra.PQ);
       const barra3 = this.CriarBarra(EnumTipoBarra.PQ);
@@ -235,7 +234,7 @@ export class DiagramaComponent implements OnInit {
       this.AdicionarLinha(barra1, barra3);
       this.AdicionarLinha(barra2, barra4);
       this.AdicionarLinha(barra3, barra4);
-    } else if (this.exemplo === 4) {
+    } else if (exemplo === 4) {
       const barra1 = this.CriarBarra(EnumTipoBarra.Slack, 'Birch');
       const barra2 = this.CriarBarra(EnumTipoBarra.PQ, 'Elm');
       const barra3 = this.CriarBarra(EnumTipoBarra.PV, 'Mapie');
@@ -872,6 +871,7 @@ export class DiagramaComponent implements OnInit {
       .cy(box.cy)
       .font(options);
 
+    grupoTexto.on('updateText', this.testeTexto);
 
 
 
@@ -904,6 +904,10 @@ export class DiagramaComponent implements OnInit {
 
     // this.AtualizaToolTipBarra(grupoBarra);
     return grupoTexto;
+  }
+
+  testeTexto(event) {
+    console.log(this, event);
   }
 
   // calcula ângulo de um deltax e deltay, ceil é multiplicidade
