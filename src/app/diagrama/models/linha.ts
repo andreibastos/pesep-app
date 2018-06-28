@@ -2,9 +2,10 @@ import { IComponente } from './componente';
 import { Barra } from './barra';
 
 export class Linha {
-    static header = ['ID', 'de', 'para', 'r', 'x', 'Tap', 'Ângulo', 'Tipo de Trafo', 'Resistência Zero', 'Reatância do Trafo'];
+    static header = ['ID', 'De', 'Para', 'r', 'x', 'Tap', 'Ângulo', 'Tipo de Trafo', 'Resistência Zero', 'Reatância do Trafo'];
 
-    id_linha: string;
+    _id_linha: string;
+
     nome = 'Linha';
     R = 0;
     X = 1;
@@ -16,18 +17,27 @@ export class Linha {
 
     constructor(public de?: Barra, public para?: Barra) {
         if (de && para) {
-            const id_de_barra = de.id_barra.split('_')[1];
-            const id_para_barra = para.id_barra.split('_')[1];
-            this.nome += ` ${id_de_barra},${id_para_barra}`;
-            this.id_linha = `linha_${id_de_barra}_${para.id_barra.split('_')[1]}`;
+            this.nome += ` ${de.id},${para.id}`;
         }
+    }
+
+    set id_linha(id) {
+        this._id_linha = `linha_${id}`;
+    }
+
+    get id_linha(): string {
+        return this._id_linha;
+    }
+
+    get id() {
+        return this.id_linha.split('_')[1];
     }
 
     toArray(): any[] {
         const array = [];
-        array.push(this.id_linha.split('_')[1]);
-        array.push(this.de.id_barra.split('_')[1]);
-        array.push(this.para.id_barra.split('_')[1]);
+        array.push(this.id);
+        array.push(this.de.id);
+        array.push(this.para.id);
         array.push(this.R);
         array.push(this.X);
         array.push(this.TAP);
