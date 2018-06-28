@@ -92,8 +92,7 @@ export class FluxoArquivosComponent implements OnInit {
     fileReader.onload = function (evt) {
       if (tipo === 'linha') {
         self.arquivoLinha = [];
-
-        const dados = FluxoArquivosComponent.TextoParaLista(evt.target['result'], 7);
+        const dados = FluxoArquivosComponent.TextoParaLista(evt.target['result'], 10 );
         self.linhas = new Array();
         dados.forEach((dado, index) => {
           dado = self.clean_lines_file(dado, index);
@@ -135,7 +134,6 @@ export class FluxoArquivosComponent implements OnInit {
         // Increase the prog bar length
         // style.width = (loaded * 200) + "px";
       }
-      console.log(loaded);
     }
   }
 
