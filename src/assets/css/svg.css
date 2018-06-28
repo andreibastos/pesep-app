@@ -31,7 +31,6 @@
     stroke-width: 1;
     stroke-opacity: 1;
     transition-duration: 500ms;
-
 }
 
 .barra {
@@ -40,8 +39,13 @@
     stroke-width: 2;
 }
 
-.barra.linhaVertical {
+.barra.barramento {
     stroke-width: 5;
+}
+
+.curto {
+    stroke-width: 0.5;
+    fill: rgb(255, 221, 0)
 }
 
 .barra.triangulo {
@@ -55,18 +59,19 @@
     font-size: 50px;
     color: black;
 }
+
 .fluxo {
-    stroke-width: 1.5; 
-    stroke:black;
+    stroke-width: 1.5;
+    stroke: black;
 }
 
 .fluxo.triangulo {
     fill: blue;
 }
+
 .fluxo.linha {
     /* fill: red; */
-    stroke:red;
-
+    stroke: red;
 }
 
 .criarLinha {
@@ -130,24 +135,6 @@
 .linha.transmissao.active {
     fill: red;
     stroke: red;
-}
-
-.barramento {
-    fill: transparent;
-    stroke-width: 1;
-}
-
-.barramento:hover {
-    stroke: none;
-    fill: none;
-}
-
-.barramento.enter {
-    fill: green;
-    fill-opacity: 0.2;
-    stroke: green;
-    stroke-width: 2;
-    stroke-dasharray: 5, 5;
 }
 
 .curtoCircuito line {

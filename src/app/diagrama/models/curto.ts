@@ -1,12 +1,7 @@
-import { Barra } from './barra';
-import { Linha } from './linha';
-import { EnumCurtoTipo } from '../../models/componente';
+import { EnumCurtoTipo } from './../../models/componente';
 
 export class Curto {
-    linha: Linha;
-    barra: Barra;
-    constructor(public afastamento = 0.75) {
-    }
+    tipo: EnumCurtoTipo;
 }
 
 
