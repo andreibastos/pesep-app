@@ -6,6 +6,8 @@ import { Fluxo } from './fluxo';
 import { EventEmitter, Output } from '@angular/core';
 export class Sistema {
 
+    private results;
+
     fluxos: Array<Fluxo> = new Array();
 
     @Output()
@@ -122,8 +124,10 @@ export class Sistema {
     CalcularFluxo() {
         const self = this;
         this.mathPowerService.calcule(this.toObjectArray(), 'power_flow').then(
-            result => {
-                const power_flow = result['power_flow'];
+            results => {
+                this.results = results;
+                console.log(results);
+                const power_flow = results['fluxo.csv'];
                 this.CriarFluxos(power_flow);
                 // const susceptance = result['susceptance'][0][0].split(' ');
                 // const lines = result['lines'][0][0].split(' ');
