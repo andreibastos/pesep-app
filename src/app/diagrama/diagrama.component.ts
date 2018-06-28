@@ -287,7 +287,6 @@ export class DiagramaComponent implements OnInit {
 
     linhaAtualizada.de = this.linhaSelecionada.de;
     linhaAtualizada.para = this.linhaSelecionada.para;
-
     this.mapaLinhas.set(linhaAtualizada.id_linha, linhaAtualizada);
     this.linhaSelecionada = null;
     this.DesenhaLinha(linhaAtualizada);

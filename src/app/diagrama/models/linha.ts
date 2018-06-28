@@ -11,7 +11,7 @@ export class Linha {
     X = 1;
     TAP = 1;
     A = 0;
-    tipo_trafo = 2;
+    _tipo_trafo = EnumTransformador['Delta Estrela'];
     resistencia_zero = 0;
     reatancia_trafo = 0;
 
@@ -22,7 +22,11 @@ export class Linha {
     }
 
     set id_linha(id) {
-        this._id_linha = `linha_${id}`;
+        if (id.indexOf('_') === -1) {
+            this._id_linha = `linha_${id}`;
+        } else {
+            this._id_linha = id;
+        }
     }
 
     get id_linha(): string {
@@ -47,4 +51,22 @@ export class Linha {
         array.push(this.reatancia_trafo);
         return array;
     }
+
+    set tipo_trafo(enumTransformador: EnumTransformador) {
+        this._tipo_trafo = enumTransformador;
+    }
+
+    get tipo_trafo() {
+        return this._tipo_trafo;
+    }
+
+    getTipoTrafo() {
+
+    }
+}
+
+
+export enum EnumTransformador {
+    'Delta Estrela' = '1',
+    'Estrela Estrela' = '2'
 }
