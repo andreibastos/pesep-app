@@ -10,13 +10,20 @@ export enum EnumLinhaEstilo {
     curva
 }
 
-export enum EnumCurtoTipo {
-    barra = 'barra',
-    linha = 'linha'
+export enum EnumFaltaLocal {
+    'Barra' = '0',
+    'Linha' = '1'
+}
+
+export enum EnumFaltaTipo {
+    'Monofasica' = '1',
+    'Bifasica' = '2',
+    'Trifasica' = '3'
 }
 
 
+
 export enum EnumTransformadorTipo {
-    'Delta Estrela' = '1',
-    'Estrela Estrela' = '2'
+    'Delta Estrela' = '0',
+    'Estrela Estrela' = '1'
 }
