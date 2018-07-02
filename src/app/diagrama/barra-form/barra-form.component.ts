@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { Barra } from '../models/barra';
-import { EnumTipoBarra } from '../../models/componente';
+import { Barra } from '../../models/barra';
+import { EnumBarraTipo } from '../../models/enumeradores';
 
 @Component({
   selector: 'app-barra-form',
@@ -59,64 +59,64 @@ export class BarraFormComponent implements OnInit {
       tensao: [barra.tensao_0, [
         Validators.max(1.1),
         Validators.min(0.9)
-        ]],
+      ]],
       angulo: [barra.angulo_0, [
         Validators.max(360),
         Validators.min(-360)
-        ]],
+      ]],
       pGerada: [barra.pGerada, [
         Validators.max(10),
         Validators.min(0)
-        ]
+      ]
       ],
       qGerada: [barra.qGerada, [
         Validators.max(10),
         Validators.min(0)
-        ]],
+      ]],
       pCarga: [barra.pCarga, [
         Validators.max(10),
         Validators.min(0)
-        ]],
+      ]],
       qCarga: [barra.qCarga, [
         Validators.max(10),
         Validators.min(0)
-        ]],
+      ]],
       pGeradaMin: [barra.pGeradaMin, [
         Validators.max(10),
         Validators.min(0)
-        ]],
+      ]],
       pGeradaMax: [barra.pGeradaMax, [
         Validators.max(10),
         Validators.min(0)
-        ]],
+      ]],
       qGeradaMin: [barra.qGeradaMin, [
         Validators.max(10),
         Validators.min(0)
-        ]],
+      ]],
       qGeradaMax: [barra.qGeradaMax, [
         Validators.max(10),
         Validators.min(0)
-        ]],
+      ]],
       qShunt: [barra.qShunt, [
         Validators.min(0),
         Validators.max(10)
-        ]
+      ]
       ],
       X: [barra.X, [
         Validators.min(0),
         Validators.max(10)
-        ]]
+      ]]
     });
     this.formulario.controls['id_barra'].disable();
     this.formulario.controls['tipoBarra'].disable();
     switch (barra.tipo) {
-      case EnumTipoBarra.Slack:
+      case EnumBarraTipo.Slack:
         this.formulario.controls['tensao'].disable();
         this.formulario.controls['angulo'].disable();
         this.formulario.controls['pGerada'].disable();
         this.formulario.controls['qGerada'].disable();
         break;
-      case EnumTipoBarra.PQ:
+      case EnumBarraTipo.PQ:
         this.formulario.controls['tensao'].disable();
         this.formulario.controls['angulo'].disable();
         this.formulario.controls['pGerada'].disable();
@@ -129,7 +129,7 @@ export class BarraFormComponent implements OnInit {
         this.formulario.controls['pGeradaMax'].disable();
         this.formulario.controls['qGeradaMax'].disable();
         break;
-      case EnumTipoBarra.PV:
+      case EnumBarraTipo.PV:
         this.formulario.controls['angulo'].disable();
         this.formulario.controls['qGerada'].disable();
         this.formulario.controls['pGeradaMin'].disable();

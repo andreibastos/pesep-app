@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Sistema } from '../models/sistema';
+import { Sistema } from '../../models/sistema';
 import { ExportDownload } from '../../utils/export';
 
 @Component({
@@ -26,7 +26,7 @@ export class ResultadosComponent implements OnInit {
   TrocarNav(campo: string) {
     this.nav_active = campo;
     this.selecionado = this.sistema.toTable(campo);
-    this.striped = 'fluxos' !== campo;
+    this.striped = 'fluxos' !== campo && 'curto' !== campo;
   }
 
   Exportar() {

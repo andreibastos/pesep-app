@@ -1,7 +1,7 @@
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-import { Linha } from './../models/linha';
+import { Linha } from '../../models/linha';
 
 @Component({
   selector: 'app-linha-form',

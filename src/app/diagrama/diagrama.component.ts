@@ -1,6 +1,6 @@
-import { MathPowerService } from './../testes-rapidos/testes-rapidos.service';
+import { MathPowerService } from '../shared/math-power.service';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, HostListener, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 
 // Bibliotecas externas
 // import * as $ from 'jquery';
@@ -11,12 +11,11 @@ import * as SVG from 'svg.js';
 declare var $: any;
 
 // Classes Internas
-import { EnumLinhaTipo, EnumTipoBarra } from './../models/componente';
-import { Barra } from './models/barra';
-import { Linha } from './models/linha';
-import { Fluxo } from './models/fluxo';
-import { Curto } from './models/curto';
-import { Sistema } from './models/sistema';
+import { EnumLinhaEstilo, EnumBarraTipo } from '../models/enumeradores';
+import { Barra } from '../models/barra';
+import { Linha } from '../models/linha';
+import { Fluxo } from '../models/fluxo';
+import { Sistema } from '../models/sistema';
 
 @Component({
   selector: 'app-diagrama',
@@ -45,7 +44,7 @@ export class DiagramaComponent implements OnInit {
   private qtdBarrasTipo = {};
   private qtdBarrasTotal = 1;
   private qtdLinhasTotal = 1;
-  enumerador_barra = EnumTipoBarra; // para usar no HTML
+  enumerador_barra = EnumBarraTipo; // para usar no HTML
 
   // Controle do SVG
   SVGPrincipal: SVG.Doc;
@@ -65,9 +64,9 @@ export class DiagramaComponent implements OnInit {
   propriedades_diagrama = { visualizar_grade: true, agarrar_grade: false }; // Propriedades do diagrama
 
   constructor(private route: ActivatedRoute, private mathPowerService: MathPowerService) {
-    this.qtdBarrasTipo[EnumTipoBarra.PV] = 1;
-    this.qtdBarrasTipo[EnumTipoBarra.PQ] = 1;
-    this.qtdBarrasTipo[EnumTipoBarra.Slack] = 1;
+    this.qtdBarrasTipo[EnumBarraTipo.PV] = 1;
+    this.qtdBarrasTipo[EnumBarraTipo.PQ] = 1;
+    this.qtdBarrasTipo[EnumBarraTipo.Slack] = 1;
   }
 
   ngOnInit(): void {
@@ -186,10 +185,10 @@ export class DiagramaComponent implements OnInit {
     const width = this.SVGPrincipal.width();
 
     if (exemplo === 1) {
-      const barra1 = this.CriarBarra(EnumTipoBarra.PV);
-      const barra2 = this.CriarBarra(EnumTipoBarra.PQ);
-      const barra3 = this.CriarBarra(EnumTipoBarra.PQ);
-      const barra4 = this.CriarBarra(EnumTipoBarra.Slack);
+      const barra1 = this.CriarBarra(EnumBarraTipo.PV);
+      const barra2 = this.CriarBarra(EnumBarraTipo.PQ);
+      const barra3 = this.CriarBarra(EnumBarraTipo.PQ);
+      const barra4 = this.CriarBarra(EnumBarraTipo.Slack);
 
       this.AdicionarBarra(barra1, width * 0.2, height * 0.1, 90);
       this.AdicionarBarra(barra2, width * 0.8, height * 0.1, 90);
@@ -208,9 +207,9 @@ export class DiagramaComponent implements OnInit {
 
     } else if (exemplo === 2) {
 
-      const barra1 = this.CriarBarra(EnumTipoBarra.Slack);
-      const barra2 = this.CriarBarra(EnumTipoBarra.PQ);
-      const barra3 = this.CriarBarra(EnumTipoBarra.PQ);
+      const barra1 = this.CriarBarra(EnumBarraTipo.Slack);
+      const barra2 = this.CriarBarra(EnumBarraTipo.PQ);
+      const barra3 = this.CriarBarra(EnumBarraTipo.PQ);
 
       this.AdicionarBarra(barra1, width * 0.2, height * 0.3);
       this.AdicionarBarra(barra2, width * 0.5, height * 0.3, 180);
@@ -222,10 +221,10 @@ export class DiagramaComponent implements OnInit {
       this.AdicionarLinha(barra2, barra3);
 
     } else if (exemplo === 3) {
-      const barra1 = this.CriarBarra(EnumTipoBarra.Slack);
-      const barra2 = this.CriarBarra(EnumTipoBarra.PQ);
-      const barra3 = this.CriarBarra(EnumTipoBarra.PQ);
-      const barra4 = this.CriarBarra(EnumTipoBarra.PV);
+      const barra1 = this.CriarBarra(EnumBarraTipo.Slack);
+      const barra2 = this.CriarBarra(EnumBarraTipo.PQ);
+      const barra3 = this.CriarBarra(EnumBarraTipo.PQ);
+      const barra4 = this.CriarBarra(EnumBarraTipo.PV);
 
 
       this.AdicionarBarra(barra1, width * 0.3, width * 0.05, 90);
@@ -238,11 +237,11 @@ export class DiagramaComponent implements OnInit {
       this.AdicionarLinha(barra2, barra4);
       this.AdicionarLinha(barra3, barra4);
     } else if (exemplo === 4) {
-      const barra1 = this.CriarBarra(EnumTipoBarra.Slack, 'Birch');
-      const barra2 = this.CriarBarra(EnumTipoBarra.PQ, 'Elm');
-      const barra3 = this.CriarBarra(EnumTipoBarra.PV, 'Mapie');
-      const barra4 = this.CriarBarra(EnumTipoBarra.PQ, 'Oak');
-      const barra5 = this.CriarBarra(EnumTipoBarra.PQ, 'Pine');
+      const barra1 = this.CriarBarra(EnumBarraTipo.Slack, 'Birch');
+      const barra2 = this.CriarBarra(EnumBarraTipo.PQ, 'Elm');
+      const barra3 = this.CriarBarra(EnumBarraTipo.PV, 'Mapie');
+      const barra4 = this.CriarBarra(EnumBarraTipo.PQ, 'Oak');
+      const barra5 = this.CriarBarra(EnumBarraTipo.PQ, 'Pine');
 
 
       this.AdicionarBarra(barra1, width * 0.2, height * 0.01, 90);
@@ -336,9 +335,9 @@ export class DiagramaComponent implements OnInit {
 
   CriarComponentesFixos() {
     // barras
-    this.CriarBarraFixa(EnumTipoBarra.Slack);
-    this.CriarBarraFixa(EnumTipoBarra.PV);
-    this.CriarBarraFixa(EnumTipoBarra.PQ, 180);
+    this.CriarBarraFixa(EnumBarraTipo.Slack);
+    this.CriarBarraFixa(EnumBarraTipo.PV);
+    this.CriarBarraFixa(EnumBarraTipo.PQ, 180);
 
     // curto;
     this.CriarCurtoCircuito(this.SVGLateral);
@@ -368,19 +367,19 @@ export class DiagramaComponent implements OnInit {
     return grupoCurto;
   }
 
-  CriarBarraFixa(enumBarra: EnumTipoBarra, angulo = 0) {
+  CriarBarraFixa(enumBarra: EnumBarraTipo, angulo = 0) {
     const barra = new Barra(enumBarra);
     const x = this.SVGLateral.width() / 4;
 
     let y = 50;
     switch (enumBarra) {
-      case EnumTipoBarra.Slack:
+      case EnumBarraTipo.Slack:
         y += 0;
         break;
-      case EnumTipoBarra.PV:
+      case EnumBarraTipo.PV:
         y += 100;
         break;
-      case EnumTipoBarra.PQ:
+      case EnumBarraTipo.PQ:
         y += 200;
         break;
     }
@@ -454,7 +453,7 @@ export class DiagramaComponent implements OnInit {
   }
 
   // criando barras
-  CriarBarra(tipo: EnumTipoBarra, nome?: string): Barra {
+  CriarBarra(tipo: EnumBarraTipo, nome?: string): Barra {
     // Sistema Elétrico de Potência
     const barra: Barra = new Barra(tipo); // cria uma nova barra com o tipo associado
     barra.id_barra = `barra_${this.qtdBarrasTotal}`; // atualiza o identificador
@@ -464,7 +463,7 @@ export class DiagramaComponent implements OnInit {
       // barra.nome = `${tipo.toString()} ${this.qtdBarrasTipo[tipo]}`;
 
     }
-    if (tipo === EnumTipoBarra.Slack) {
+    if (tipo === EnumBarraTipo.Slack) {
       if (!nome) {
         barra.nome = `${tipo.toString()}`;
       }
@@ -500,7 +499,7 @@ export class DiagramaComponent implements OnInit {
 
   // removendo uma barra
   RemoverBarra(barra: Barra) {
-    if (barra.tipo === EnumTipoBarra.Slack) {
+    if (barra.tipo === EnumBarraTipo.Slack) {
       this.slack = null;
     }
     this.mapaGruposSVG.get(barra.id_barra).remove();
@@ -510,13 +509,13 @@ export class DiagramaComponent implements OnInit {
   }
 
   // incremento de barras novas
-  IncrementaBarra(tipo: EnumTipoBarra) {
+  IncrementaBarra(tipo: EnumBarraTipo) {
     this.qtdBarrasTipo[tipo]++; // respectivo tipo
     this.qtdBarrasTotal++; // barras total
   }
 
   // decremetando barras
-  DecrementarBarra(tipo: EnumTipoBarra) {
+  DecrementarBarra(tipo: EnumBarraTipo) {
     this.qtdBarrasTipo[tipo]--; // respectivo tipo
     this.qtdBarrasTotal--; // barras total
   }
@@ -526,11 +525,11 @@ export class DiagramaComponent implements OnInit {
   */
 
   // adicionando linhas na tela
-  AdicionarLinha(de: Barra, para: Barra, enumLinhaTipo?: EnumLinhaTipo) {
+  AdicionarLinha(de: Barra, para: Barra, enumLinhaEstilo?: EnumLinhaEstilo) {
     const linha: Linha = new Linha(de, para);
     linha.id_linha = this.qtdLinhasTotal.toString();
     this.mapaLinhas.set(linha.id_linha, linha);
-    this.DesenhaLinha(linha, enumLinhaTipo);
+    this.DesenhaLinha(linha, enumLinhaEstilo);
     this.qtdLinhasTotal++;
   }
 
@@ -582,7 +581,7 @@ export class DiagramaComponent implements OnInit {
   }
 
   // redesenhando linha na tela
-  DesenhaLinha(linha: Linha, enumLinhaTipo: EnumLinhaTipo = EnumLinhaTipo.reta) {
+  DesenhaLinha(linha: Linha, enumLinhaEstilo: EnumLinhaEstilo = EnumLinhaEstilo.reta) {
     const self = this;
     // remover linha existente com o mesmo identificador
     const selecao = this.SVGPrincipal.select(`#${linha.id_linha}`);
@@ -615,7 +614,7 @@ export class DiagramaComponent implements OnInit {
     // let hipotenusa = Math.hypot(delta_x, delta_y);
 
     // verifica qual é o tipo da linha (reta, polinha ou curva)
-    if (enumLinhaTipo === EnumLinhaTipo.reta) {
+    if (enumLinhaEstilo === EnumLinhaEstilo.reta) {
       // const afastamento = 50;
       // if (hipotenusa > afastamento) {
       //   hipotenusa -= afastamento;
@@ -636,7 +635,7 @@ export class DiagramaComponent implements OnInit {
         }
         ).style({ 'cursor': 'pointer' });
 
-    } else if (enumLinhaTipo === EnumLinhaTipo.poliretas) {
+    } else if (enumLinhaEstilo === EnumLinhaEstilo.poliretas) {
       poliLinha.polyline(this.CriarPoliLinha(delta_x, delta_y, 15));
     }
 
@@ -700,10 +699,10 @@ export class DiagramaComponent implements OnInit {
   }
 
   // redesenha várias linhas na tela
-  DesenhaLinhas(linhas: Array<Linha>, enumLinhaTipo = EnumLinhaTipo.reta) {
+  DesenhaLinhas(linhas: Array<Linha>, enumLinhaEstilo = EnumLinhaEstilo.reta) {
     linhas.forEach(
       linha => {
-        this.DesenhaLinha(linha, enumLinhaTipo);
+        this.DesenhaLinha(linha, enumLinhaEstilo);
       }
     );
   }
@@ -783,7 +782,7 @@ export class DiagramaComponent implements OnInit {
   // grupo de desenho (circulos, setas, triangulos)
   CriaGrupoBarraDesenho(barra: Barra, SVGUsado = this.SVGPrincipal as SVG.Doc): SVG.G {
     const grupo = SVGUsado.group().id('grupoBarraDesenho');
-    if (barra.tipo === EnumTipoBarra.Slack || barra.tipo === EnumTipoBarra.PV) {
+    if (barra.tipo === EnumBarraTipo.Slack || barra.tipo === EnumBarraTipo.PV) {
       grupo.circle(50)
         .move(2, 25)
         .addClass('barra')
@@ -794,12 +793,12 @@ export class DiagramaComponent implements OnInit {
       grupo.group().id('barramento').line(80, 10, 80, 90)
         .addClass('barra')
         .addClass('barramento');
-      grupo.text(barra.tipo === EnumTipoBarra.PV ? '~' : '∞')
+      grupo.text(barra.tipo === EnumBarraTipo.PV ? '~' : '∞')
         .addClass('barra')
         .addClass('texto')
         .font({ size: 50, family: 'Times New Roman' })
         .move(10, 20); // texto
-    } else if (barra.tipo === EnumTipoBarra.PQ) {
+    } else if (barra.tipo === EnumBarraTipo.PQ) {
       grupo.line(20, 50, 80, 50)
         .addClass('barra')
         .addClass('linhaHorizontal');
@@ -837,7 +836,7 @@ export class DiagramaComponent implements OnInit {
       );
 
       if (this.select('.curto').length() > 1) {
-        this.select('.curto').each(function () { this.remove(); })
+        this.select('.curto').each(function () { this.remove(); });
       }
     });
   }
@@ -1059,7 +1058,7 @@ export class DiagramaComponent implements OnInit {
       const grupoBarra = this as SVG.G;
       const barraRecortada: Barra = self.getBarra(this.id());
       self.ExcluirLinhas(barraRecortada);
-      if (barraRecortada.tipo === EnumTipoBarra.Slack) {
+      if (barraRecortada.tipo === EnumBarraTipo.Slack) {
         self.slack = null;
       }
       self.barrasRecortadasSVG.add(this);
@@ -1097,7 +1096,7 @@ export class DiagramaComponent implements OnInit {
         this.barrasRecortadasSVG.each(function () {
           const grupoBarra = this as SVG.G;
           const barraColada: Barra = self.getBarra(this.id());
-          if (barraColada.tipo === EnumTipoBarra.Slack) {
+          if (barraColada.tipo === EnumBarraTipo.Slack) {
             if (self.slack) {
 
             } else {
@@ -1345,7 +1344,7 @@ export class DiagramaComponent implements OnInit {
           if (deBarra.id() !== paraBarra.id()) {
             const de = self.getBarra(deBarra.id());
             const para = self.getBarra(paraBarra.id());
-            self.AdicionarLinha(de, para, EnumLinhaTipo.reta);
+            self.AdicionarLinha(de, para, EnumLinhaEstilo.reta);
           }
           event.target.classList.remove('active');
           event.target.classList.remove('enter');

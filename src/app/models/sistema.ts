@@ -1,7 +1,7 @@
 import { element } from 'protractor';
 import { Linha } from './linha';
 import { Barra } from './barra';
-import { MathPowerService } from './../../testes-rapidos/testes-rapidos.service';
+import { MathPowerService } from '../shared/math-power.service';
 import { Fluxo } from './fluxo';
 import { EventEmitter, Output } from '@angular/core';
 export class Sistema {

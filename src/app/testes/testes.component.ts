@@ -1,4 +1,4 @@
-import { Sistema } from './../diagrama/models/sistema';
+import { Sistema } from '../models/sistema';
 import { MathPowerService } from '../shared/math-power.service';
 import { Component, OnInit } from '@angular/core';
 
