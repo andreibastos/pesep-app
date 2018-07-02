@@ -9,8 +9,8 @@ export class DataUpload {
 
     }
 
-     getData(filename): Array<any> {
-         const self = this;
+    getData(filename, delimiter = 'auto'): Array<any> {
+        const self = this;
         const data: Array<any> = new Array();
 
         let fileReader: FileReader;
@@ -18,7 +18,7 @@ export class DataUpload {
         // Read file into memory as UTF-8
         fileReader.readAsText(filename, 'UTF-8');
         fileReader.onload = function (evt) {
-            const data_text = Conversion.TextToList(evt.target['result']);
+            const data_text = Conversion.TextToList(evt.target['result'], delimiter);
             data_text.forEach((row, index) => {
                 row = Conversion.cleanLinesFile(row, index);
                 data.push(row);

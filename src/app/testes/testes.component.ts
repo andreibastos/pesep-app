@@ -1,3 +1,4 @@
+import { Sistema } from './../diagrama/models/sistema';
 import { MathPowerService } from '../shared/math-power.service';
 import { Component, OnInit } from '@angular/core';
 
@@ -20,12 +21,12 @@ export class TestesComponent implements OnInit {
       filename: 'barra.csv'
     },
     {
-      label: 'Inserir arquivo de falta (falta.txt)',
-      placeholder: 'falta.txt',
-      filename: 'falta.txt'
+      label: 'Inserir arquivo de falta (entrada_falta.txt)',
+      placeholder: 'entrada_falta.txt',
+      filename: 'entrada_falta.txt'
     }
   ];
-
+  sistema: Sistema;
   files = {};
 
   valid = {};
@@ -35,19 +36,34 @@ export class TestesComponent implements OnInit {
   short;
   errors;
 
-  constructor(private mathPowerService: MathPowerService) { }
+  constructor(private mathPowerService: MathPowerService) {
+    // this.sistema = new Sistema(null, null, mathPowerService);
+  }
 
   ngOnInit() {
 
   }
 
   ReceiveFile(event) {
-    const key = event['name'], data = event['data'] as any[];
+    const key = event['name'];
+    const data = clone(event['data']) as any[];
     this.files[key] = data;
+    if (data.length > 1) {
+      this.files[key] = data.splice(1);
+    }
     if (data) {
       this.valid[key] = true;
     } else {
       this.valid[key] = false;
+    }
+
+    function clone(obj) {
+      if (null == obj || 'object' !== typeof obj) { return obj; }
+      const copy = obj.constructor();
+      for (const attr in obj) {
+        if (obj.hasOwnProperty(attr)) { copy[attr] = obj[attr]; }
+      }
+      return copy;
     }
   }
 
@@ -60,24 +76,25 @@ export class TestesComponent implements OnInit {
   }
 
   canShort(): boolean {
-    return this.canFlow() && this.valid['falta.txt'];
+    return this.canFlow() && this.valid['entrada_falta.txt'];
   }
 
   CalculePowerFlow() {
     this.mathPowerService.calcule(this.files, 'power_flow')
       .catch((error) => { this.handleError(error); })
-      .then((data) => { this.flow = data; console.log(data); });
+      .then((data) => { this.flow = data || []; console.log(data); });
   }
   CalculeShortCircuit() {
     this.mathPowerService.calcule(this.files, 'short_circuit')
       .catch((error) => { this.handleError(error); })
-      .then((data) => { this.flow = data; console.log(data); });
+      .then((data) => { this.flow = data || []; console.log(data); });
   }
 
   handleError(error) {
     if (!error['ok']) {
       this.errors = { msg: 'Não foi possível conectar ao servidor' };
     }
+    console.log(error);
   }
 
 

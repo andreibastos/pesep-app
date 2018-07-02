@@ -6,12 +6,11 @@ export class Conversion {
         // size_column: indica o número de colunas que deve ter cada linha.
 
         const data = []; // dados a serem enviados para quem chama essa função
-        const lines = text.split('\n'); // quebra o texto em linhas
+        const lines = text.split('\n') as any[]; // quebra o texto em linhas
         if (delimiter === 'auto') {
-            delimiter = lines[0].split(',').length > lines[0].split(' ').length ? ',' : ' ';
+            const index_last = lines.length - 1;
+            delimiter = lines[index_last].split(',').length >= lines[index_last].split(' ').length ? ',' : ' ';
         }
-
-
         lines.forEach(linha => { // para cada linha em linhas
             const colunas = linha.split(delimiter); // quebra de acordo com o delimitador
             if (size_column) {
