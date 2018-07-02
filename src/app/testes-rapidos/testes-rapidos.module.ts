@@ -2,27 +2,25 @@ import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TestesRapidosComponent } from './testes-rapidos.component';
+import { TestesComponent } from './testes-rapidos.component';
 import { FluxoPotenciaComponent } from './fluxo-potencia/fluxo-potencia.component';
 import { CurtoCircuitoComponent } from './curto-circuito/curto-circuito.component';
 import { LinhaTabelaComponent } from './linha-tabela/linha-tabela.component';
 import { BarraTabelaComponent } from './barra-tabela/barra-tabela.component';
 import { FluxoTabelaComponent } from './fluxo-tabela/fluxo-tabela.component';
 import { FluxoArquivosComponent } from './fluxo-arquivos/fluxo-arquivos.component';
-import { FluxoManualComponent } from './fluxo-manual/fluxo-manual.component';
-import { TestesRapidosRoutingModule } from './testes-rapidos.routing.module';
 import { CurtoArquivosComponent } from './curto-arquivos/curto-arquivos.component';
-import { TabelaComponent } from './tabela/tabela.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     HttpModule,
-    TestesRapidosRoutingModule
+    SharedModule
   ],
   declarations: [
-    TestesRapidosComponent,
+    TestesComponent,
     FluxoPotenciaComponent,
     CurtoCircuitoComponent,
     LinhaTabelaComponent,
@@ -30,11 +28,6 @@ import { TabelaComponent } from './tabela/tabela.component';
     FluxoTabelaComponent,
     FluxoArquivosComponent,
     CurtoArquivosComponent,
-    FluxoManualComponent,
-    TabelaComponent
-  ],
-  exports: [
-    TabelaComponent
-  ],
+  ]
 })
-export class TestesRapidosModule { }
+export class TestesModule { }

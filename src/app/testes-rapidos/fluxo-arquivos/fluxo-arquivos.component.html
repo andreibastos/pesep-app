@@ -4,15 +4,16 @@
     <input type="file" placeholder="Entre com o arquivo de linha" class="form-control" id='arquivoLinha' (change)="lerArquivo('arquivoLinha')"
       accept=".csv" />
   </div>
+</form>
 
-  <app-linha-tabela [linhas]="linhas" *ngIf="linhas.length>0"></app-linha-tabela>
+<app-tabela [table]="linhas" *ngIf="linhas.length>0"></app-tabela>
 
+<form>
+  <div class="form-group">
+    <label>Inserir arquivo de barra (barra.csv)</label>
+    <input type="file" placeholder="Entre com o arquivo de barra" class="form-control" id="arquivoBarra" (change)="lerArquivo('arquivoBarra')"
+      accept=".csv" />
+  </div>
 
-  <form>
-    <div class="form-group">
-      <label>Inserir arquivo de barra (barra.csv)</label>
-      <input type="file" placeholder="Entre com o arquivo de barra" class="form-control" id="arquivoBarra" (change)="lerArquivo('arquivoBarra')"
-        accept=".csv" />
-    </div>
-
-    <app-barra-tabela [barras]="barras" *ngIf="barras.length>0"></app-barra-tabela>
+</form>
+<app-tabela [table]="barras" *ngIf="barras.length>0"></app-tabela>

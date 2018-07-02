@@ -1,10 +1,10 @@
-import { TestesRapidosModule } from './testes-rapidos.module';
+import { TestesModule } from './testes-rapidos.module';
 
 describe('TestesRapidosModule', () => {
-  let testesRapidosModule: TestesRapidosModule;
+  let testesRapidosModule: TestesModule;
 
   beforeEach(() => {
-    testesRapidosModule = new TestesRapidosModule();
+    testesRapidosModule = new TestesModule();
   });
 
   it('should create an instance', () => {
