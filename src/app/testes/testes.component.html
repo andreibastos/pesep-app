@@ -1,0 +1,30 @@
+<div class="container">
+  <p class="h3">Testes</p>
+  <div class="row">
+    <div class="col-12">
+
+      <div *ngFor="let file of list_files">
+        <app-upload-csv [filename]="file.filename" [label]="file.label" [placeholder]="file.placeholder" (filesLoadedEmit)="ReceiveFile($event)"></app-upload-csv>
+      </div>
+
+      <div class="mt-3">
+        <button [disabled]="!canFlow()" (click)="CalculePowerFlow()" class="btn btn-secondary mr-3" role="button">Calcular Fluxo de Potência</button>
+        <button [disabled]="!canShort()" (click)="CalculeShortCircuit()" class="btn btn-secondary" role="button">Calcular Curto Circuito</button>
+      </div>
+
+      <div *ngIf="flow">
+        <app-tabela [striped]="false" [table]="flow"></app-tabela>
+        <button (click)="Export('fluxo.csv')" class="btn btn-secondary mb-3" role="button">Exportar Fluxo de Potência</button>
+      </div>
+
+      <div *ngIf="short">
+        <app-tabela [striped]="false" [table]="short"></app-tabela>
+        <button (click)="Export('curto.csv')" class="btn btn-secondary mb-3" role="button">Exportar Fluxo de Potência</button>
+      </div>
+
+      <div *ngIf="errors">
+        <p>{{errors['msg']}}</p>
+      </div>
+    </div>
+  </div>
+</div>

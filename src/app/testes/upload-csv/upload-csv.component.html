@@ -1,0 +1,8 @@
+<form>
+  <div class="form-group">
+    <label>{{label}}</label>
+    <input id="{{filename}}" type="file" placeholder="{{placeholder}}" class="form-control" (change)="ReadFile($event)" accept=".csv, .txt"
+    />
+  </div>
+</form>
+<app-tabela [(table)]="fileCSV" *ngIf="fileCSV.length>0"></app-tabela>

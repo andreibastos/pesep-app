@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BarraTabelaComponent } from './barra-tabela.component';
+import { UploadCsvComponent } from './upload-csv.component';
 
-describe('BarraTabelaComponent', () => {
-  let component: BarraTabelaComponent;
-  let fixture: ComponentFixture<BarraTabelaComponent>;
+describe('UploadCsvComponent', () => {
+  let component: UploadCsvComponent;
+  let fixture: ComponentFixture<UploadCsvComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BarraTabelaComponent ]
+      declarations: [ UploadCsvComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BarraTabelaComponent);
+    fixture = TestBed.createComponent(UploadCsvComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

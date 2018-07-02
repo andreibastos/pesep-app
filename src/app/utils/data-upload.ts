@@ -1,13 +1,16 @@
 import { Conversion } from './conversions';
+import { EventEmitter } from '@angular/core';
 export class DataUpload {
 
+    dataEmitter = new EventEmitter();
 
     constructor() {
 
 
     }
 
-    static getData(filename): Array<any> {
+     getData(filename): Array<any> {
+         const self = this;
         const data: Array<any> = new Array();
 
         let fileReader: FileReader;
@@ -20,6 +23,7 @@ export class DataUpload {
                 row = Conversion.cleanLinesFile(row, index);
                 data.push(row);
             });
+            self.dataEmitter.emit(data);
         };
         return data;
     }
