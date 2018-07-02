@@ -2,7 +2,7 @@ import { IComponente } from './componente';
 import { Barra } from './barra';
 
 export class Linha {
-    static header = ['ID', 'De', 'Para', 'r', 'x', 'Tap', 'Ângulo', 'Tipo de Trafo', 'Resistência Zero', 'Reatância do Trafo'];
+    static header = ['ID', 'De', 'Para', 'r', 'x', 'Tap', 'Ângulo', 'Tipo de Trafo', 'Reatância Zero', 'Reatância do Trafo'];
 
     _id_linha: string;
 
