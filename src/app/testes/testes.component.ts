@@ -1,5 +1,5 @@
 import { Sistema } from '../models/sistema';
-import { MathPowerService } from '../shared/math-power.service';
+import { MathPowerService, MathPowerMethod } from '../shared/math-power.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -33,6 +33,8 @@ export class TestesComponent implements OnInit {
 
   // math calc
   flow;
+  tensoes;
+  correntes;
   short;
   errors;
 
@@ -80,17 +82,35 @@ export class TestesComponent implements OnInit {
   }
 
   CalculePowerFlow() {
-    this.mathPowerService.calcule(this.files, 'power_flow')
-      .catch((error) => { this.handleError(error); })
-      .then((data) => { this.flow = data || []; console.log(data); });
+    this.mathPowerService.calcule(this.files, MathPowerMethod.FPO)
+      .catch((error) => { this.handlerError(error); })
+      .then((data) => { this.handlerData(data); });
   }
   CalculeShortCircuit() {
-    this.mathPowerService.calcule(this.files, 'short_circuit')
-      .catch((error) => { this.handleError(error); })
-      .then((data) => { this.flow = data || []; console.log(data); });
+    this.mathPowerService.calcule(this.files, MathPowerMethod.CC)
+      .catch((error) => { this.handlerError(error); })
+      .then((data) => { this.handlerData(data); });
   }
 
-  handleError(error) {
+  handlerData(data) {
+    let flow, tensoes, correntes;
+    if (data) {
+      flow = data['fluxo.csv'];
+      tensoes = data['tensao_pos_falta.txt'];
+      correntes = data['corrente_linha_falta.txt'];
+      if (flow) {
+        this.flow = flow;
+      }
+      if (tensoes) {
+        this.tensoes = tensoes;
+      }
+      if (correntes) {
+        this.correntes = correntes;
+      }
+    }
+  }
+
+  handlerError(error) {
     if (!error['ok']) {
       this.errors = { msg: 'Não foi possível conectar ao servidor' };
     }

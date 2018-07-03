@@ -151,6 +151,17 @@ export class DiagramaComponent implements OnInit {
     this.sistema.errorHandler.subscribe(error => this.errorServidor(error));
   }
 
+
+  CalcularCurto() {
+    // peda para calcular o fluxo
+    this.sistema.CalcularCurto();
+
+    // se inscreve no fluxo
+    // this.sistema.calculandoFluxo.subscribe(fluxos => this.chegouFluxo(fluxos));
+    // this.sistema.errorHandler.subscribe(error => this.errorServidor(error));
+  }
+
+
   chegouFluxo(fluxos: Array<Fluxo>) {
     this.criarAlerta('Fluxo de Potência', 'concluído', 'sucesso');
     this.DesenhaLinhas(this.getLinhas());

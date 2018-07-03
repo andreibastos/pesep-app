@@ -11,8 +11,8 @@ export enum EnumLinhaEstilo {
 }
 
 export enum EnumFaltaLocal {
-    'Barra' = '0',
-    'Linha' = '1'
+    'Linha' = '0',
+    'Barra' = '1'
 }
 
 export enum EnumFaltaTipo {

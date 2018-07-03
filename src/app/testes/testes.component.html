@@ -20,8 +20,10 @@
       </div>
 
       <div *ngIf="short">
-        <app-tabela [striped]="false" [table]="short"></app-tabela>
-        <button (click)="Export('curto.csv')" class="btn btn-secondary mb-3" role="button">Exportar Fluxo de Potência</button>
+        <app-tabela [striped]="false" [table]="tensoes"></app-tabela>
+        <button (click)="Export('tensoes.txt')" class="btn btn-secondary mb-3" role="button">Exportar Fluxo de Potência</button>
+        <app-tabela [striped]="false" [table]="correntes"></app-tabela>
+        <button (click)="Export('correntes.txt')" class="btn btn-secondary mb-3" role="button">Exportar Fluxo de Potência</button>
       </div>
 
       <div *ngIf="errors">

@@ -11,14 +11,14 @@ export class MathPowerService {
 
   constructor(private http: Http) { }
 
-  getUrl(method) {
-    return this.url + method;
+  getUrl(method: MathPowerMethod) {
+    return this.url + method.toString();
   }
 
-  calcule(system, method): Promise<any> {
+  calcule(system, methodPower: MathPowerMethod): Promise<any> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
     const options = new RequestOptions({ headers: headers, method: RequestMethod.Post });
-    return this.http.post(this.getUrl(method), system, options).toPromise()
+    return this.http.post(this.getUrl(methodPower), system, options).toPromise()
       .then(this.handleDataPromisse)
       .catch(this.handleErrorPromise)
       ;
@@ -32,4 +32,9 @@ export class MathPowerService {
   private handleErrorPromise(error: Response | any) {
     return Promise.reject(error.message || error);
   }
+}
+
+export enum MathPowerMethod {
+  'FPO' = 'power_flow',
+  'CC' = 'short_circuit'
 }
