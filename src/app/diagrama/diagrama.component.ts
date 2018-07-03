@@ -48,7 +48,6 @@ export class DiagramaComponent implements OnInit {
 
   // Controle do SVG
   SVGPrincipal: SVG.Doc;
-  SVGLateral: SVG.Doc;
   mapaGruposSVG: Map<string, SVG.G> = new Map();
 
   // controle de seleção
@@ -74,8 +73,6 @@ export class DiagramaComponent implements OnInit {
     // criação dos elementos na tela
     // divNome = 'draw_inside';
     this.CriarDocumentoSVG('svg_principal');
-    this.CriarDocumentoSVG('svg_lateral');
-    this.CriarComponentesFixos();
 
     // interações com interact.js
     this.HabilitarInteractSelecao();
@@ -92,8 +89,6 @@ export class DiagramaComponent implements OnInit {
     this.sistema = new Sistema(this.getLinhas(), this.getBarras(), this.mathPowerService);
 
   }
-
-
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -165,9 +160,6 @@ export class DiagramaComponent implements OnInit {
   errorServidor(mensagem) {
     this.criarAlerta('Fluxo de Potência', 'Não possível conectar ao servidor', 'perigo');
   }
-
-
-
 
   DesenharExemplo() {
     let exemplo;
@@ -303,25 +295,14 @@ export class DiagramaComponent implements OnInit {
     // Now (ab)use the @import directive to load make the browser load our css
     styleSvg.textContent = '@import url("./assets/css/svg.css");';
 
-
-    if (SVGNome === 'svg_principal') {
-      this.SVGPrincipal = SVG(SVGNome)
-        .id('svg_principal')
-        .addClass('svg_area')
-        .size(width, height).viewbox(0, 0, width, height);
-      this.SVGPrincipal.node.appendChild(styleSvg);
-      this.barrasSelecionadasSVG = this.SVGPrincipal.set();
-      this.barrasCopiadasSVG = this.SVGPrincipal.set();
-      this.barrasRecortadasSVG = this.SVGPrincipal.set();
-
-    } else if (SVGNome === 'svg_lateral') {
-
-      this.SVGLateral = SVG(SVGNome)
-        .id('svg_lateral')
-        // .addClass('svg_area')
-        .size(width, height - 100);
-    }
-
+    this.SVGPrincipal = SVG(SVGNome)
+      .id('svg_principal')
+      .addClass('svg_area')
+      .size(width, height).viewbox(0, 0, width, height);
+    this.SVGPrincipal.node.appendChild(styleSvg);
+    this.barrasSelecionadasSVG = this.SVGPrincipal.set();
+    this.barrasCopiadasSVG = this.SVGPrincipal.set();
+    this.barrasRecortadasSVG = this.SVGPrincipal.set();
   }
 
   AtualizarDocumentoSVG() {
@@ -333,19 +314,8 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-  CriarComponentesFixos() {
-    // barras
-    this.CriarBarraFixa(EnumBarraTipo.Slack);
-    this.CriarBarraFixa(EnumBarraTipo.PV);
-    this.CriarBarraFixa(EnumBarraTipo.PQ, 180);
-
-    // curto;
-    this.CriarCurtoCircuito(this.SVGLateral);
-
-  }
-
-  CriarCurtoCircuito(SVGUsado: SVG.Doc = this.SVGPrincipal): SVG.G {
-    const grupoCurto = SVGUsado.group();
+  CriarCurtoCircuito(): SVG.G {
+    const grupoCurto = this.SVGPrincipal.group();
     const grupoCurtoPrincipal = this.mapaGruposSVG.get('curtoPrincipal');
     if (grupoCurtoPrincipal) {
       return grupoCurtoPrincipal;
@@ -356,39 +326,15 @@ export class DiagramaComponent implements OnInit {
     grupoCurto.line(0, 0, largura, largura);
     grupoCurto.line(0, largura, largura, 0);
     grupoCurto.circle(10).cx(largura / 2).cy(largura / 2);
-    if (SVGUsado.id() === 'svg_lateral') {
+    if (this.SVGPrincipal.id() === 'svg_lateral') {
       grupoCurto.id('curtoFixo')
         .y(400)
-        .cx(SVGUsado.width() / 2);
+        .cx(this.SVGPrincipal.width() / 2);
     } else {
       grupoCurto.id('curtoPrincipal');
     }
 
     return grupoCurto;
-  }
-
-  CriarBarraFixa(enumBarra: EnumBarraTipo, angulo = 0) {
-    const barra = new Barra(enumBarra);
-    const x = this.SVGLateral.width() / 4;
-
-    let y = 50;
-    switch (enumBarra) {
-      case EnumBarraTipo.Slack:
-        y += 0;
-        break;
-      case EnumBarraTipo.PV:
-        y += 100;
-        break;
-      case EnumBarraTipo.PQ:
-        y += 200;
-        break;
-    }
-    const grupoBarra = this.CriaGrupoBarra(barra, x, y, this.SVGLateral);
-
-    // Grupo do desenhos (circulos, linha, etc)
-    const grupoBarraDesenho = this.CriaGrupoBarraDesenho(barra, this.SVGLateral).rotate(angulo);
-    grupoBarra.add(grupoBarraDesenho);
-    grupoBarra.data('angulo', angulo);
   }
 
   /*
@@ -1493,7 +1439,7 @@ export class DiagramaComponent implements OnInit {
       }
     })
       .on('dragstart', function (event) {
-        grupoBarras = self.SVGLateral.set();
+        grupoBarras = self.SVGPrincipal.set();
         tipo = event.target.id;
         const barra = self.CriarBarra(tipo);
         if (barra) {
@@ -1501,10 +1447,7 @@ export class DiagramaComponent implements OnInit {
           event.target.id = barra.id_barra;
           dragstart(event);
         } else {
-          // alert(`só pode ter uma ${tipo}`);
-          // console.log(self.slack);
           self.criarAlerta('Sistema', `Só pode ter uma ${tipo}`, 'perigo');
-
         }
       })
       .on('dragmove', dragmove)

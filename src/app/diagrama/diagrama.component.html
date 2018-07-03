@@ -1,64 +1,84 @@
-<div class="container-fluid noselect">
-  <!-- Linha Principal -->
-  <div class="row">
-    <!-- Componentes  -->
-    <div class="col-1 p-0 m-0 border ">
-      <div id="svg_lateral" class="sidebar">
+<div>
+  <div class="container-fluid noselect">
+    <div class="row">
+      <!-- Coluna 01 - Componentes -->
+      <div class="col-lg-1 pr-1">
+        <div class="card simulador">
+          <div class="card-body text-center">
+            <img id="Slack" class="py-1 componente-lateral" src="../../assets/icons/componentes/1.png" style="width: 80%" title="Barra Slack"
+            />
+            <img id="PV" class="py-1 componente-lateral" src="../../assets/icons/componentes/2.png" style="width: 80%" title="Barra de Geração"
+            />
+            <img id="PQ" class="py-1 componente-lateral" src="../../assets/icons/componentes/3.png" style="width: 80%" title="Barra de Carga"
+            />
+            <img class="py-1 curtoPrincipal" src="../../assets/icons/componentes/4.png" style="width: 80%" title="Curto Circuito"
+            />
+          </div>
+        </div>
       </div>
-    </div>
-    <!-- /Componentes  -->
+      <!-- /Coluna 01 - Componentes -->
 
-    <!-- Diagrama -->
-    <div class="col-10 m-0 p-2">
-      <!-- Menu Superior -->
-      <div class="row menu-superior bg-white border mb-1 mx-0 px-0">
 
-        <!-- Ações de Copiar/Recortar/Colar/Excluir -->
-        <div class="col-3 btn-group px-0" role="group">
-          <button [disabled]="BarrasSelecionadas().length == 0" (click)="CopiarBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
-            data-toggle="tooltip" data-html="true" data-placement="top" title="Copiar">
-            <img src="../../assets/icons/menu-acoes/icons8-copiar-32.png">
-          </button>
-          <button [disabled]="BarrasSelecionadas().length == 0" (click)="RecortarBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
-            data-toggle="tooltip" data-html="true" data-placement="top" title="Recortar">
-            <img src="../../assets/icons/menu-acoes/icons8-recortar-32.png">
-          </button>
-          <button [disabled]="!podeColar()" (click)="ColarBarras()" type="button" class="btn btn-outline-secondary" data-toggle="tooltip"
-            data-html="true" data-placement="top" title="Colar">
-            <img src="../../assets/icons/menu-acoes/icons8-colar-32.png">
-          </button>
-          <button [disabled]="BarrasSelecionadas().length == 0" (click)="ExcluirBarrasSelecionadas()" type="button" class="btn btn-outline-secondary"
-            data-toggle="tooltip" data-html="true" data-placement="top" title="Excluir">
-            <img src="../../assets/icons/menu-acoes/icons8-lixo-32.png">
-          </button>
+      <!-- Coluna 02 - SVG -->
+      <div class="col-lg-11 pl-1">
+        <div class="card simulador">
+          <!-- barra de ferramentas -->
+          <div class="card-header py-2 px-2">
+            <button [disabled]="BarrasSelecionadas().length == 0" (click)="CopiarBarrasSelecionadas()" type="button" class="btn btn-outline-dark btn-blue mx-1"
+              title="Copiar">
+              <i class="fas fa-copy fa-lg"></i>
+            </button>
+            <button [disabled]="BarrasSelecionadas().length == 0" (click)="RecortarBarrasSelecionadas()" type="button" class="btn btn-outline-dark btn-blue mx-1"
+              title="Recortar">
+              <i class="fas fa-cut fa-lg"></i>
+            </button>
+            <button [disabled]="!podeColar()" (click)="ColarBarras()" type="button" class="btn btn-outline-dark btn-blue mx-1" title="Colar">
+              <i class="fas fa-paste fa-lg"></i>
+            </button>
+            <button [disabled]="BarrasSelecionadas().length == 0" (click)="ExcluirBarrasSelecionadas()" type="button" class="btn btn-outline-dark btn-blue mx-1"
+              title="Apagar">
+              <i class="fas fa-trash-alt fa-lg"></i>
+            </button>
+            <label class="separator">&nbsp;</label>
+            <button (click)="CalcularFluxo()" [disabled]="!PodeRealizarFluxo()" type="button" class="btn btn-outline-dark btn-blue mx-1" title="Calcular Fluxo de Potência">
+              <i class="fas fa-arrows-alt-h fa-lg"></i>
+            </button>
+            <button disabled type="button" class="btn btn-outline-dark btn-blue mx-1" title="Calcular Curto Circuito">
+              <i class="fas fa-bolt fa-lg"></i>
+            </button>
+            <label class="separator">&nbsp;</label>
+            <button (click)="AtualizarSistema()" type="button" class="btn btn-outline-dark btn-blue mx-1" data-toggle="modal" data-target="#resultados"
+              title="Informações do Sistema">
+              <i class="far fa-file-alt"></i>
+            </button>
+          </div>
+          <!-- /barra de ferramentas -->
+
+          <!-- Área de Desenho -->
+          <div id="svg_principal" tabindex="0" class="card-body text-center p-0"></div>
+          <!-- /Área de Desenho -->
+
         </div>
-        <!-- /Ações de Copiar/Recortar/Colar -->
-
-
-        <!-- calculos -->
-        <div class="col-3 px-0 btn-group justify-content-end d-flex " role="group">
-          <button id="btn_fluxo" (click)="CalcularFluxo()" [disabled]="!PodeRealizarFluxo()" type="button" class="btn btn-outline-secondary"
-            data-toggle="tooltip" data-html="true" data-placement="top" title="Calcular Fluxo de Potência">
-            <img src="../../assets/icons/menu-acoes/flow.png" width="32px" height="32px">
-          </button>
-          <button disabled type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-html="true" data-placement="top"
-            title="Calcular Curto Circuito">
-            <img src="../../assets/icons/menu-acoes/short.png" width="32px" height="32px">
-          </button>
-        </div>
-        <!-- calculos -->
-
-        <!-- Informações do Sistema -->
-        <div class="col-6 px-0 btn-group justify-content-end d-flex " role="group">
-          <button id="btn_resultados" (click)="AtualizarSistema()" type="button" class="btn btn-outline-secondary" data-toggle="tooltip"
-            data-toggle="modal" data-target="#resultados" data-html="true" data-placement="top" title="Informarções do Sistema">
-            <img src="../../assets/icons/menu-acoes/resultados.png" width="32px" height="32px">
-          </button>
-        </div>
-        <!-- Informações do Sistema -->
-
       </div>
-      <!-- /Menu Superior -->
+      <!-- /Coluna 02 - SVG -->
+
+      <!-- Propriedades -->
+      <div [ngStyle]="{'height.px': BarrasSelecionadas().length == 1 || LinhaSelecionada()?150:0 }" class="col px-4 pt-2 properties">
+        <div class="card card-properties mb-1" style="height: 100%">
+          <div class="card-body text-white pt-0 px-3">
+            <!-- Barras -->
+            <app-barra-form *ngIf="BarrasSelecionadas().length == 1" (barrasEnviadas)="AtualizarBarras($event)" [barrasRecebidas]="BarrasSelecionadas()">
+            </app-barra-form>
+            <!-- /Barras -->
+
+            <!-- Linha -->
+            <app-linha-form *ngIf="LinhaSelecionada()" (linhaEnviada)="AtualizarLinha($event)" [linhaRecebida]="linhaSelecionada"> </app-linha-form>
+            <!-- /Linha -->
+          </div>
+        </div>
+      </div>
+      <!-- /Propriedades -->
+
 
       <!-- Modal -->
       <app-resultados *ngIf="openModal" [sistema]="sistema" class="modal fade" id="resultados" tabindex="-1" role="dialog" aria-hidden="true"></app-resultados>
@@ -74,51 +94,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Área de Desenho -->
-      <div id="svg_principal" tabindex="0" class="row mx-0 px-0 shadow-lg bg-white border rounded area-draw"></div>
-      <!-- /Área de Desenho -->
-
-
-
     </div>
-    <!-- /Diagrama -->
-
-    <!-- Propriedades -->
-    <div class="col-1 m-0 p-0 border">
-      <div [class.active]="
-        BarrasSelecionadas().length == 1 || LinhaSelecionada()" class="propriety">
-        <!-- Diagrama -->
-        <div *ngIf="BarrasSelecionadas().length == 0 && !LinhaSelecionada()" class="justify-content-center m-0 p-0">
-          <p class="h5 "> Propriedades</p>
-          <div class="row p-0 m-0 border">
-            <div class="m-2 custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="view_grid">
-              <label class="custom-control-label" for="view_grid">Exibir Grade</label>
-            </div>
-          </div>
-          <div class="row p-0 m-0 border">
-            <div class="m-2 custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="snap_grid">
-              <label class="custom-control-label" for="snap_grid">Ajustar a Grade</label>
-            </div>
-          </div>
-        </div>
-        <!-- /Diagrama -->
-
-        <!-- Barras -->
-        <div *ngIf="BarrasSelecionadas().length == 1" class="m-0 p-0 justify-content-center">
-          <app-barra-form (barrasEnviadas)="AtualizarBarras($event)" [barrasRecebidas]="BarrasSelecionadas()"> </app-barra-form>
-        </div>
-        <!-- /Barras -->
-
-        <!-- Linha -->
-        <div *ngIf="LinhaSelecionada()" class="m-0 p-0 justify-content-center">
-          <app-linha-form (linhaEnviada)="AtualizarLinha($event)" [linhaRecebida]="linhaSelecionada"> </app-linha-form>
-        </div>
-        <!-- /Linha -->
-
-      </div>
-    </div>
-    <!-- /Propriedades -->
   </div>
+</div>
