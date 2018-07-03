@@ -1,11 +1,9 @@
 <!-- container -->
 <div class="container">
-
-  <div class="row my-5">
-    <p class="h2 my-1">
-      {{title}}
-    </p>
+  <div class="my-1">
+    <h1>{{title}}</h1>
   </div>
+
   <div class="row">
 
     <!-- card -->
@@ -19,7 +17,7 @@
             <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:example.id}">{{example.title}}</a>
           </h4>
           <p class="card-text">{{example.text}}</p>
-          <a href="{{example.link}}" class="btn btn-primary">{{button}}</a>
+          <a href="{{example.link}}" class="btn btn-blue btn-outline-dark ">{{button}}</a>
         </div>
       </div>
     </div>

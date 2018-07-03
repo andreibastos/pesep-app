@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ExemplosComponent implements OnInit {
   constructor() { }
-  title = 'Exemplos para Testes';
+  title = 'Exemplos';
   button = 'Baixar';
 
   examples = [
@@ -27,19 +27,19 @@ export class ExemplosComponent implements OnInit {
     }, {
       id: 3,
       title: 'Exemplo 3',
-      text: 'Fundamentos de Sistemas Elétricos de Potência - Zanetta - 2006',
+      text: 'Fluxo de carga em redes de energia elétrica - Monticelli - 1983',
       link: '../../assets/download/exemplo-7.zip',
       img: '../../assets/images/exemplos/7.png'
     }, {
       id: 4,
       title: 'Exemplo 4',
-      text: 'Fundamentos de Sistemas Elétricos de Potência - Zanetta - 2006',
+      text: 'Elementos de Análise de Sistemas Elétricos de Potência - Steverson - 1982',
       link: '../../assets/download/exemplo-8.zip',
       img: '../../assets/images/exemplos/8.png'
     }, {
       id: 5,
       title: 'Exemplo 5',
-      text: 'Fundamentos de Sistemas Elétricos de Potência - Zanetta - 2006',
+      text: 'Power System Analysis - Grainer e Steverson - 1994 ',
       link: '../../assets/download/exemplo-9.zip',
       img: '../../assets/images/exemplos/9.png'
     }
