@@ -548,6 +548,7 @@ export class DiagramaComponent implements OnInit {
 
     const poliLinha: SVG.G = grupoLinha.group().addClass('polilinha');
     const impedancia: SVG.G = grupoLinha.group();
+    const trafo: SVG.G = grupoLinha.group().addClass('trafo');
     // let grupoCurto: SVG.G;
 
     // identifica as ligações da linha (da barra, para barra)
@@ -563,22 +564,11 @@ export class DiagramaComponent implements OnInit {
     const delta_x = paraBarraCriarLinhaBox.cx - deBarraCriaLinhaBox.cx;
     const delta_y = paraBarraCriarLinhaBox.cy - deBarraCriaLinhaBox.cy;
     const angulo = this.CalcularAngulo(delta_x, delta_y);
-    // let hipotenusa = Math.hypot(delta_x, delta_y);
+    const hipotenusa = Math.hypot(delta_x, delta_y);
 
     // verifica qual é o tipo da linha (reta, polinha ou curva)
     if (enumLinhaEstilo === EnumLinhaEstilo.reta) {
-      // const afastamento = 50;
-      // if (hipotenusa > afastamento) {
-      //   hipotenusa -= afastamento;
-      // }
-      // const altura = 25;
-      // poliLinha.rect(hipotenusa, altura)
-      //   .dx(afastamento / 2)
-      //   .dy(-altura / 2)
-      //   .rotate(angulo, -afastamento, -altura / 2)
-      //   .translate(delta_x, delta_y)
-      //   .addClass('linha')
-      //   .addClass('transmissao');
+
       poliLinha.polyline([[0, 0], [delta_x, delta_y]])
         .addClass('linha');
       grupoLinha.data('angulo', angulo)
@@ -591,28 +581,26 @@ export class DiagramaComponent implements OnInit {
       poliLinha.polyline(this.CriarPoliLinha(delta_x, delta_y, 15));
     }
 
-    // if (this.curto.linha) {
-    //   if (this.curto.linha.id_linha === linha.id_linha) {
-    //     grupoCurto = poliLinha.group().addClass('curtoCircuito');
-    //     const largura = 40;
-    //     grupoCurto.addClass('curtoCircuito');
-    //     grupoCurto.line(0, 0, largura, largura);
-    //     grupoCurto.line(0, largura, largura, 0);
-    //     grupoCurto.circle(largura / 5)
-    //       .cx(largura / 2)
-    //       .cy(largura / 2);
-    //     grupoCurto.cx(-this.curto.afastamento * hipotenusa * Math.cos(angulo * Math.PI / 180));
-    //     grupoCurto.cy(-this.curto.afastamento * hipotenusa * Math.sin(angulo * Math.PI / 180));
-    //     grupoCurto.rotate(angulo);
-    //   }
-    // }
-
-
-
     // adiciona impedância
-    const rect = impedancia.rect(60, 20).rotate(angulo);
-    impedancia.move(delta_x / 2 - rect.width() / 2, delta_y / 2 - rect.height() / 2)
-      .front();
+    const rect = impedancia.rect(60, 20);
+    rect.rotate(-angulo, rect.cx(), rect.cy());
+    impedancia.move(delta_x / 2 - rect.width() / 2, delta_y / 2 - rect.height() / 2);
+    //   .front();
+
+    const diametro = 25;
+    const circle1 = trafo.circle(diametro).fill({ 'color': 'transparent' }).dx(diametro / 2);
+    const circle2 = trafo.circle(diametro).fill({ 'color': 'transparent' });
+
+
+    trafo.center(poliLinha.cx(), poliLinha.cy());
+    trafo.rotate(-angulo);
+
+    trafo.each(function () {
+      this.dx(-hipotenusa * 0.2);
+    });
+
+
+
 
     const texto = impedancia.group()
       .text(linha.nome)
@@ -638,6 +626,10 @@ export class DiagramaComponent implements OnInit {
       //       .cx(rect.cx());
       //   }
       // });
+    }
+
+    function toRad(angle: number): number {
+      return angle * Math.PI / 180;
     }
 
 
@@ -898,12 +890,12 @@ export class DiagramaComponent implements OnInit {
       dx = 1 / 10000000;
     }
     m = dy / dx;
-    let angulo = Math.atan2(dx, dy) * 180 / Math.PI;
-    angulo += 90;
+    let angulo = Math.atan2(dy, dx) * 180 / Math.PI;
+    // angulo += 90;
 
-    if (angulo < 0) {
-      angulo = 360 + angulo;
-    }
+    // if (angulo < 0) {
+    //   angulo = 360 + angulo;
+    // }
     angulo = Math.ceil(angulo / ceil) * ceil;
 
     return -angulo;
