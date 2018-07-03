@@ -317,22 +317,17 @@ export class DiagramaComponent implements OnInit {
   CriarCurtoCircuito(): SVG.G {
     const grupoCurto = this.SVGPrincipal.group();
     const grupoCurtoPrincipal = this.mapaGruposSVG.get('curtoPrincipal');
-    if (grupoCurtoPrincipal) {
-      return grupoCurtoPrincipal;
-    }
+    // if (grupoCurtoPrincipal) {
+    //   return grupoCurtoPrincipal;
+    // }
 
     const largura = 50;
     grupoCurto.addClass('curtoCircuito');
     grupoCurto.line(0, 0, largura, largura);
     grupoCurto.line(0, largura, largura, 0);
     grupoCurto.circle(10).cx(largura / 2).cy(largura / 2);
-    if (this.SVGPrincipal.id() === 'svg_lateral') {
-      grupoCurto.id('curtoFixo')
-        .y(400)
-        .cx(this.SVGPrincipal.width() / 2);
-    } else {
-      grupoCurto.id('curtoPrincipal');
-    }
+
+    grupoCurto.id('curtoPrincipal');
 
     return grupoCurto;
   }
@@ -1471,6 +1466,7 @@ export class DiagramaComponent implements OnInit {
       inertia: true
     }).on('dragstart', function (event) {
       grupoCurto = self.CriarCurtoCircuito();
+      console.log(grupoCurto);
       grupoCurto.x(-175);
       grupoCurto.y(event.y0 - 130);
     })
