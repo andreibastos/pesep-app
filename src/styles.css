@@ -46,9 +46,18 @@ body {
   background-color: #3F51B5;
 }
 
+.btn-blue:hover :disabled {
+  background-color: transparent !important;
+}
+
 .btn-outline-dark {
   border-color: #3F51B5;
   color: #3F51B5;
 }
+
+.btn-outline-dark:disabled {
+  border-color: #252525 !important;
+}
+
 
 /*Geral*/
