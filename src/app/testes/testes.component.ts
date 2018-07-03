@@ -1,5 +1,5 @@
 import { Sistema } from '../models/sistema';
-import { MathPowerService } from '../shared/math-power.service';
+import { MathPowerService, MathPowerMethod } from '../shared/math-power.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -80,12 +80,12 @@ export class TestesComponent implements OnInit {
   }
 
   CalculePowerFlow() {
-    this.mathPowerService.calcule(this.files, 'power_flow')
+    this.mathPowerService.calcule(this.files, MathPowerMethod.FPO)
       .catch((error) => { this.handleError(error); })
       .then((data) => { this.flow = data || []; console.log(data); });
   }
   CalculeShortCircuit() {
-    this.mathPowerService.calcule(this.files, 'short_circuit')
+    this.mathPowerService.calcule(this.files, MathPowerMethod.CC)
       .catch((error) => { this.handleError(error); })
       .then((data) => { this.flow = data || []; console.log(data); });
   }

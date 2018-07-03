@@ -1,14 +1,17 @@
 import { element } from 'protractor';
 import { Linha } from './linha';
 import { Barra } from './barra';
-import { MathPowerService } from '../shared/math-power.service';
+import { MathPowerService, MathPowerMethod } from '../shared/math-power.service';
 import { Fluxo } from './fluxo';
 import { EventEmitter, Output } from '@angular/core';
+import { Falta } from './falta';
 export class Sistema {
 
     private results;
 
     fluxos: Array<Fluxo> = new Array();
+
+    falta: Falta = new Falta();
 
     @Output()
     calculandoFluxo: EventEmitter<Array<Fluxo>> = new EventEmitter();
@@ -17,36 +20,61 @@ export class Sistema {
     errorHandler: EventEmitter<string> = new EventEmitter();
 
     constructor(public linhas: Array<Linha>, public barras: Array<Barra>, private mathPowerService?: MathPowerService) {
-
     }
 
     toObjectArray(): any {
+        const files = [
+            {
+                name: 'linhas',
+                filename: 'linha.csv'
+            },
+            {
+                name: 'barras',
+                filename: 'barra.csv'
+            }, {
+                name: 'falta',
+                filename: 'entrada_falta.txt'
+            },
+        ];
         const objectArray = {};
-        ['linhas', 'barras'].forEach((key) => {
-            objectArray[key] = this.toTable(key, false);
+        files.forEach((value) => {
+            objectArray[value.filename] = this.toTable(value.name, false);
         });
+        console.log(objectArray);
         return objectArray;
     }
 
     toTable(field: string, withHeader = true): any[] {
         let array = [];
-        if (field !== 'fluxos') {
+        let header = [];
+
+        if (field === 'fluxos') {
             if (withHeader) {
-                let header = [];
-                if (field === 'linhas') {
-                    header = Linha.header;
-                } else if (field === 'fluxos') {
-                    header = Fluxo.header;
-                } else if (field === 'barras') {
-                    header = Barra.header;
-                }
+                header = Fluxo.header;
+                array.push(header);
+            }
+            array = this.fluxosToTable();
+        } else if (field === 'linhas') {
+            if (withHeader) {
+                header = Linha.header;
                 array.push(header);
             }
             this[field].forEach(row => {
                 array.push(row.toArray());
             });
-        } else {
-            array = this.fluxosToTable();
+
+        } else if (field === 'barras') {
+            if (withHeader) {
+                header = Barra.header;
+                array.push(header);
+            }
+            this[field].forEach(row => {
+                array.push(row.toArray());
+            });
+
+        } else if (field === 'falta') {
+            console.log(this.falta);
+            array.push(this.falta.toArray());
         }
 
         return array;
@@ -72,7 +100,7 @@ export class Sistema {
         return tabela;
     }
 
-    CriarFluxos(fluxoPotencia) {
+    CriarFluxos(fluxoPotencia: any[]) {
         this.fluxos = [];
         let header = [];
         let de_anterior, de_atual, para_atual = null;
@@ -109,6 +137,10 @@ export class Sistema {
         this.calculandoFluxo.emit(this.fluxos);
     }
 
+    CriarCurtos(files: any[]) {
+        console.log(files);
+    }
+
     CriarMatrizSusceptancia(susceptancias: any[], linhas: any[], colunas: any[]) {
         const matriz = new Array(linhas.length);
         susceptancias.forEach((susceptancia, index) => {
@@ -123,7 +155,7 @@ export class Sistema {
 
     CalcularFluxo() {
         const self = this;
-        this.mathPowerService.calcule(this.toObjectArray(), 'power_flow').then(
+        this.mathPowerService.calcule(this.toObjectArray(), MathPowerMethod.FPO).then(
             results => {
                 this.results = results;
                 console.log(results);
@@ -134,6 +166,22 @@ export class Sistema {
                 // const columns = result['columns'][0][0].split(' ');
                 // this.CriarMatrizSusceptancia(susceptance, lines, columns);
 
+            }
+        ).catch(
+            function (e) {
+                self.errorHandler.emit(e);
+            }
+        );
+    }
+
+    CalcularCurto() {
+        const self = this;
+        this.mathPowerService.calcule(this.toObjectArray(), MathPowerMethod.CC).then(
+            results => {
+                this.results = results;
+                console.log(results);
+                const power_flow = results['fluxo.csv'];
+                this.CriarFluxos(power_flow);
             }
         ).catch(
             function (e) {
