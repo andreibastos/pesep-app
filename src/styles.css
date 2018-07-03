@@ -1,10 +1,54 @@
 /* You can add global styles to this file, and also import other style files */
+
 .noselect {
-    -webkit-touch-callout: none; /* iOS Safari */
-      -webkit-user-select: none; /* Safari */
-       -khtml-user-select: none; /* Konqueror HTML */
-         -moz-user-select: none; /* Firefox */
-          -ms-user-select: none; /* Internet Explorer/Edge */
-              user-select: none; /* Non-prefixed version, currently
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
                                     supported by Chrome and Opera */
-  }
+}
+
+body {
+  background-color: #DDD;
+  padding-top: 75px;
+  height: 100%;
+  position: relative;
+}
+
+/*Geral*/
+
+.card {
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.text-blue {
+  color: #3F51B5;
+}
+
+.separator {
+  border-right: 1px solid #3F51B5;
+  width: 15px;
+  margin-right: 15px;
+  height: 30px;
+  margin-bottom: 0;
+}
+
+.btn-blue:hover {
+  background-color: #3F51B5;
+}
+
+.btn-outline-dark {
+  border-color: #3F51B5;
+  color: #3F51B5;
+}
+
+/*Geral*/

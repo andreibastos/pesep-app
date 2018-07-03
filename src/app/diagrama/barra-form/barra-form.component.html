@@ -1,100 +1,73 @@
-<div class="row">
-  <div class="col-12">
-    <p class="m-2 p-0">Alterando Barra</p>
-    <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
-      <div class="form-row">
-        <div class="form-group col-md-12" [ngClass]="AplicaCSSError('id_barra')">
-          <label>ID</label>
-          <input type="text" class="form-control" placeholder="barra_1" formControlName="id_barra">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group col-12" [ngClass]="AplicaCSSError('nome')">
-          <label>Nome</label>
-          <input type="text" class="form-control" placeholder="Elm" formControlName="nome">
-        </div>
-      </div>
-      <div class="form-row">
-
-        <div class="form-group col-12" [ngClass]="AplicaCSSError('tipoBarra')">
-          <label>Tipo</label>
-          <input type="text" class="form-control" placeholder="0.0" formControlName="tipoBarra">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('tensao')">
-          <label>Tensão</label>
-          <input step="0.01" min="0" type="number" class="form-control" placeholder="1.0" formControlName="tensao">
-        </div>
-
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('angulo')">
-          <label>Ângulo</label>
-          <input min="0" type="number" class="form-control" placeholder="0.0" formControlName="angulo">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('pGerada')">
-          <label>P Gerada</label>
-          <input min="0" type="number" class="form-control" placeholder="1.0" formControlName="pGerada">
-        </div>
-
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('qGerada')">
-          <label>Q Gerada</label>
-          <input min="0" type="number" class="form-control" placeholder="0.0" formControlName="qGerada">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('pCarga')">
-          <label>P Carga</label>
-          <input min="0" type="number" class="form-control" placeholder="1.0" formControlName="pCarga">
-        </div>
-
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('qCarga')">
-          <label>Q Carga</label>
-          <input min="0" type="number" class="form-control" placeholder="0.0" formControlName="qCarga">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('pGeradaMin')">
-          <label>P Gerada Max</label>
-          <input min="0" type="number" class="form-control" placeholder="1.0" formControlName="pGeradaMin">
-        </div>
-
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('pGeradaMax')">
-          <label>P Gerada Min</label>
-          <input min="0" type="number" class="form-control" placeholder="0.0" formControlName="pGeradaMax">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('qGeradaMin')">
-          <label>Q Gerada Max</label>
-          <input min="0" type="number" class="form-control" placeholder="1.0" formControlName="qGeradaMin">
-        </div>
-
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('qGeradaMax')">
-          <label>Q Gerada Min</label>
-          <input min="0" type="number" class="form-control" placeholder="0.0" formControlName="qGeradaMax">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('qShunt')">
-          <label>Q Shunt</label>
-          <input min="0" type="number" class="form-control" placeholder="1.0" formControlName="qShunt">
-        </div>
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('X')">
-          <label>Reatância Gerador</label>
-          <input min="0" type="number" class="form-control" placeholder="0.0" formControlName="X">
-        </div>
-      </div>
-
-      <button type="submit" class="btn btn-primary mb-2">Atualizar</button>
-    </form>
+<form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+  <!-- Linha 1 -->
+  <div class="row">
+    <div class="col-1" [ngClass]="AplicaCSSError('id_barra')">
+      <label>ID</label>
+      <input type="text" class="form-control form-control-sm" placeholder="barra_1" formControlName="id_barra">
+    </div>
+    <div class="col-1" [ngClass]="AplicaCSSError('tipoBarra')">
+      <label>Tipo</label>
+      <input type="text" class="form-control form-control-sm" placeholder="0.0" formControlName="tipoBarra">
+    </div>
+    <div class="col-1" [ngClass]="AplicaCSSError('tensao')">
+      <label>Tensão</label>
+      <input step="0.01" min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="tensao">
+    </div>
+    <div class="col-1" [ngClass]="AplicaCSSError('pGerada')">
+      <label>P Gerada</label>
+      <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="pGerada">
+    </div>
+    <div class="col-1" [ngClass]="AplicaCSSError('pCarga')">
+      <label>P Carga</label>
+      <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="pCarga">
+    </div>
+    <div class="col-2" [ngClass]="AplicaCSSError('pGeradaMin')">
+      <label>P Gerada Max</label>
+      <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="pGeradaMin">
+    </div>
+    <div class="col-2" [ngClass]="AplicaCSSError('qGeradaMin')">
+      <label>Q Gerada Max</label>
+      <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="qGeradaMin">
+    </div>
+    <div class="col-1" [ngClass]="AplicaCSSError('qShunt')">
+      <label>Q Shunt</label>
+      <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="qShunt">
+    </div>
   </div>
-</div>
+  <!-- /Linha 1 -->
+  <!-- Linha 2 -->
+  <div class="row">
+    <div class="col-2" [ngClass]="AplicaCSSError('nome')">
+      <label>Nome</label>
+      <input type="text" class="form-control form-control-sm" placeholder="Elm" formControlName="nome">
+    </div>
+    <div class="col-1" [ngClass]="AplicaCSSError('angulo')">
+      <label>Ângulo</label>
+      <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="angulo">
+    </div>
+    <div class="col-1" [ngClass]="AplicaCSSError('qGerada')">
+      <label>Q Gerada</label>
+      <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="qGerada">
+    </div>
+    <div class="col-1" [ngClass]="AplicaCSSError('qCarga')">
+      <label>Q Carga</label>
+      <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="qCarga">
+    </div>
+    <div class="col-2" [ngClass]="AplicaCSSError('pGeradaMax')">
+      <label>P Gerada Min</label>
+      <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="pGeradaMax">
+    </div>
+    <div class="col-2" [ngClass]="AplicaCSSError('qGeradaMax')">
+      <label>Q Gerada Min</label>
+      <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="qGeradaMax">
+    </div>
+    <div class="col-2" [ngClass]="AplicaCSSError('X')">
+      <label>Reatância Gerador</label>
+      <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="X">
+    </div>
+
+    <button type="submit" class="btn btn-primary mb-2">Atualizar</button>
+  </div>
+  <!-- /Linha 2 -->
+
+</form>

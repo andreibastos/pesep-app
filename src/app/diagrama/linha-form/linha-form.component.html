@@ -1,71 +1,60 @@
-<div class="row">
-  <div class="col-12">
-    <p class="m-2 p-0">Alterando Barra</p>
-    <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
-      <div class="form-row">
-        <div class="form-group col-md-12" [ngClass]="AplicaCSSError('id_linha')">
-          <label>ID</label>
-          <input type="text" class="form-control" placeholder="barra_1" formControlName="id_linha">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group col-12" [ngClass]="AplicaCSSError('nome')">
-          <label>Nome</label>
-          <input type="text" class="form-control" placeholder="linha 0,0" formControlName="nome">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <label class="col-12" for="">Impedância</label>
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('R')">
-          <label>r</label>
-          <input type="number" class="form-control" placeholder="1.0" formControlName="R">
-        </div>
-
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('X')">
-          <label>x</label>
-          <input type="number" class="form-control" placeholder="0.0" formControlName="X">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <label class="col-12" for="">Transformador</label>
-
-        <div class="form-group col-md-8 mx-1" [ngClass]="AplicaCSSError('tipo_trafo')">
-          <label>Tipo Transformador</label>
-          <select class="form-control " formControlName="tipo_trafo">
-            <option value="1">Delta Estrela</option>
-            <option value="2">Estrela Estrela</option>
-          </select>
-        </div>
-
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('TAP')">
-          <label>Tap</label>
-          <input type="number" class="form-control" placeholder="1.0" formControlName="TAP">
-        </div>
-
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('A')">
-          <label>Ângulo</label>
-          <input type="number" class="form-control" placeholder="0.0" formControlName="A">
-        </div>
+<form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+  <!-- Linha 1 -->
+  <div class="row">
+    <div class="col-1" [ngClass]="AplicaCSSError('id_linha')">
+      <label>ID</label>
+      <input type="text" class="form-control form-control-sm" placeholder="barra_1" formControlName="id_linha">
+    </div>
+    <div class="col-1" [ngClass]="AplicaCSSError('R')">
+      <label>r</label>
+      <input type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="R">
+    </div>
 
 
+    <div class="col-1" [ngClass]="AplicaCSSError('TAP')">
+      <label>Tap</label>
+      <input type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="TAP">
+    </div>
 
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('reatancia_trafo')">
-          <label>Reatância Transformador</label>
-          <input type="number" class="form-control" placeholder="0.0" formControlName="reatancia_trafo">
-        </div>
+    <div class="col-2" [ngClass]="AplicaCSSError('reatancia_trafo')">
+      <label>Reatância Transformador</label>
+      <input type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="reatancia_trafo">
+    </div>
 
-        <div class="form-group col-md-6" [ngClass]="AplicaCSSError('resistencia_zero')">
-          <label>Resistência Zero</label>
-          <input type="number" class="form-control" placeholder="0.0" formControlName="resistencia_zero">
-        </div>
+    <div class="col-2" [ngClass]="AplicaCSSError('tipo_trafo')">
+      <label>Tipo Transformador</label>
+      <select class="form-control form-control-sm " formControlName="tipo_trafo">
+        <option value="1">Delta Estrela</option>
+        <option value="2">Estrela Estrela</option>
+      </select>
+    </div>
 
 
-      </div>
-      <button type="submit" class="btn btn-primary mb-2">Atualizar</button>
-
-    </form>
   </div>
-</div>
+  <!-- /Linha 1 -->
+  <!-- Linha 2 -->
+  <div class="row">
+    <div class="col-1" [ngClass]="AplicaCSSError('nome')">
+      <label>Nome</label>
+      <input type="text" class="form-control form-control-sm" placeholder="linha 0,0" formControlName="nome">
+    </div>
+    <div class="col-1" [ngClass]="AplicaCSSError('X')">
+      <label>x</label>
+      <input type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="X">
+    </div>
+
+    <div class="col-1" [ngClass]="AplicaCSSError('A')">
+      <label>Ângulo</label>
+      <input type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="A">
+    </div>
+
+    <div class="col-2" [ngClass]="AplicaCSSError('resistencia_zero')">
+      <label>Resistência Zero</label>
+      <input type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="resistencia_zero">
+    </div>
+
+    <button type="submit" class="btn btn-primary m-3 p-2">Atualizar</button>
+  </div>
+  <!-- /Linha 2 -->
+
+</form>

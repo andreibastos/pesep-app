@@ -56,6 +56,40 @@
 }
 
 #svg_principal {
-  position: relative;
   z-index: 100;
 }
+
+/*Propriedades*/
+
+/*Propriedades*/
+.properties {
+	margin-bottom: -2.5vh;
+	position: absolute;
+	overflow: hidden;
+	bottom: 0;
+	height: 0px;
+  transition: 1s;
+  z-index: 100;
+}
+
+.titleItem {
+	margin-top: 8px;
+	margin-bottom: 0;
+}
+
+.card-properties {
+	border-radius: 10px 10px 0 0 !important;
+	box-shadow: 0 0 10px black !important;
+	background-color: #8e9194;
+	height: 100%;
+}
+/*Propriedades*/
+
+
+/*Simulador*/
+
+.simulador {
+  height: 90vh;
+}
+
+/*Simulador*/
