@@ -45,9 +45,9 @@ export class Barra {
     }
 
     private tipoNumerico(): Number {
-        let numero = 3;
-        if (this.tipo === EnumBarraTipo.PQ) {
-            numero = 2;
+        let numero = 2;
+        if (this.tipo === EnumBarraTipo.Slack) {
+            numero = 3;
         } else if (this.tipo === EnumBarraTipo.PV) {
             numero = 1;
         }

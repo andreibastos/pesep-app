@@ -1,3 +1,4 @@
+import { EnumBarraTipo } from './../models/enumeradores';
 import { MathPowerService } from '../shared/math-power.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, HostListener } from '@angular/core';
@@ -594,7 +595,6 @@ export class DiagramaComponent implements OnInit {
     trafo.center(poliLinha.cx(), poliLinha.cy());
     trafo.rotate(angulo);
 
-    console.log(hipotenusa);
 
     trafo.each(function () {
       // this.dx(-hipotenusa * 0.2);
@@ -729,8 +729,10 @@ export class DiagramaComponent implements OnInit {
 
   // grupo de desenho (circulos, setas, triangulos)
   CriaGrupoBarraDesenho(barra: Barra, SVGUsado = this.SVGPrincipal as SVG.Doc): SVG.G {
+
     const grupo = SVGUsado.group().id('grupoBarraDesenho');
     if (barra.tipo === EnumBarraTipo.Slack || barra.tipo === EnumBarraTipo.PV) {
+
       grupo.circle(50)
         .move(2, 25)
         .addClass('barra')
@@ -738,6 +740,7 @@ export class DiagramaComponent implements OnInit {
       grupo.line(52, 50, 80, 50)
         .addClass('barra')
         .addClass('linhaHorizontal');
+
       grupo.group().id('barramento').line(80, 10, 80, 90)
         .addClass('barra')
         .addClass('barramento');
@@ -746,28 +749,28 @@ export class DiagramaComponent implements OnInit {
         .addClass('texto')
         .font({ size: 50, family: 'Times New Roman' })
         .move(10, 20); // texto
-    } else if (barra.tipo === EnumBarraTipo.PQ) {
-      grupo.line(20, 50, 80, 50)
-        .addClass('barra')
-        .addClass('linhaHorizontal');
+    } else if (barra.tipo === EnumBarraTipo.PQ || barra.tipo === EnumBarraTipo.PQZero) {
       grupo.group().id('barramento').line(80, 10, 80, 90)
         .addClass('barra')
         .addClass('barramento');
-      grupo.path('m25,60l10,-25l10,25l-10,0l-10,0z') // triangulo
-        .rotate(-90, 25, 60)
-        .addClass('barra')
-        .addClass('triangulo');
+      if (!(barra.pCarga === 0 && barra.qCarga === 0)) {
+        grupo.line(20, 50, 80, 50)
+          .addClass('barra')
+          .addClass('linhaHorizontal');
+        grupo.path('m25,60l10,-25l10,25l-10,0l-10,0z') // triangulo
+          .rotate(-90, 25, 60)
+          .addClass('barra')
+          .addClass('triangulo');
+      }
     }
-    if (SVGUsado.id() === 'svg_principal') {
-      const box = grupo.bbox();
-      grupo.circle(10)
-        .addClass('rotacao')
-        .move(box.cx - 5, box.cy - 5);
-      grupo.circle(10).addClass('criarLinha')
-        .move(box.x2 - 5, box.cy - 5);
-      grupo.addClass('barra')
-        .addClass('grupoBarraDesenho');
-    }
+    const box = grupo.bbox();
+    grupo.circle(10)
+      .addClass('rotacao')
+      .move(box.cx - 5, box.cy - 5);
+    grupo.circle(10).addClass('criarLinha')
+      .move(box.x2 - 5, box.cy - 5);
+    grupo.addClass('barra')
+      .addClass('grupoBarraDesenho');
     return grupo;
   }
 
@@ -829,11 +832,15 @@ export class DiagramaComponent implements OnInit {
       'font-weight': 'bold'
     };
 
-    grupoTexto.text(barra.tipo)
-      .id('tipo')
-      .cx(box.x2)
-      .cy(box.y2 + 5)
-      .font(options);
+    if (barra.tipo !== EnumBarraTipo.PQZero) {
+
+      grupoTexto.text(barra.tipo)
+        .id('tipo')
+        .cx(box.x2)
+        .cy(box.y2 + 5)
+        .font(options);
+
+    }
 
     grupoTexto.text(barra.id_barra.split('_')[1])
       .id('id')
