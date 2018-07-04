@@ -1,4 +1,3 @@
-import { EnumBarraTipo } from './../models/enumeradores';
 import { MathPowerService } from '../shared/math-power.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, HostListener } from '@angular/core';
@@ -279,22 +278,37 @@ export class DiagramaComponent implements OnInit {
     return false;
   }
 
-  AtualizarBarras(barrasAtualizadas: Array<Barra>) {
-    barrasAtualizadas.forEach(barra => {
-      this.mapaBarras.set(barra.id_barra, barra);
-      const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
-      this.AtualizaGrupoBarraTexto(grupoBarra);
-    });
-
+  AtualizarBarras(barrasInfo) {
+    if (barrasInfo) {
+      let barrasAtualizadas = barrasInfo['update'];
+      if (barrasAtualizadas) {
+        barrasAtualizadas.forEach(barra => {
+          this.mapaBarras.set(barra.id_barra, barra);
+          const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
+          this.AtualizaGrupoBarraTexto(grupoBarra);
+        });
+      } else {
+        barrasAtualizadas = barrasInfo['delete'];
+        barrasAtualizadas.forEach(barra => {
+          this.ExcluirBarra(barra);
+        });
+      }
+    }
     this.LimparSelecionados();
   }
-  AtualizarLinha(linhaAtualizada: Linha) {
-
-    linhaAtualizada.de = this.linhaSelecionada.de;
-    linhaAtualizada.para = this.linhaSelecionada.para;
-    this.mapaLinhas.set(linhaAtualizada.id_linha, linhaAtualizada);
-    this.linhaSelecionada = null;
-    this.DesenhaLinha(linhaAtualizada);
+  AtualizarLinha(linhasInfo) {
+    const linhaAtualizada = linhasInfo['data'];
+    if (linhasInfo['update']) {
+      linhaAtualizada.de = this.linhaSelecionada.de;
+      linhaAtualizada.para = this.linhaSelecionada.para;
+      this.mapaLinhas.set(linhaAtualizada.id_linha, linhaAtualizada);
+      this.linhaSelecionada = null;
+      this.DesenhaLinha(linhaAtualizada);
+    } else if (linhasInfo['delete']) {
+      this.ExcluirLinhas(linhaAtualizada);
+    }
+    console.log(linhaAtualizada);
+    this.LimparLinhasSelecionadas();
   }
   CriarDocumentoSVG(SVGNome: string) {
     const divDesenho = document.getElementById(SVGNome);
@@ -399,7 +413,7 @@ export class DiagramaComponent implements OnInit {
   // excluindo barra na tela e no mapa de barras
   ExcluirBarra(barra: Barra) {
     if (this.mapaGruposSVG.get(barra.id_barra)) {
-      this.ExcluirLinhas(barra);
+      this.ExcluirLinhasBarra(barra);
       this.RemoverBarra(barra);
     }
 
@@ -486,8 +500,16 @@ export class DiagramaComponent implements OnInit {
     this.qtdLinhasTotal++;
   }
 
+  ExcluirLinhas(paraRemover: Array<Linha>) {
+
+    paraRemover.forEach(linha => {
+      this.mapaLinhas.delete(linha.id_linha);
+      this.mapaGruposSVG.delete(linha.id_linha);
+    });
+  }
+
   // excluindo linhas na tela
-  ExcluirLinhas(barra: Barra) {
+  ExcluirLinhasBarra(barra: Barra) {
     const paraRemover: Array<Linha> = new Array();
     this.mapaLinhas.forEach((linha) => {
       if (linha.de.id_barra === barra.id_barra || linha.para.id_barra === barra.id_barra) {
@@ -497,11 +519,7 @@ export class DiagramaComponent implements OnInit {
     });
     console.log(`excluindo ${paraRemover.length} linhas associadas a barra ${barra.id_barra}`);
 
-    paraRemover.forEach(linha => {
-      this.mapaLinhas.delete(linha.id_linha);
-      this.mapaGruposSVG.delete(linha.id_linha);
-    });
-
+    this.ExcluirLinhas(paraRemover);
   }
 
   // criando polilinhas
@@ -977,7 +995,7 @@ export class DiagramaComponent implements OnInit {
     this.barrasSelecionadasSVG.each(function () {
       const grupoBarra = this as SVG.G;
       const barraRecortada: Barra = self.getBarra(this.id());
-      self.ExcluirLinhas(barraRecortada);
+      self.ExcluirLinhasBarra(barraRecortada);
       if (barraRecortada.tipo === EnumBarraTipo.Slack) {
         self.slack = null;
       }

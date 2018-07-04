@@ -33,6 +33,12 @@
       <label>Q Shunt</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="qShunt">
     </div>
+
+    <div class="col">
+      <button (click)="onSubmit('update')" type="submit" class="btn btn-primary mb-2">Atualizar</button>
+      <button (click)="onSubmit('delete')" type="submit" class="btn btn-danger mb-2">Excluir</button>
+      <button (click)="onSubmit('cancel')" type="submit" class="btn btn-info mb-2">Cancelar</button>
+    </div>
   </div>
   <!-- /Linha 1 -->
   <!-- Linha 2 -->
@@ -66,7 +72,7 @@
       <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="X">
     </div>
 
-    <button type="submit" class="btn btn-primary mb-2">Atualizar</button>
+
   </div>
   <!-- /Linha 2 -->
 

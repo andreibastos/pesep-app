@@ -11,7 +11,7 @@ import { Linha } from '../../models/linha';
 export class LinhaFormComponent implements OnInit {
   formulario: FormGroup;
   @Input() linhaRecebida: Linha;
-  @Output() linhaEnviada: EventEmitter<Linha> = new EventEmitter();
+  @Output() linhaEnviada: EventEmitter<any> = new EventEmitter();
   private linhaAtualizada: Linha;
 
   constructor(private formBuild: FormBuilder) { }
@@ -31,9 +31,10 @@ export class LinhaFormComponent implements OnInit {
     return novaLinha;
   }
 
-  onSubmit() {
+  onSubmit(command) {
     this.linhaAtualizada = this.AtualizarLinhaComFormulario(this.linhaRecebida);
-    this.linhaEnviada.emit(this.linhaAtualizada);
+    const response = { 'command': command, 'data': this.linhaAtualizada };
+    this.linhaEnviada.emit(response);
   }
 
   CriarFormulario(linha: Linha) {
