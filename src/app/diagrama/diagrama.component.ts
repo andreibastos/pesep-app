@@ -583,20 +583,24 @@ export class DiagramaComponent implements OnInit {
 
     // adiciona impedância
     const rect = impedancia.rect(60, 20);
-    rect.rotate(-angulo, rect.cx(), rect.cy());
+    rect.rotate(angulo, rect.cx(), rect.cy());
     impedancia.move(delta_x / 2 - rect.width() / 2, delta_y / 2 - rect.height() / 2);
-    //   .front();
 
+
+    // adiciona trafo
     const diametro = 25;
-    const circle1 = trafo.circle(diametro).fill({ 'color': 'transparent' }).dx(diametro / 2);
-    const circle2 = trafo.circle(diametro).fill({ 'color': 'transparent' });
-
-
+    trafo.circle(diametro).fill({ 'color': 'transparent' }).dx(diametro / 2);
+    trafo.circle(diametro).fill({ 'color': 'transparent' });
     trafo.center(poliLinha.cx(), poliLinha.cy());
-    trafo.rotate(-angulo);
+    trafo.rotate(angulo);
+
+    console.log(hipotenusa);
 
     trafo.each(function () {
-      this.dx(-hipotenusa * 0.2);
+      // this.dx(-hipotenusa * 0.2);
+      if (hipotenusa > diametro * 6) {
+        this.dx(-diametro * 3);
+      }
     });
 
 
@@ -847,35 +851,6 @@ export class DiagramaComponent implements OnInit {
     grupoTexto.on('updateText', this.testeTexto);
 
 
-
-    // grupoBarra.rect(box.w, box.h).fill({ opacity: 0.1 });
-
-    // grupoTexto.text(barra.nome)
-    //   .id('nome')
-    //   .dx(box.x)
-    //   .dy(box.width * 1.1);
-
-    // grupoTexto.text(barra.id_barra.split('_')[1])
-    //   .id('id')
-    //   .dx(box.x - 20)
-    //   .dy(box.cx - 5);
-
-    // grupoTexto.text(`P=${barra.pCarga} pu`)
-    //   .id('P')
-    //   .dx(-box.height * 0.1)
-    //   .dy(-box.width * 0.5);
-
-    // grupoTexto.text(`Q=${barra.qCarga} pu`)
-    //   .id('Q')
-    //   .dx(-box.height * 0.1)
-    //   .dy(-box.width * 0.3);
-
-    // grupoTexto.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
-    //   .id('PV')
-    //   .dy(-box.width * 0.15)
-    //   .dx(box.height * 0.7);
-
-    // this.AtualizaToolTipBarra(grupoBarra);
     return grupoTexto;
   }
 
@@ -891,14 +866,8 @@ export class DiagramaComponent implements OnInit {
     }
     m = dy / dx;
     let angulo = Math.atan2(dy, dx) * 180 / Math.PI;
-    // angulo += 90;
-
-    // if (angulo < 0) {
-    //   angulo = 360 + angulo;
-    // }
     angulo = Math.ceil(angulo / ceil) * ceil;
-
-    return -angulo;
+    return angulo;
   }
 
   // MANIPULAÇÃO DOS SELECIONADOS
