@@ -40,7 +40,6 @@ export class Sistema {
         files.forEach((value) => {
             objectArray[value.filename] = this.toTable(value.name, false);
         });
-        console.log(objectArray);
         return objectArray;
     }
 
@@ -73,7 +72,6 @@ export class Sistema {
             });
 
         } else if (field === 'falta') {
-            console.log(this.falta);
             array.push(this.falta.toArray());
         }
 
@@ -158,7 +156,6 @@ export class Sistema {
         this.mathPowerService.calcule(this.toObjectArray(), MathPowerMethod.FPO).then(
             results => {
                 this.results = results;
-                console.log(results);
                 const power_flow = results['fluxo.csv'];
                 this.CriarFluxos(power_flow);
                 // const susceptance = result['susceptance'][0][0].split(' ');

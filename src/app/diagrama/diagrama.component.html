@@ -87,7 +87,7 @@
       <!-- Modal -->
       <app-resultados *ngIf="openModal" [sistema]="sistema" class="modal fade" id="resultados" tabindex="-1" role="dialog" aria-hidden="true"></app-resultados>
 
-      <div id="log" class="">
+      <div id="log" class="mt-5 ml-5">
         <div class="row" *ngFor="let log of logs">
           <div [ngClass]="log.classe" class="alert alert-dismissible fade show" role="alert">
             <strong> {{log?.titulo}}</strong>

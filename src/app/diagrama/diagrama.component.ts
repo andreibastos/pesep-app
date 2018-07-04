@@ -144,6 +144,7 @@ export class DiagramaComponent implements OnInit {
 
   CalcularFluxo() {
     // peda para calcular o fluxo
+    this.AtualizarSistema();
     this.sistema.CalcularFluxo();
 
     // se inscreve no fluxo
