@@ -69,12 +69,14 @@
         <div class="card card-properties mb-1" style="height: 100%">
           <div class="card-body text-white pt-0 px-3">
             <!-- Barras -->
-            <app-barra-form *ngIf="BarrasSelecionadas().length == 1" (barrasEnviadas)="AtualizarBarras($event)" [barrasRecebidas]="BarrasSelecionadas()">
+            <app-barra-form *ngIf="BarrasSelecionadas().length == 1 && !LinhaSelecionada()" (barrasEnviadas)="AtualizarBarras($event)"
+              [barrasRecebidas]="BarrasSelecionadas()">
             </app-barra-form>
             <!-- /Barras -->
 
             <!-- Linha -->
-            <app-linha-form *ngIf="LinhaSelecionada()" (linhaEnviada)="AtualizarLinha($event)" [linhaRecebida]="linhaSelecionada"> </app-linha-form>
+            <app-linha-form *ngIf="LinhaSelecionada() && BarrasSelecionadas().length ==0" (linhaEnviada)="AtualizarLinha($event)" [linhaRecebida]="linhaSelecionada">
+            </app-linha-form>
             <!-- /Linha -->
           </div>
         </div>
