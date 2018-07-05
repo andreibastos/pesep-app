@@ -2,7 +2,6 @@ export enum EnumBarraTipo {
     PV = 'PV',
     PQ = 'PQ',
     Slack = 'Slack',
-    PQZero = 'PQZero'
 }
 
 export enum EnumLinhaEstilo {

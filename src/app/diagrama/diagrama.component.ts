@@ -774,46 +774,81 @@ export class DiagramaComponent implements OnInit {
       .each(function () { this.remove(); });
 
     // desenha a barraa
-    const grupoBarraDesenho = grupoBarra.group().id('grupoBarraDesenho');
+    const grupoBarraDesenho = grupoBarra.group()
+      .id('grupoBarraDesenho')
+      .addClass('barra')
+      .addClass('grupoBarraDesenho');
 
-    if (barra.tipo === EnumBarraTipo.Slack || barra.tipo === EnumBarraTipo.PV) {
-      grupoBarraDesenho.circle(50)
-        .move(2, 25)
-        .addClass('barra')
-        .addClass('circulo');
-      grupoBarraDesenho.line(52, 50, 80, 50)
-        .addClass('barra')
-        .addClass('linhaHorizontal');
-      grupoBarraDesenho.group().id('barramento').line(80, 10, 80, 90)
-        .addClass('barra')
-        .addClass('barramento');
-      grupoBarraDesenho.text(barra.tipo === EnumBarraTipo.PV ? '~' : '∞')
-        .addClass('barra')
-        .addClass('texto')
-        .font({ size: 50, family: 'Times New Roman' })
-        .move(10, 20); // texto
-    } else if (barra.tipo === EnumBarraTipo.PQ || barra.tipo === EnumBarraTipo.PQZero) {
-      grupoBarraDesenho.group().id('barramento').line(80, 10, 80, 90)
-        .addClass('barra')
-        .addClass('barramento');
-      if (!(barra.pCarga === 0 && barra.qCarga === 0)) {
+    const barramento = grupoBarraDesenho.group().id('barramento');
+    barramento.line(80, 10, 80, 90)
+      .addClass('barra')
+      .addClass('barramento');
+
+    if (barra.hasQshunt()) {
+      barramento.polyline([
+        [80, 60],
+        [120, 60], [120, 65],
+        [125, 65], [125, 80], [120, 80], [120, 90], [110, 90], [130, 90], [120, 90], [120, 80], [115, 80], [115, 65], [120, 65]
+      ]);
+    }
+
+    if (barra.tipo === EnumBarraTipo.PQ) {
+      if (!barra.isEmpty()) {
         grupoBarraDesenho.line(20, 50, 80, 50)
           .addClass('barra')
           .addClass('linhaHorizontal');
+
         grupoBarraDesenho.path('m25,60l10,-25l10,25l-10,0l-10,0z') // triangulo
           .rotate(-90, 25, 60)
           .addClass('barra')
           .addClass('triangulo');
       }
+    } else if (barra.tipo === EnumBarraTipo.PV) {
+      grupoBarraDesenho.line(52, 50, 80, 50)
+        .addClass('barra')
+        .addClass('linhaHorizontal');
+
+      grupoBarraDesenho.circle(50)
+        .move(2, 25)
+        .addClass('barra')
+        .addClass('circulo');
+
+      grupoBarraDesenho.text('~')
+        .addClass('barra')
+        .addClass('texto')
+        .font({ size: 50, family: 'Times New Roman' })
+        .move(15, 20); // texto
+    } else if (barra.tipo === EnumBarraTipo.Slack) {
+      grupoBarraDesenho.line(52, 50, 80, 50)
+        .addClass('barra')
+        .addClass('linhaHorizontal');
+
+      grupoBarraDesenho.circle(50)
+        .move(2, 25)
+        .addClass('barra')
+        .addClass('circulo');
+
+      grupoBarraDesenho.text('∞')
+        .addClass('barra')
+        .addClass('texto')
+        .font({ size: 50, family: 'Times New Roman' })
+        .move(10, 20); // texto
     }
-    const box = grupoBarraDesenho.bbox();
+
+    let box = grupoBarraDesenho.bbox();
     grupoBarraDesenho.circle(10)
       .addClass('rotacao')
       .move(box.cx - 5, box.cy - box.height / 2);
-    grupoBarraDesenho.circle(10).addClass('criarLinha')
-      .move(box.x2 - 5, box.cy - 5);
-    grupoBarraDesenho.addClass('barra')
-      .addClass('grupoBarraDesenho');
+
+
+    box = barramento.bbox();
+
+    barramento.circle(10).addClass('criarLinha')
+      .move(box.x - 5, box.height / 2 + 5);
+
+
+    const angulo = grupoBarra.data('angulo');
+    grupoBarraDesenho.rotate(angulo);
 
   }
 
@@ -840,9 +875,10 @@ export class DiagramaComponent implements OnInit {
   // grupo de texto (P,Q, V, T) ...
   AtualizaGrupoBarraTexto(grupoBarra: SVG.G) {
     const barra: Barra = this.getBarra(grupoBarra.id());
-    grupoBarra.select('#grupoBarraTexto').each(function () {
+    grupoBarra.select('#grupoBarraTexto, #grupoBarraSelecao').each(function () {
       this.remove();
     });
+
     const box = grupoBarra.bbox();
     const grupoTexto = grupoBarra.group()
       .id('grupoBarraTexto');
@@ -854,14 +890,12 @@ export class DiagramaComponent implements OnInit {
       'font-weight': 'bold'
     };
 
-    if (barra.tipo !== EnumBarraTipo.PQZero) {
-
+    if (!(barra.isEmpty() && barra.tipo === EnumBarraTipo.PQ)) {
       grupoTexto.text(barra.tipo)
         .id('tipo')
         .cx(box.x2)
-        .cy(box.y2 + 5)
+        .cy(box.y2 + 20)
         .font(options);
-
     }
 
     grupoTexto.text(barra.id)
@@ -876,7 +910,6 @@ export class DiagramaComponent implements OnInit {
       .cx(box.x2 + 20)
       .cy(box.cy)
       .font(options);
-
   }
 
   AtualizaGrupoBarra(grupoBarra: SVG.G) {
@@ -1136,9 +1169,8 @@ export class DiagramaComponent implements OnInit {
           ceil = 10;
         }
         const angulo = self.CalcularAngulo(dx, dy, ceil);
-        const grupoBarraDesenho = grupoBarra.select('.grupoBarraDesenho').first() as SVG.G;
-        grupoBarraDesenho.rotate(angulo);
         grupoBarra.data('angulo', angulo);
+        self.AtualizaGrupoBarra(grupoBarra);
         self.DesenhaLinhas(linhasConectadas);
       }
     });
@@ -1322,7 +1354,7 @@ export class DiagramaComponent implements OnInit {
 
     function dragstart(event) {
       grupoLinha = self.SVGPrincipal.group().id('linha_nova') as SVG.G;
-      const id_barra = event.target.parentNode.parentNode.id;
+      const id_barra = event.target.parentNode.parentNode.parentNode.id;
       deBarra = self.mapaGruposSVG.get(id_barra);
       const circulo = deBarra.select('.criarLinha');
       if (circulo) {
@@ -1440,7 +1472,7 @@ export class DiagramaComponent implements OnInit {
       .on('dragstart', function (event) {
         grupoBarras = self.SVGPrincipal.set();
         tipo = event.target.id;
-        const barra = self.CriarBarra(tipo);
+        const barra: Barra = self.CriarBarra(tipo);
         if (barra) {
           self.AdicionarBarra(barra, -100, event.y0 - 180);
           event.target.id = barra.id_barra;

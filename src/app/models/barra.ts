@@ -36,12 +36,15 @@ export class Barra {
     X = 0;
 
     constructor(tipo: EnumBarraTipo) {
-        this.tipo = tipo;
-        this.id_barra = tipo.toString();
         if (tipo === EnumBarraTipo.PQ) {
             this.pCarga = 1;
         }
-
+        if (!tipo) {
+            this.tipo = EnumBarraTipo.PQ;
+        } else {
+            this.tipo = tipo;
+        }
+        this.id_barra = tipo.toString();
     }
 
     private tipoNumerico(): Number {
@@ -53,6 +56,15 @@ export class Barra {
         }
         return numero;
     }
+
+    isEmpty() {
+        return (this.pCarga === 0 && this.qCarga === 0);
+    }
+
+    hasQshunt() {
+        return this.qShunt !== 0;
+    }
+
     toArray(): any[] {
         const array = [];
         array.push(this.id_barra.split('_')[1]);
