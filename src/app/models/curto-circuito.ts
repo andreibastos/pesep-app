@@ -2,7 +2,7 @@ import { Linha } from './linha';
 import { Barra } from './barra';
 
 export class CurtoCircuito {
-    static header = ['Corrente de falta']
+    static header = ['Corrente de falta'];
 
 
     if_m: number;
