@@ -11,11 +11,12 @@ import * as SVG from 'svg.js';
 declare var $: any;
 
 // Classes Internas
-import { EnumLinhaEstilo, EnumBarraTipo } from '../models/enumeradores';
+import { EnumLinhaEstilo, EnumBarraTipo, EnumFaltaLocal } from '../models/enumeradores';
 import { Barra } from '../models/barra';
 import { Linha } from '../models/linha';
 import { Fluxo } from '../models/fluxo';
 import { Sistema } from '../models/sistema';
+import { Falta } from '../models/falta';
 
 @Component({
   selector: 'app-diagrama',
@@ -102,12 +103,8 @@ export class DiagramaComponent implements OnInit {
     // Alterar, colocar barras e linhas no sistema
     this.sistema.linhas = this.getLinhas();
     this.sistema.barras = this.getBarras();
-
     this.EventoModal();
-
     this.openModal = true;
-
-    this.SVGPrincipal.fire('updateText', { some: 'data' });
 
   }
 
@@ -154,6 +151,9 @@ export class DiagramaComponent implements OnInit {
 
 
   CalcularCurto() {
+    // peda para calcular o fluxo
+    this.AtualizarSistema();
+
     // peda para calcular o fluxo
     this.sistema.CalcularCurto();
 
@@ -219,8 +219,6 @@ export class DiagramaComponent implements OnInit {
       this.AdicionarBarra(barra2, width * 0.5, height * 0.3, 180);
       this.AdicionarBarra(barra3, width * 0.8, height * 0.3, 180);
 
-      this.AdicionarCurtoBarra(barra1);
-
       this.AdicionarLinha(barra1, barra2);
       this.AdicionarLinha(barra2, barra3);
 
@@ -282,7 +280,7 @@ export class DiagramaComponent implements OnInit {
   RedesenharBarra(barra: Barra) {
     const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
     this.AtualizaGrupoBarra(grupoBarra);
-    console.log(grupoBarra);
+    this.AdicionarFaltaBarra(barra);
   }
 
   AtualizarBarras(barrasInfo) {
@@ -723,12 +721,23 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-  AdicionarCurtoBarra(barra: Barra) {
+  AdicionarFaltaBarra(barra: Barra) {
     const self = this;
     const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
+
+    if (this.sistema.falta.enumFaltaLocal === EnumFaltaLocal.Barra) {
+      const barraAnterior = this.getBarra(`barra_${this.sistema.falta.id_componente}`);
+      if (barraAnterior) {
+      const grupoBarraAnterior = this.mapaGruposSVG.get(barraAnterior.id_barra);
+        const select = grupoBarraAnterior.select('.curto').each(function () { this.remove(); });
+      }
+    }
+
+    this.sistema.falta.id_componente = barra.id;
+
     grupoBarra.select('#barramento').each(function () {
 
-      const grupoCurto = self.criarGrupoCurto();
+      const grupoCurto = self.criarFaltaCurto();
       this.add(
         grupoCurto
           .cx(this.cx())
@@ -741,10 +750,42 @@ export class DiagramaComponent implements OnInit {
     });
   }
 
-  criarGrupoCurto(): SVG.Element {
-    const grupoCurto = this.SVGPrincipal
-      // tslint:disable-next-line:max-line-length
-      .path('m0,12.009504l-12.909047,11.080477l12.749461,3.806669l-11.784216,11.895846l-4.757763,-2.008794l3.374514,11.466287l13.410648,-5.002671l-5.662191,-2.091093l15.375336,-17.08628l-14.054793,-3.096771l13.572177,-11.546031l-7.741827,-1.733576l8.43201,-7.338106l-3.097563,-0.105459l-13.08481,10.067093l6.178062,1.692414l0.000001,-0.000003z').addClass('curto');
+  criarFaltaCurto(): SVG.Element {
+    const dist = 15;
+    const diagonal = dist * Math.sqrt(2);
+    const grupoCurto = this.SVGPrincipal.group()
+      .addClass('curto');
+    grupoCurto
+      .line(
+        [
+          [0, 0],
+          [diagonal, diagonal]
+        ]
+      );
+    grupoCurto.line([
+      [diagonal, 0],
+      [0, diagonal]
+    ]);
+
+    grupoCurto.each(function () {
+      this.dy(25);
+    });
+
+    // .polyline(
+    //   [
+    //     [0, 0],
+    //     [diagonal, diagonal],
+    //     [diagonal / 2, diagonal / 2],
+    //     [diagonal, 0],
+    //     [diagonal / 2, diagonal / 2],
+    //     [0, diagonal],
+    //     [dist / 2, dist * 1.1],
+    //     [0, dist * 1.5]
+
+    //   ]
+    // )
+    // tslint:disable-next-line:max-line-length
+    // .path('m0,12.009504l-12.909047,11.080477l12.749461,3.806669l-11.784216,11.895846l-4.757763,-2.008794l3.374514,11.466287l13.410648,-5.002671l-5.662191,-2.091093l15.375336,-17.08628l-14.054793,-3.096771l13.572177,-11.546031l-7.741827,-1.733576l8.43201,-7.338106l-3.097563,-0.105459l-13.08481,10.067093l6.178062,1.692414l0.000001,-0.000003z')
     return grupoCurto;
 
   }
@@ -1534,7 +1575,7 @@ export class DiagramaComponent implements OnInit {
         const id_elemento: string = event.target.parentNode.parentNode.id;
         const barra = self.getBarra(id_elemento);
         console.log(barra);
-        self.AdicionarCurtoBarra(barra);
+        self.AdicionarFaltaBarra(barra);
         // self.curto.linha = self.mapaLinhas.get(id_elemento);
         // self.AdicionarCurto();
       },

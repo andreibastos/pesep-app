@@ -50,8 +50,9 @@
 }
 
 .curto {
-    stroke-width: 0.5;
-    fill: rgb(255, 221, 0)
+    stroke-width: 2;
+    stroke: red;
+    /* fill: rgb(255, 221, 0) */
 }
 
 .barra.triangulo {
