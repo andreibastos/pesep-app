@@ -11,7 +11,7 @@
     </div>
     <div class="col-1" [ngClass]="AplicaCSSError('tensao')">
       <label>Tensão</label>
-      <input step="0.01" min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="tensao">
+      <input step="0.01" min="0.9" max="1.1" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="tensao">
     </div>
     <div class="col-1" [ngClass]="AplicaCSSError('pGerada')">
       <label>P Gerada</label>
