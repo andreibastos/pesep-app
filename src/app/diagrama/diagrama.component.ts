@@ -794,12 +794,12 @@ export class DiagramaComponent implements OnInit {
 
     if (barra.tipo === EnumBarraTipo.PQ) {
       if (!barra.isEmpty()) {
-        grupoBarraDesenho.line(20, 50, 80, 50)
+        grupoBarraDesenho.line(80, 50, 120, 50)
           .addClass('barra')
           .addClass('linhaHorizontal');
 
         grupoBarraDesenho.path('m25,60l10,-25l10,25l-10,0l-10,0z') // triangulo
-          .rotate(-90, 25, 60)
+          .rotate(90, 25, 60).dy(-95).dx(-18.5)
           .addClass('barra')
           .addClass('triangulo');
       }
