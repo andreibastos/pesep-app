@@ -11,11 +11,12 @@ import * as SVG from 'svg.js';
 declare var $: any;
 
 // Classes Internas
-import { EnumLinhaEstilo, EnumBarraTipo } from '../models/enumeradores';
+import { EnumLinhaEstilo, EnumBarraTipo, EnumFaltaLocal } from '../models/enumeradores';
 import { Barra } from '../models/barra';
 import { Linha } from '../models/linha';
 import { Fluxo } from '../models/fluxo';
 import { Sistema } from '../models/sistema';
+import { Falta } from '../models/falta';
 
 @Component({
   selector: 'app-diagrama',
@@ -102,12 +103,8 @@ export class DiagramaComponent implements OnInit {
     // Alterar, colocar barras e linhas no sistema
     this.sistema.linhas = this.getLinhas();
     this.sistema.barras = this.getBarras();
-
     this.EventoModal();
-
     this.openModal = true;
-
-    this.SVGPrincipal.fire('updateText', { some: 'data' });
 
   }
 
@@ -144,6 +141,7 @@ export class DiagramaComponent implements OnInit {
 
   CalcularFluxo() {
     // peda para calcular o fluxo
+    this.AtualizarSistema();
     this.sistema.CalcularFluxo();
 
     // se inscreve no fluxo
@@ -153,6 +151,9 @@ export class DiagramaComponent implements OnInit {
 
 
   CalcularCurto() {
+    // peda para calcular o fluxo
+    this.AtualizarSistema();
+
     // peda para calcular o fluxo
     this.sistema.CalcularCurto();
 
@@ -218,8 +219,6 @@ export class DiagramaComponent implements OnInit {
       this.AdicionarBarra(barra2, width * 0.5, height * 0.3, 180);
       this.AdicionarBarra(barra3, width * 0.8, height * 0.3, 180);
 
-      this.AdicionarCurtoBarra(barra1);
-
       this.AdicionarLinha(barra1, barra2);
       this.AdicionarLinha(barra2, barra3);
 
@@ -278,22 +277,42 @@ export class DiagramaComponent implements OnInit {
     return false;
   }
 
-  AtualizarBarras(barrasAtualizadas: Array<Barra>) {
-    barrasAtualizadas.forEach(barra => {
-      this.mapaBarras.set(barra.id_barra, barra);
-      const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
-      this.AtualizaGrupoBarraTexto(grupoBarra);
-    });
+  RedesenharBarra(barra: Barra) {
+    const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
+    this.AtualizaGrupoBarra(grupoBarra);
+    this.AdicionarFaltaBarra(barra);
+  }
 
+  AtualizarBarras(barrasInfo) {
+    if (barrasInfo) {
+      let barrasAtualizadas = barrasInfo['update'];
+      if (barrasAtualizadas) {
+        barrasAtualizadas.forEach(barra => {
+          this.mapaBarras.set(barra.id_barra, barra);
+          this.RedesenharBarra(barra);
+        });
+      } else {
+        barrasAtualizadas = barrasInfo['delete'];
+        barrasAtualizadas.forEach(barra => {
+          this.ExcluirBarra(barra);
+        });
+      }
+    }
     this.LimparSelecionados();
   }
-  AtualizarLinha(linhaAtualizada: Linha) {
-
-    linhaAtualizada.de = this.linhaSelecionada.de;
-    linhaAtualizada.para = this.linhaSelecionada.para;
-    this.mapaLinhas.set(linhaAtualizada.id_linha, linhaAtualizada);
-    this.linhaSelecionada = null;
-    this.DesenhaLinha(linhaAtualizada);
+  AtualizarLinha(linhasInfo) {
+    const linhaAtualizada = linhasInfo['data'];
+    if (linhasInfo['update']) {
+      linhaAtualizada.de = this.linhaSelecionada.de;
+      linhaAtualizada.para = this.linhaSelecionada.para;
+      this.mapaLinhas.set(linhaAtualizada.id_linha, linhaAtualizada);
+      this.linhaSelecionada = null;
+      this.DesenhaLinha(linhaAtualizada);
+    } else if (linhasInfo['delete']) {
+      this.ExcluirLinhas(linhaAtualizada);
+    }
+    console.log(linhaAtualizada);
+    this.LimparLinhasSelecionadas();
   }
   CriarDocumentoSVG(SVGNome: string) {
     const divDesenho = document.getElementById(SVGNome);
@@ -379,26 +398,13 @@ export class DiagramaComponent implements OnInit {
     // SVG
     const grupoBarra = this.CriaGrupoBarra(barra, posicao_x, posicao_y);
     grupoBarra.data('angulo', angulo);
-
-    // Grupo do desenhos (circulos, linha, etc)
-    const grupoBarraDesenho = this.CriaGrupoBarraDesenho(barra).rotate(angulo);
-    grupoBarra.add(grupoBarraDesenho);
-
-    // Grupo de tenho (P,Q,V,T)
-    this.AtualizaGrupoBarraTexto(grupoBarra);
-
-    // Grupo de seleção
-    const grupoBarraSelecao = this.CriarGrupoBarraSelecao(grupoBarra);
-    grupoBarra.add(grupoBarraSelecao);
-
-    // Adiciona no dicionário do SVG
-    this.mapaGruposSVG.set(grupoBarra.id(), grupoBarra);
+    this.AtualizaGrupoBarra(grupoBarra);
   }
 
   // excluindo barra na tela e no mapa de barras
   ExcluirBarra(barra: Barra) {
     if (this.mapaGruposSVG.get(barra.id_barra)) {
-      this.ExcluirLinhas(barra);
+      this.ExcluirLinhasBarra(barra);
       this.RemoverBarra(barra);
     }
 
@@ -485,8 +491,16 @@ export class DiagramaComponent implements OnInit {
     this.qtdLinhasTotal++;
   }
 
+  ExcluirLinhas(paraRemover: Array<Linha>) {
+
+    paraRemover.forEach(linha => {
+      this.mapaLinhas.delete(linha.id_linha);
+      this.mapaGruposSVG.delete(linha.id_linha);
+    });
+  }
+
   // excluindo linhas na tela
-  ExcluirLinhas(barra: Barra) {
+  ExcluirLinhasBarra(barra: Barra) {
     const paraRemover: Array<Linha> = new Array();
     this.mapaLinhas.forEach((linha) => {
       if (linha.de.id_barra === barra.id_barra || linha.para.id_barra === barra.id_barra) {
@@ -496,11 +510,7 @@ export class DiagramaComponent implements OnInit {
     });
     console.log(`excluindo ${paraRemover.length} linhas associadas a barra ${barra.id_barra}`);
 
-    paraRemover.forEach(linha => {
-      this.mapaLinhas.delete(linha.id_linha);
-      this.mapaGruposSVG.delete(linha.id_linha);
-    });
-
+    this.ExcluirLinhas(paraRemover);
   }
 
   // criando polilinhas
@@ -583,20 +593,23 @@ export class DiagramaComponent implements OnInit {
 
     // adiciona impedância
     const rect = impedancia.rect(60, 20);
-    rect.rotate(-angulo, rect.cx(), rect.cy());
+    rect.rotate(angulo, rect.cx(), rect.cy());
     impedancia.move(delta_x / 2 - rect.width() / 2, delta_y / 2 - rect.height() / 2);
-    //   .front();
 
+
+    // adiciona trafo
     const diametro = 25;
-    const circle1 = trafo.circle(diametro).fill({ 'color': 'transparent' }).dx(diametro / 2);
-    const circle2 = trafo.circle(diametro).fill({ 'color': 'transparent' });
-
-
+    trafo.circle(diametro).fill({ 'color': 'transparent' }).dx(diametro / 2);
+    trafo.circle(diametro).fill({ 'color': 'transparent' });
     trafo.center(poliLinha.cx(), poliLinha.cy());
-    trafo.rotate(-angulo);
+    trafo.rotate(angulo);
+
 
     trafo.each(function () {
-      this.dx(-hipotenusa * 0.2);
+      // this.dx(-hipotenusa * 0.2);
+      if (hipotenusa > diametro * 6) {
+        this.dx(-diametro * 3);
+      }
     });
 
 
@@ -672,9 +685,9 @@ export class DiagramaComponent implements OnInit {
   // GRUPOS
 
   // grupo Geral, contém os outros grupos (desenho, texto e seleção)
-  CriaGrupoBarra(barra: Barra, posicao_x?: number, posicao_y?: number, SVGUsado = this.SVGPrincipal as SVG.Doc) {
+  CriaGrupoBarra(barra: Barra, posicao_x?: number, posicao_y?: number): SVG.G {
     const self = this;
-    const grupoBarra = SVGUsado.group()
+    const grupoBarra = this.SVGPrincipal.group()
       .id(barra.id_barra)
       .addClass('grupoBarra')
       .move(posicao_x || 0, posicao_y || 0) // move para a posição desejada
@@ -696,83 +709,35 @@ export class DiagramaComponent implements OnInit {
         //   self.AlternarBarraSelecionada(this);
         // }
         // self.RemoverBarraSelecionada(this);
-      })
-      ;
+      });
 
-    if (SVGUsado.id() === 'svg_principal') {
-      grupoBarra.addClass('componente-principal');
-    } else if (SVGUsado.id() === 'svg_lateral') {
-      grupoBarra.addClass('componente-lateral');
-    }
+
+    grupoBarra.addClass('componente-principal');
+
+    // Adiciona no dicionário do SVG
+    this.mapaGruposSVG.set(grupoBarra.id(), grupoBarra);
+
     return grupoBarra;
 
   }
 
-  // grupo de Seleção
-  CriarGrupoBarraSelecao(grupoBarra: SVG.G, SVGUsado = this.SVGPrincipal as SVG.Doc): SVG.G {
-    // cria o grupo de seleção
-    const grupoBarraSelecao = SVGUsado.group().id('grupoBarraSelecao')
-      .addClass('grupoBarraSelecao');
-
-    // pega a caixa delimitadora do grupo barra
-    const grupoBarraBBox = grupoBarra.bbox();
-    grupoBarraSelecao.rect(grupoBarraBBox.w, grupoBarraBBox.h)
-      .move(grupoBarraBBox.x, grupoBarraBBox.y)
-      .addClass('retanguloSelecao');
-
-    return grupoBarraSelecao;
-  }
-
-  // grupo de desenho (circulos, setas, triangulos)
-  CriaGrupoBarraDesenho(barra: Barra, SVGUsado = this.SVGPrincipal as SVG.Doc): SVG.G {
-    const grupo = SVGUsado.group().id('grupoBarraDesenho');
-    if (barra.tipo === EnumBarraTipo.Slack || barra.tipo === EnumBarraTipo.PV) {
-      grupo.circle(50)
-        .move(2, 25)
-        .addClass('barra')
-        .addClass('circulo');
-      grupo.line(52, 50, 80, 50)
-        .addClass('barra')
-        .addClass('linhaHorizontal');
-      grupo.group().id('barramento').line(80, 10, 80, 90)
-        .addClass('barra')
-        .addClass('barramento');
-      grupo.text(barra.tipo === EnumBarraTipo.PV ? '~' : '∞')
-        .addClass('barra')
-        .addClass('texto')
-        .font({ size: 50, family: 'Times New Roman' })
-        .move(10, 20); // texto
-    } else if (barra.tipo === EnumBarraTipo.PQ) {
-      grupo.line(20, 50, 80, 50)
-        .addClass('barra')
-        .addClass('linhaHorizontal');
-      grupo.group().id('barramento').line(80, 10, 80, 90)
-        .addClass('barra')
-        .addClass('barramento');
-      grupo.path('m25,60l10,-25l10,25l-10,0l-10,0z') // triangulo
-        .rotate(-90, 25, 60)
-        .addClass('barra')
-        .addClass('triangulo');
-    }
-    if (SVGUsado.id() === 'svg_principal') {
-      const box = grupo.bbox();
-      grupo.circle(10)
-        .addClass('rotacao')
-        .move(box.cx - 5, box.cy - 5);
-      grupo.circle(10).addClass('criarLinha')
-        .move(box.x2 - 5, box.cy - 5);
-      grupo.addClass('barra')
-        .addClass('grupoBarraDesenho');
-    }
-    return grupo;
-  }
-
-  AdicionarCurtoBarra(barra: Barra) {
+  AdicionarFaltaBarra(barra: Barra) {
     const self = this;
     const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
+
+    if (this.sistema.falta.enumFaltaLocal === EnumFaltaLocal.Barra) {
+      const barraAnterior = this.getBarra(`barra_${this.sistema.falta.id_componente}`);
+      if (barraAnterior) {
+      const grupoBarraAnterior = this.mapaGruposSVG.get(barraAnterior.id_barra);
+        const select = grupoBarraAnterior.select('.curto').each(function () { this.remove(); });
+      }
+    }
+
+    this.sistema.falta.id_componente = barra.id;
+
     grupoBarra.select('#barramento').each(function () {
 
-      const grupoCurto = self.criarGrupoCurto();
+      const grupoCurto = self.criarFaltaCurto();
       this.add(
         grupoCurto
           .cx(this.cx())
@@ -785,10 +750,42 @@ export class DiagramaComponent implements OnInit {
     });
   }
 
-  criarGrupoCurto(): SVG.Element {
-    const grupoCurto = this.SVGPrincipal
-      // tslint:disable-next-line:max-line-length
-      .path('m0,12.009504l-12.909047,11.080477l12.749461,3.806669l-11.784216,11.895846l-4.757763,-2.008794l3.374514,11.466287l13.410648,-5.002671l-5.662191,-2.091093l15.375336,-17.08628l-14.054793,-3.096771l13.572177,-11.546031l-7.741827,-1.733576l8.43201,-7.338106l-3.097563,-0.105459l-13.08481,10.067093l6.178062,1.692414l0.000001,-0.000003z').addClass('curto');
+  criarFaltaCurto(): SVG.Element {
+    const dist = 15;
+    const diagonal = dist * Math.sqrt(2);
+    const grupoCurto = this.SVGPrincipal.group()
+      .addClass('curto');
+    grupoCurto
+      .line(
+        [
+          [0, 0],
+          [diagonal, diagonal]
+        ]
+      );
+    grupoCurto.line([
+      [diagonal, 0],
+      [0, diagonal]
+    ]);
+
+    grupoCurto.each(function () {
+      this.dy(25);
+    });
+
+    // .polyline(
+    //   [
+    //     [0, 0],
+    //     [diagonal, diagonal],
+    //     [diagonal / 2, diagonal / 2],
+    //     [diagonal, 0],
+    //     [diagonal / 2, diagonal / 2],
+    //     [0, diagonal],
+    //     [dist / 2, dist * 1.1],
+    //     [0, dist * 1.5]
+
+    //   ]
+    // )
+    // tslint:disable-next-line:max-line-length
+    // .path('m0,12.009504l-12.909047,11.080477l12.749461,3.806669l-11.784216,11.895846l-4.757763,-2.008794l3.374514,11.466287l13.410648,-5.002671l-5.662191,-2.091093l15.375336,-17.08628l-14.054793,-3.096771l13.572177,-11.546031l-7.741827,-1.733576l8.43201,-7.338106l-3.097563,-0.105459l-13.08481,10.067093l6.178062,1.692414l0.000001,-0.000003z')
     return grupoCurto;
 
   }
@@ -807,17 +804,126 @@ export class DiagramaComponent implements OnInit {
     return barra;
   }
 
-  // grupo de texto (P,Q, V, T) ...
-  AtualizaGrupoBarraTexto(grupoBarra: SVG.G): SVG.G {
+  // Atualizações
+
+  // grupo de desenho (circulos, setas, triangulos)
+  AtualizaGrupoBarraDesenho(grupoBarra: SVG.G) {
     const barra: Barra = this.getBarra(grupoBarra.id());
-    grupoBarra.select('#grupoBarraTexto').each(function () {
+
+    // remover desenho existente com o mesmo identificador
+    grupoBarra.select('#grupoBarraDesenho')
+      .each(function () { this.remove(); });
+
+    // desenha a barraa
+    const grupoBarraDesenho = grupoBarra.group()
+      .id('grupoBarraDesenho')
+      .addClass('barra')
+      .addClass('grupoBarraDesenho');
+
+    const barramento = grupoBarraDesenho.group().id('barramento');
+    barramento.line(80, 10, 80, 90)
+      .addClass('barra')
+      .addClass('barramento');
+
+    if (barra.hasQshunt()) {
+      barramento.polyline([
+        [80, 60],
+        [111, 60], [111, 65],
+        [114, 65], [114, 80], [111, 80], [111, 90], [100, 90], [120, 90], [111, 90], [111, 80], [105, 80], [105, 65], [111, 65]
+      ]);
+    }
+
+    if (barra.tipo === EnumBarraTipo.PQ) {
+      if (!barra.isEmpty()) {
+        grupoBarraDesenho.line(80, 50, 120, 50)
+          .addClass('barra')
+          .addClass('linhaHorizontal');
+
+        grupoBarraDesenho.path('m25,60l10,-25l10,25l-10,0l-10,0z') // triangulo
+          .rotate(90, 25, 60).dy(-95).dx(-18.5)
+          .addClass('barra')
+          .addClass('triangulo');
+      }
+    } else if (barra.tipo === EnumBarraTipo.PV) {
+      grupoBarraDesenho.line(52, 50, 80, 50)
+        .addClass('barra')
+        .addClass('linhaHorizontal');
+
+      grupoBarraDesenho.circle(50)
+        .move(2, 25)
+        .addClass('barra')
+        .addClass('circulo');
+
+      grupoBarraDesenho.text('~')
+        .addClass('barra')
+        .addClass('texto')
+        .font({ size: 50, family: 'Times New Roman' })
+        .move(15, 20); // texto
+    } else if (barra.tipo === EnumBarraTipo.Slack) {
+      grupoBarraDesenho.line(52, 50, 80, 50)
+        .addClass('barra')
+        .addClass('linhaHorizontal');
+
+      grupoBarraDesenho.circle(50)
+        .move(2, 25)
+        .addClass('barra')
+        .addClass('circulo');
+
+      grupoBarraDesenho.text('∞')
+        .addClass('barra')
+        .addClass('texto')
+        .font({ size: 50, family: 'Times New Roman' })
+        .move(10, 20); // texto
+    }
+
+    let box = grupoBarraDesenho.bbox();
+    grupoBarraDesenho.circle(10)
+      .addClass('rotacao')
+      .move(box.cx - 5, box.cy - box.height / 2);
+
+
+    box = barramento.bbox();
+
+    barramento.circle(10).addClass('criarLinha')
+      .move(box.x - 5, box.height / 2 + 5);
+
+
+    const angulo = grupoBarra.data('angulo');
+    grupoBarraDesenho.rotate(angulo);
+
+  }
+
+  // grupo de Seleção
+  AtualizaGrupoBarraSelecao(grupoBarra: SVG.G): SVG.G {
+
+    // remover desenho existente com o mesmo identificador
+    grupoBarra.select('#grupoBarraSelecao')
+      .each(function () { this.remove(); });
+
+    // cria o grupo de seleção
+    const grupoBarraSelecao = grupoBarra.group().id('grupoBarraSelecao')
+      .addClass('grupoBarraSelecao');
+
+    // pega a caixa delimitadora do grupo barra
+    const grupoBarraBBox = grupoBarra.bbox();
+    grupoBarraSelecao.rect(grupoBarraBBox.w, grupoBarraBBox.h)
+      .move(grupoBarraBBox.x, grupoBarraBBox.y)
+      .addClass('retanguloSelecao');
+
+    return grupoBarraSelecao;
+  }
+
+  // grupo de texto (P,Q, V, T) ...
+  AtualizaGrupoBarraTexto(grupoBarra: SVG.G) {
+    const barra: Barra = this.getBarra(grupoBarra.id());
+    grupoBarra.select('#grupoBarraTexto, #grupoBarraSelecao').each(function () {
       this.remove();
     });
 
-    const box = grupoBarra.get(0).bbox();
+    const box = grupoBarra.bbox();
     const grupoTexto = grupoBarra.group()
-      .id('grupoBarraTexto')
-      .backward();
+      .id('grupoBarraTexto');
+
     const options = {
       family: 'Helvetica',
       size: 20,
@@ -825,16 +931,18 @@ export class DiagramaComponent implements OnInit {
       'font-weight': 'bold'
     };
 
-    grupoTexto.text(barra.tipo)
-      .id('tipo')
-      .cx(box.x2)
-      .cy(box.y2 + 5)
-      .font(options);
+    if (!(barra.isEmpty() && barra.tipo === EnumBarraTipo.PQ)) {
+      grupoTexto.text(barra.tipo)
+        .id('tipo')
+        .cx(box.x2)
+        .cy(box.y2 + 20)
+        .font(options);
+    }
 
-    grupoTexto.text(barra.id_barra.split('_')[1])
+    grupoTexto.text(barra.id)
       .id('id')
       .cx(box.x - 10)
-      .dy(box.cy - 5)
+      .dy(box.cy - 10)
       .font(options);
 
     options['font-weight'] = 'normal';
@@ -843,44 +951,17 @@ export class DiagramaComponent implements OnInit {
       .cx(box.x2 + 20)
       .cy(box.cy)
       .font(options);
-
-    grupoTexto.on('updateText', this.testeTexto);
-
-
-
-    // grupoBarra.rect(box.w, box.h).fill({ opacity: 0.1 });
-
-    // grupoTexto.text(barra.nome)
-    //   .id('nome')
-    //   .dx(box.x)
-    //   .dy(box.width * 1.1);
-
-    // grupoTexto.text(barra.id_barra.split('_')[1])
-    //   .id('id')
-    //   .dx(box.x - 20)
-    //   .dy(box.cx - 5);
-
-    // grupoTexto.text(`P=${barra.pCarga} pu`)
-    //   .id('P')
-    //   .dx(-box.height * 0.1)
-    //   .dy(-box.width * 0.5);
-
-    // grupoTexto.text(`Q=${barra.qCarga} pu`)
-    //   .id('Q')
-    //   .dx(-box.height * 0.1)
-    //   .dy(-box.width * 0.3);
-
-    // grupoTexto.text(`${barra.tensao_0}∠${barra.angulo_0}° pu`)
-    //   .id('PV')
-    //   .dy(-box.width * 0.15)
-    //   .dx(box.height * 0.7);
-
-    // this.AtualizaToolTipBarra(grupoBarra);
-    return grupoTexto;
   }
 
-  testeTexto(event) {
-    console.log(this, event);
+  AtualizaGrupoBarra(grupoBarra: SVG.G) {
+    // Grupo do desenhos (circulos, linha, etc)
+    this.AtualizaGrupoBarraDesenho(grupoBarra);
+
+    // Grupo de tenho (P,Q,V,T)
+    this.AtualizaGrupoBarraTexto(grupoBarra);
+
+    // Grupo de seleção
+    this.AtualizaGrupoBarraSelecao(grupoBarra);
   }
 
   // calcula ângulo de um deltax e deltay, ceil é multiplicidade
@@ -891,14 +972,8 @@ export class DiagramaComponent implements OnInit {
     }
     m = dy / dx;
     let angulo = Math.atan2(dy, dx) * 180 / Math.PI;
-    // angulo += 90;
-
-    // if (angulo < 0) {
-    //   angulo = 360 + angulo;
-    // }
     angulo = Math.ceil(angulo / ceil) * ceil;
-
-    return -angulo;
+    return angulo;
   }
 
   // MANIPULAÇÃO DOS SELECIONADOS
@@ -1001,7 +1076,7 @@ export class DiagramaComponent implements OnInit {
     this.barrasSelecionadasSVG.each(function () {
       const grupoBarra = this as SVG.G;
       const barraRecortada: Barra = self.getBarra(this.id());
-      self.ExcluirLinhas(barraRecortada);
+      self.ExcluirLinhasBarra(barraRecortada);
       if (barraRecortada.tipo === EnumBarraTipo.Slack) {
         self.slack = null;
       }
@@ -1135,9 +1210,8 @@ export class DiagramaComponent implements OnInit {
           ceil = 10;
         }
         const angulo = self.CalcularAngulo(dx, dy, ceil);
-        const grupoBarraDesenho = grupoBarra.select('.grupoBarraDesenho').first() as SVG.G;
-        grupoBarraDesenho.rotate(angulo);
         grupoBarra.data('angulo', angulo);
+        self.AtualizaGrupoBarra(grupoBarra);
         self.DesenhaLinhas(linhasConectadas);
       }
     });
@@ -1321,7 +1395,7 @@ export class DiagramaComponent implements OnInit {
 
     function dragstart(event) {
       grupoLinha = self.SVGPrincipal.group().id('linha_nova') as SVG.G;
-      const id_barra = event.target.parentNode.parentNode.id;
+      const id_barra = event.target.parentNode.parentNode.parentNode.id;
       deBarra = self.mapaGruposSVG.get(id_barra);
       const circulo = deBarra.select('.criarLinha');
       if (circulo) {
@@ -1439,7 +1513,7 @@ export class DiagramaComponent implements OnInit {
       .on('dragstart', function (event) {
         grupoBarras = self.SVGPrincipal.set();
         tipo = event.target.id;
-        const barra = self.CriarBarra(tipo);
+        const barra: Barra = self.CriarBarra(tipo);
         if (barra) {
           self.AdicionarBarra(barra, -100, event.y0 - 180);
           event.target.id = barra.id_barra;
@@ -1501,7 +1575,7 @@ export class DiagramaComponent implements OnInit {
         const id_elemento: string = event.target.parentNode.parentNode.id;
         const barra = self.getBarra(id_elemento);
         console.log(barra);
-        self.AdicionarCurtoBarra(barra);
+        self.AdicionarFaltaBarra(barra);
         // self.curto.linha = self.mapaLinhas.get(id_elemento);
         // self.AdicionarCurto();
       },

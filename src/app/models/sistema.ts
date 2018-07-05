@@ -5,11 +5,14 @@ import { MathPowerService, MathPowerMethod } from '../shared/math-power.service'
 import { Fluxo } from './fluxo';
 import { EventEmitter, Output } from '@angular/core';
 import { Falta } from './falta';
+import { CurtoCircuito } from './curto-circuito';
 export class Sistema {
 
     private results;
 
     fluxos: Array<Fluxo> = new Array();
+    curtoCircuito: CurtoCircuito;
+    curto;
 
     falta: Falta = new Falta();
 
@@ -40,7 +43,6 @@ export class Sistema {
         files.forEach((value) => {
             objectArray[value.filename] = this.toTable(value.name, false);
         });
-        console.log(objectArray);
         return objectArray;
     }
 
@@ -73,8 +75,9 @@ export class Sistema {
             });
 
         } else if (field === 'falta') {
-            console.log(this.falta);
             array.push(this.falta.toArray());
+        } else if (field === 'curto') {
+            array = this.curto;
         }
 
         return array;
@@ -139,6 +142,13 @@ export class Sistema {
 
     CriarCurtos(files: any[]) {
         console.log(files);
+        this.curtoCircuito = new CurtoCircuito();
+        // corrente de falta
+        this.curtoCircuito.if_m =
+
+            this.curto = files['log_CC.txt'];
+
+        console.log(this.curto);
     }
 
     CriarMatrizSusceptancia(susceptancias: any[], linhas: any[], colunas: any[]) {
@@ -158,7 +168,6 @@ export class Sistema {
         this.mathPowerService.calcule(this.toObjectArray(), MathPowerMethod.FPO).then(
             results => {
                 this.results = results;
-                console.log(results);
                 const power_flow = results['fluxo.csv'];
                 this.CriarFluxos(power_flow);
                 // const susceptance = result['susceptance'][0][0].split(' ');
@@ -178,10 +187,7 @@ export class Sistema {
         const self = this;
         this.mathPowerService.calcule(this.toObjectArray(), MathPowerMethod.CC).then(
             results => {
-                this.results = results;
-                console.log(results);
-                const power_flow = results['fluxo.csv'];
-                this.CriarFluxos(power_flow);
+                this.CriarCurtos(results);
             }
         ).catch(
             function (e) {

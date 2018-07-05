@@ -50,8 +50,9 @@
 }
 
 .curto {
-    stroke-width: 0.5;
-    fill: rgb(255, 221, 0)
+    stroke-width: 2;
+    stroke: red;
+    /* fill: rgb(255, 221, 0) */
 }
 
 .barra.triangulo {
@@ -103,7 +104,7 @@
 .rotacao {
     fill: green;
     stroke: none;
-    fill-opacity: 0.1;
+    fill-opacity: 0.3;
     cursor: url('../icons/menu-acoes/rotate.png'), pointer;
 }
 

@@ -1,20 +1,18 @@
 import { Barra } from './barra';
 import { EnumFaltaLocal, EnumFaltaTipo } from './enumeradores';
 export class Falta {
-    id_componente = 1;
+    id_componente = '1';
 
     montante: Barra;
     jusante: Barra;
 
-    xg = 1;
-    x0 = 1;
-    xf = 1;
-    porcentagem = 50;
+    xg = 0.5;
+    x0 = 0.5;
+    xf = 0.5;
+    porcentagem = 0;
 
     enumFaltaLocal: EnumFaltaLocal = EnumFaltaLocal.Barra;
-    enumFaltaTipo: EnumFaltaTipo = EnumFaltaTipo.Monofasica;
-
-
+    enumFaltaTipo: EnumFaltaTipo = EnumFaltaTipo.Trifasica;
     toArray() {
         const array = [];
         if (this.enumFaltaLocal === EnumFaltaLocal.Barra) {

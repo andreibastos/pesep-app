@@ -2,11 +2,20 @@ import { Linha } from './linha';
 import { Barra } from './barra';
 
 export class CurtoCircuito {
+    static header = ['Corrente de falta'];
+
+
     if_m: number;
     if_f: number;
 
+
     tensoes: Array<TensaoPosFalta>;
     correntes: Array<CorrenteFalta>;
+
+    toArray() {
+        const array = [this.if_m];
+        return array;
+    }
 
 }
 export class TensaoPosFalta {

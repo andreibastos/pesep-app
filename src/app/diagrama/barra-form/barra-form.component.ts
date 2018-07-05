@@ -13,7 +13,7 @@ export class BarraFormComponent implements OnInit {
   formulario: FormGroup;
 
   @Input() barrasRecebidas: Array<Barra>;
-  @Output() barrasEnviadas: EventEmitter<Array<Barra>> = new EventEmitter();
+  @Output() barrasEnviadas: EventEmitter<any> = new EventEmitter();
   private barrasAtualizadas: Array<Barra> = new Array();
 
   private regex = /\d/g;
@@ -39,16 +39,19 @@ export class BarraFormComponent implements OnInit {
     return novaBarra;
   }
 
-  onSubmit() {
-    if (this.formulario.valid) {
+  onSubmit(btn) {
+    if (btn === 'cancel') {
+      this.barrasEnviadas.emit();
+    } else if (btn === 'delete') {
+      this.barrasAtualizadas = this.barrasRecebidas;
+      this.barrasEnviadas.emit({ 'delete': this.barrasAtualizadas });
+
+    } else if (this.formulario.valid && btn === 'update') {
       const barra = this.AtualizarBarraComFormulario(this.barrasRecebidas[0]);
       this.barrasAtualizadas.push(barra);
-      this.barrasEnviadas.emit(this.barrasAtualizadas);
-      this.barrasAtualizadas = new Array();
-    } else {
-      console.log(this.formulario);
+      this.barrasEnviadas.emit({ 'update': this.barrasAtualizadas });
     }
-
+    this.barrasAtualizadas = new Array();
   }
 
   CriarFormulario(barra: Barra) {

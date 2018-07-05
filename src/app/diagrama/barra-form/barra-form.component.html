@@ -1,4 +1,4 @@
-<form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+<form [formGroup]="formulario" (ngSubmit)="onSubmit('update')">
   <!-- Linha 1 -->
   <div class="row">
     <div class="col-1" [ngClass]="AplicaCSSError('id_barra')">
@@ -11,7 +11,7 @@
     </div>
     <div class="col-1" [ngClass]="AplicaCSSError('tensao')">
       <label>Tensão</label>
-      <input step="0.01" min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="tensao">
+      <input step="0.01" min="0.9" max="1.1" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="tensao">
     </div>
     <div class="col-1" [ngClass]="AplicaCSSError('pGerada')">
       <label>P Gerada</label>
@@ -32,6 +32,12 @@
     <div class="col-1" [ngClass]="AplicaCSSError('qShunt')">
       <label>Q Shunt</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="qShunt">
+    </div>
+
+    <div class="col">
+      <button (click)="onSubmit('update')" type="submit" class="btn btn-primary mb-2">Atualizar</button>
+      <button (click)="onSubmit('delete')" type="submit" class="btn btn-danger mb-2">Excluir</button>
+      <button (click)="onSubmit('cancel')" type="submit" class="btn btn-info mb-2">Cancelar</button>
     </div>
   </div>
   <!-- /Linha 1 -->
@@ -66,7 +72,7 @@
       <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="X">
     </div>
 
-    <button type="submit" class="btn btn-primary mb-2">Atualizar</button>
+
   </div>
   <!-- /Linha 2 -->
 

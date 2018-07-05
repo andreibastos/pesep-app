@@ -11,7 +11,9 @@
             />
             <img id="PQ" class="py-1 componente-lateral" src="../../assets/icons/componentes/3.png" style="width: 80%" title="Barra de Carga"
             />
-            <img class="py-1 curtoCircuito" src="../../assets/icons/componentes/4.png" style="width: 80%" title="Curto Circuito" />
+            <img class="py-1 componente-lateral" src="../../assets/icons/componentes/4.png" style="width: 80%" title="Barra de Carga"
+            />
+            <img class="py-1 curtoCircuito" src="../../assets/icons/componentes/5.png" style="width: 80%" title="Curto Circuito" />
           </div>
         </div>
       </div>
@@ -67,12 +69,14 @@
         <div class="card card-properties mb-1" style="height: 100%">
           <div class="card-body text-white pt-0 px-3">
             <!-- Barras -->
-            <app-barra-form *ngIf="BarrasSelecionadas().length == 1" (barrasEnviadas)="AtualizarBarras($event)" [barrasRecebidas]="BarrasSelecionadas()">
+            <app-barra-form *ngIf="BarrasSelecionadas().length == 1 && !LinhaSelecionada()" (barrasEnviadas)="AtualizarBarras($event)"
+              [barrasRecebidas]="BarrasSelecionadas()">
             </app-barra-form>
             <!-- /Barras -->
 
             <!-- Linha -->
-            <app-linha-form *ngIf="LinhaSelecionada()" (linhaEnviada)="AtualizarLinha($event)" [linhaRecebida]="linhaSelecionada"> </app-linha-form>
+            <app-linha-form *ngIf="LinhaSelecionada() && BarrasSelecionadas().length ==0" (linhaEnviada)="AtualizarLinha($event)" [linhaRecebida]="linhaSelecionada">
+            </app-linha-form>
             <!-- /Linha -->
           </div>
         </div>
@@ -83,7 +87,7 @@
       <!-- Modal -->
       <app-resultados *ngIf="openModal" [sistema]="sistema" class="modal fade" id="resultados" tabindex="-1" role="dialog" aria-hidden="true"></app-resultados>
 
-      <div id="log" class="">
+      <div id="log" class="mt-5 ml-5">
         <div class="row" *ngFor="let log of logs">
           <div [ngClass]="log.classe" class="alert alert-dismissible fade show" role="alert">
             <strong> {{log?.titulo}}</strong>
