@@ -10,13 +10,16 @@
     <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item p-2" *ngFor="let example of examples">
       <div class="card h-100">
         <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:example.id}">
-          <img class="card-img-top" src="{{example.img}}" alt="">
+          <img class="card-img-top" style="max-height: 20rem" src="{{example.img}}" alt="">
         </a>
         <div class="card-body">
           <h4 class="card-title">
             <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:example.id}">{{example.title}}</a>
           </h4>
           <p class="card-text">{{example.text}}</p>
+
+        </div>
+        <div class="card-footer text-muted text-center">
           <a href="{{example.link}}" class="btn btn-blue btn-outline-dark ">{{button}}</a>
         </div>
       </div>
