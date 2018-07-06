@@ -6,9 +6,9 @@ export class Falta {
     montante: Barra;
     jusante: Barra;
 
-    xg = 0.5;
-    x0 = 0.5;
-    xf = 0.5;
+    xg = 1;
+    x0 = 1;
+    xf = 1;
     porcentagem = 0;
 
     enumFaltaLocal: EnumFaltaLocal = EnumFaltaLocal.Barra;
