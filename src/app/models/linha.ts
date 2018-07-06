@@ -11,7 +11,7 @@ export class Linha {
     X = 1;
     TAP = 1;
     A = 0;
-    _tipo_trafo = EnumTransformadorTipo['Delta Estrela'];
+    _tipo_trafo = EnumTransformadorTipo['Estrela Estrela'];
     resistencia_zero = 0;
     reatancia_trafo = 0;
 
