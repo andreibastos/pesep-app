@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Sistema } from '../../models/sistema';
-import { ExportDownload } from '../../utils/export';
+import { ExportDownload } from '../../shared/utils/export';
 
 @Component({
   selector: 'app-resultados',

@@ -1,4 +1,4 @@
-import { DataUpload } from './../../utils/data-upload';
+import { DataUpload } from '../../shared/utils/data-upload';
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 
 @Component({
