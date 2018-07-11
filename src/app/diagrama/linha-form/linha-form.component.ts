@@ -34,6 +34,7 @@ export class LinhaFormComponent implements OnInit {
   onSubmit(command) {
     this.linhaAtualizada = this.AtualizarLinhaComFormulario(this.linhaRecebida);
     const response = { 'command': command, 'data': this.linhaAtualizada };
+    console.log(response)
     this.linhaEnviada.emit(response);
   }
 
@@ -72,13 +73,10 @@ export class LinhaFormComponent implements OnInit {
       ]
       ],
 
-      de: [linha.de.id_barra],
-      para: [linha.para.id_barra]
 
     });
     this.formulario.controls['id_linha'].disable();
-    this.formulario.controls['de'].disable();
-    this.formulario.controls['para'].disable();
+  
   }
 
   AplicaCSSError(campo) {

@@ -36,13 +36,18 @@ export class Barra {
     X = 0;
 
     constructor(tipo: EnumBarraTipo) {
-        if (tipo === EnumBarraTipo.PQ) {
-            this.pCarga = 1;
-        }
+
         if (!tipo) {
             this.tipo = EnumBarraTipo.PQ;
         } else {
             this.tipo = tipo;
+            if (tipo === EnumBarraTipo.PQ) {
+                this.pCarga = 1;
+            } else if (tipo === EnumBarraTipo.Slack) {
+                this.pGeradaMax = 10;
+                this.qGeradaMax = 10;
+
+            }
         }
         this.id_barra = tipo.toString();
     }

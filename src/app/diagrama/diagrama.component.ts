@@ -280,7 +280,9 @@ export class DiagramaComponent implements OnInit {
   RedesenharBarra(barra: Barra) {
     const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
     this.AtualizaGrupoBarra(grupoBarra);
-    this.AdicionarFaltaBarra(barra);
+    if (this.sistema.falta.id_componente === barra.id) {
+      this.AdicionarFaltaBarra(barra);
+    }
   }
 
   AtualizarBarras(barrasInfo) {
@@ -306,6 +308,7 @@ export class DiagramaComponent implements OnInit {
       linhaAtualizada.de = this.linhaSelecionada.de;
       linhaAtualizada.para = this.linhaSelecionada.para;
       this.mapaLinhas.set(linhaAtualizada.id_linha, linhaAtualizada);
+      console.log(this.mapaLinhas.get(linhaAtualizada.id_linha))
       this.linhaSelecionada = null;
       this.DesenhaLinha(linhaAtualizada);
     } else if (linhasInfo['delete']) {
@@ -728,7 +731,7 @@ export class DiagramaComponent implements OnInit {
     if (this.sistema.falta.enumFaltaLocal === EnumFaltaLocal.Barra) {
       const barraAnterior = this.getBarra(`barra_${this.sistema.falta.id_componente}`);
       if (barraAnterior) {
-      const grupoBarraAnterior = this.mapaGruposSVG.get(barraAnterior.id_barra);
+        const grupoBarraAnterior = this.mapaGruposSVG.get(barraAnterior.id_barra);
         const select = grupoBarraAnterior.select('.curto').each(function () { this.remove(); });
       }
     }

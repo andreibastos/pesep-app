@@ -116,12 +116,16 @@ export class Sistema {
                     de_atual = this.barras.find(function (barra) { return barra.id_barra === id_de_barra; });
                     if (de_atual) {
                         de_anterior = de_atual;
+
                         header.forEach((colunaNome, i) => {
                             if (i > 0 && i < 8) {
-                                const valor = parseFloat(linha[i]);
-                                if (valor === NaN) {
-                                    de_anterior[colunaNome] = linha[i];
-                                }
+                                    const valor = parseFloat(linha[i]) || null;
+                                    if (valor) {
+                                        de_anterior[colunaNome] = valor;
+
+                                    } else {
+                                        de_anterior[colunaNome] = linha[i];
+                                    }
                             }
                         });
                         // console.log('de', de_anterior);
@@ -137,6 +141,7 @@ export class Sistema {
                 }
             }
         });
+        // console.log(this.fluxos);
         this.calculandoFluxo.emit(this.fluxos);
     }
 

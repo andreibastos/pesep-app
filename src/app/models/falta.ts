@@ -1,7 +1,7 @@
 import { Barra } from './barra';
 import { EnumFaltaLocal, EnumFaltaTipo } from './enumeradores';
 export class Falta {
-    id_componente = '1';
+    id_componente = '';
 
     montante: Barra;
     jusante: Barra;
