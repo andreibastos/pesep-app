@@ -264,7 +264,7 @@ export class DiagramaComponent implements OnInit {
 
   }
 
-  PodeRealizarFluxo(): boolean {
+  PodeRealizarCalculo(): boolean {
     const quantidadeBarras = this.mapaBarras.size;
     const quantidadeLinhas = this.mapaLinhas.size;
 
