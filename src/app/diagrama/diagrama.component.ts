@@ -308,7 +308,7 @@ export class DiagramaComponent implements OnInit {
       linhaAtualizada.de = this.linhaSelecionada.de;
       linhaAtualizada.para = this.linhaSelecionada.para;
       this.mapaLinhas.set(linhaAtualizada.id_linha, linhaAtualizada);
-      console.log(this.mapaLinhas.get(linhaAtualizada.id_linha))
+      console.log(this.mapaLinhas.get(linhaAtualizada.id_linha));
       this.linhaSelecionada = null;
       this.DesenhaLinha(linhaAtualizada);
     } else if (linhasInfo['delete']) {

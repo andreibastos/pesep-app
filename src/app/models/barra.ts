@@ -5,8 +5,8 @@ export class Barra {
     static header = ['Item',
         'Tipo',
         'Nome',
-        'Tensão Inicial (pu)',
-        'Ângulo Inicial (θ)',
+        'Tensão (pu)',
+        'Ângulo (θ)',
         'Potência Ativa Gerada (pu)',
         'Potência Reativa Gerada (pu)',
         'Potência Reativa Mínima (pu)',
@@ -53,11 +53,11 @@ export class Barra {
     }
 
     private tipoNumerico(): Number {
-        let numero = 2;
+        let numero = 0;
         if (this.tipo === EnumBarraTipo.Slack) {
             numero = 3;
         } else if (this.tipo === EnumBarraTipo.PV) {
-            numero = 1;
+            numero = 2;
         }
         return numero;
     }
