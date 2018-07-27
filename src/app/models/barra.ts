@@ -33,7 +33,7 @@ export class Barra {
     qGeradaMin = 0;
     qGeradaMax = 0;
     qShunt = 0;
-    X = 0;
+    X = 1;
 
     constructor(tipo: EnumBarraTipo) {
 

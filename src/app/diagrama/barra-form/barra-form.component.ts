@@ -110,7 +110,7 @@ export class BarraFormComponent implements OnInit {
       ]
       ],
       X: [barra.X, [
-        Validators.min(0),
+        Validators.min(0.000001),
         Validators.max(10)
       ]]
     });
