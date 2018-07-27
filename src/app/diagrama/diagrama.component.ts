@@ -308,17 +308,15 @@ export class DiagramaComponent implements OnInit {
   }
   AtualizarLinha(linhasInfo) {
     const linhaAtualizada = linhasInfo['data'];
-    if (linhasInfo['update']) {
+    if (linhasInfo['command'] === 'update') {
       linhaAtualizada.de = this.linhaSelecionada.de;
       linhaAtualizada.para = this.linhaSelecionada.para;
       this.mapaLinhas.set(linhaAtualizada.id_linha, linhaAtualizada);
-      console.log(this.mapaLinhas.get(linhaAtualizada.id_linha));
       this.linhaSelecionada = null;
       this.DesenhaLinha(linhaAtualizada);
-    } else if (linhasInfo['delete']) {
+    } else if (linhasInfo['command'] === 'delete') {
       this.ExcluirLinhas(linhaAtualizada);
     }
-    console.log(linhaAtualizada);
     this.LimparLinhasSelecionadas();
   }
   CriarDocumentoSVG(SVGNome: string) {

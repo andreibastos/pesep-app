@@ -18,7 +18,8 @@ export enum EnumFaltaLocal {
 export enum EnumFaltaTipo {
     'Monofasica' = '1',
     'Bifasica' = '2',
-    'Trifasica' = '3'
+    'Trifasica' = '3',
+    'Bifásico com terra' = '4'
 }
 
 

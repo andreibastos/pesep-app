@@ -32,10 +32,11 @@ export class LinhaFormComponent implements OnInit {
   }
 
   onSubmit(command) {
-    this.linhaAtualizada = this.AtualizarLinhaComFormulario(this.linhaRecebida);
-    const response = { 'command': command, 'data': this.linhaAtualizada };
-    console.log(response)
-    this.linhaEnviada.emit(response);
+    if (this.formulario.valid) {
+      this.linhaAtualizada = this.AtualizarLinhaComFormulario(this.linhaRecebida);
+      const response = { 'command': command, 'data': this.linhaAtualizada };
+      this.linhaEnviada.emit(response);
+    }
   }
 
   CriarFormulario(linha: Linha) {
@@ -76,7 +77,6 @@ export class LinhaFormComponent implements OnInit {
 
     });
     this.formulario.controls['id_linha'].disable();
-  
   }
 
   AplicaCSSError(campo) {
