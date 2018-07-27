@@ -6,7 +6,7 @@ import { Http, Headers, RequestOptions, Response, RequestMethod } from '@angular
 })
 export class MathPowerService {
 
-  private url = 'http://0.0.0.0:5000/calcule/';
+  private url = 'https://35.237.112.162:5000/calcule/';
   private body: any[];
 
   constructor(private http: Http) { }
