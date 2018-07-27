@@ -18,6 +18,7 @@ export class Sistema {
 
     @Output()
     calculandoFluxo: EventEmitter<Array<Fluxo>> = new EventEmitter();
+    calculandoCurto: EventEmitter<Array<CurtoCircuito>> = new EventEmitter();
 
     @Output()
     errorHandler: EventEmitter<string> = new EventEmitter();
@@ -119,13 +120,13 @@ export class Sistema {
 
                         header.forEach((colunaNome, i) => {
                             if (i > 0 && i < 8) {
-                                    const valor = parseFloat(linha[i]) || null;
-                                    if (valor) {
-                                        de_anterior[colunaNome] = valor;
+                                const valor = parseFloat(linha[i]) || null;
+                                if (valor) {
+                                    de_anterior[colunaNome] = valor;
 
-                                    } else {
-                                        de_anterior[colunaNome] = linha[i];
-                                    }
+                                } else {
+                                    de_anterior[colunaNome] = linha[i];
+                                }
                             }
                         });
                         // console.log('de', de_anterior);
@@ -149,11 +150,11 @@ export class Sistema {
         console.log(files);
         this.curtoCircuito = new CurtoCircuito();
         // corrente de falta
-        this.curtoCircuito.if_m =
+        // this.curtoCircuito.if_m =
 
-            this.curto = files['log_CC.txt'];
+        this.curto = files['log_CC.txt'];
 
-        console.log(this.curto);
+        this.calculandoCurto.emit(files);
     }
 
     CriarMatrizSusceptancia(susceptancias: any[], linhas: any[], colunas: any[]) {

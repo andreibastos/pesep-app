@@ -145,7 +145,7 @@ export class DiagramaComponent implements OnInit {
     this.sistema.CalcularFluxo();
 
     // se inscreve no fluxo
-    this.sistema.calculandoFluxo.subscribe(fluxos => this.chegouFluxo(fluxos));
+    this.sistema.calculandoFluxo.subscribe(fluxos => this.chegouFluxo());
     this.sistema.errorHandler.subscribe(error => this.errorServidor(error));
   }
 
@@ -158,15 +158,19 @@ export class DiagramaComponent implements OnInit {
     this.sistema.CalcularCurto();
 
     // se inscreve no fluxo
+    this.sistema.calculandoCurto.subscribe(this.chegouCurto());
     // this.sistema.calculandoFluxo.subscribe(fluxos => this.chegouFluxo(fluxos));
     // this.sistema.errorHandler.subscribe(error => this.errorServidor(error));
   }
 
 
-  chegouFluxo(fluxos: Array<Fluxo>) {
+  chegouFluxo() {
     this.criarAlerta('Fluxo de Potência', 'concluído', 'sucesso');
     this.DesenhaLinhas(this.getLinhas());
-    console.log(this.sistema);
+  }
+  chegouCurto() {
+    this.criarAlerta('Curto Circuito', 'concluído', 'sucesso');
+    this.DesenhaLinhas(this.getLinhas());
   }
 
   errorServidor(mensagem) {
