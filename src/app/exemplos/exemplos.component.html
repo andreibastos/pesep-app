@@ -10,7 +10,7 @@
     <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item p-2" *ngFor="let example of examples">
       <div class="card h-100">
         <a routerLinkActive="active" [routerLink]="['/diagrama']" [queryParams]="{exemplo:example.id}">
-          <img class="card-img-top" style="height: 80%;" src="{{example.img}}" alt="">
+          <img class="card-img-top" src="{{example.img}}" alt="">
         </a>
         <div class="card-body">
           <h4 class="card-title">
