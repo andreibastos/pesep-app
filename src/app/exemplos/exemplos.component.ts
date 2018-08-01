@@ -76,7 +76,7 @@ export class ExemplosComponent implements OnInit {
       img: '../../assets/images/exemplos/14.png'
     }, {
       id: 10,
-      title: 'Exemplo 10',
+      title: 'Exemplo 11',
       text: 'Livro: Power System Analysis - Grainer e Steverson - 1994, Exemplos 12.4 e 12.5 ',
       link: '../../assets/download/exemplo-15.zip',
       img: '../../assets/images/exemplos/15.png'
