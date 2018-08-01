@@ -5,7 +5,7 @@ import { MathPowerService, MathPowerMethod } from '../shared/math-power.service'
 import { Fluxo } from './fluxo';
 import { EventEmitter, Output } from '@angular/core';
 import { Falta } from './falta';
-import { CurtoCircuito } from './curto-circuito';
+import { CurtoCircuito, TensaoPosFalta, CorrenteFalta } from './curto-circuito';
 export class Sistema {
 
     private results;
@@ -18,12 +18,23 @@ export class Sistema {
 
     @Output()
     calculandoFluxo: EventEmitter<Array<Fluxo>> = new EventEmitter();
-    calculandoCurto: EventEmitter<Array<CurtoCircuito>> = new EventEmitter();
+    calculandoCurto: EventEmitter<CurtoCircuito> = new EventEmitter();
 
     @Output()
     errorHandler: EventEmitter<string> = new EventEmitter();
 
     constructor(public linhas: Array<Linha>, public barras: Array<Barra>, private mathPowerService?: MathPowerService) {
+    }
+
+    getBarraByID(id_barra: number): Barra {
+        const id_barra_str = `barra_${id_barra}`;
+        return this.barras.find(function (barra) { return barra.id_barra === id_barra_str; });
+    }
+
+    getLinhaByID(id_linha: number): Linha {
+        const id_linha_str = `linha_${id_linha}`;
+        const linha_find = this.linhas.find(function (linha) { return linha.id_linha === id_linha_str; });
+        return linha_find;
     }
 
     toObjectArray(): any {
@@ -48,40 +59,43 @@ export class Sistema {
     }
 
     toTable(field: string, withHeader = true): any[] {
-        let array = [];
+        let table = [];
         let header = [];
 
         if (field === 'fluxos') {
             if (withHeader) {
                 header = Fluxo.header;
-                array.push(header);
+                table.push(header);
             }
-            array = this.fluxosToTable();
+            table = this.fluxosToTable();
         } else if (field === 'linhas') {
             if (withHeader) {
                 header = Linha.header;
-                array.push(header);
+                table.push(header);
             }
             this[field].forEach(row => {
-                array.push(row.toArray());
+                table.push(row.toArray());
             });
 
         } else if (field === 'barras') {
             if (withHeader) {
                 header = Barra.header;
-                array.push(header);
+                table.push(header);
             }
             this[field].forEach(row => {
-                array.push(row.toArray());
+                table.push(row.toArray());
             });
 
         } else if (field === 'falta') {
-            array.push(this.falta.toArray());
+            table.push(this.falta.toArray());
         } else if (field === 'curto') {
-            array = this.curto;
+            // array = this.curto;
+            if (this.curtoCircuito) {
+                table = this.curtoCircuito.toTable();
+            }
+            console.log(table);
         }
-
-        return array;
+        return table;
     }
 
 
@@ -149,12 +163,54 @@ export class Sistema {
     CriarCurtos(files: any[]) {
         console.log(files);
         this.curtoCircuito = new CurtoCircuito();
-        // corrente de falta
-        // this.curtoCircuito.if_m =
+        this.curtoCircuito.local = files['entrada_falta.txt'][0];
+        this.curtoCircuito.if_m = files['corrente_falta.txt'][0];
+        this.curtoCircuito.if_f = [0, 0, 0];
+        this.curtoCircuito.tensoes = this.voltagesAfterFault(files['tensao_pos_falta.txt']);
+        this.curtoCircuito.correntes = this.currentsAfterFault(files['corrente_linha_falta.txt']);
+        // this.curto = files['log_CC.txt'];
+        // this.calculandoCurto.emit(this.curtoCircuito);
+    }
 
-        this.curto = files['log_CC.txt'];
+    voltageAfterFault(rowVoltage: any[]): TensaoPosFalta {
+        const voltage = new TensaoPosFalta();
+        // const id_barra = rowVoltage[0];
+        const id_barra = rowVoltage[0].split(',')[0];  // remover isso quando luiz colocar separação por virgulas
+        voltage.barra = this.getBarraByID(id_barra);
+        // if (rowVoltage.length === 6) { // maior que 6 parâmetros (trifásico módulo e angulo (3*2))
+        voltage.va_f = rowVoltage[1];
+        voltage.va_m = rowVoltage[2];
+        voltage.vb_m = rowVoltage[3];
+        voltage.vb_f = rowVoltage[4];
+        voltage.vc_f = rowVoltage[5];
+        voltage.vc_m = rowVoltage[6];
+        // }
+        return voltage;
+    }
 
-        this.calculandoCurto.emit(files);
+    voltagesAfterFault(tableVoltages: any[]): Array<TensaoPosFalta> {
+        const voltages: Array<TensaoPosFalta> = new Array();
+        tableVoltages.forEach(rowVoltage => {
+            voltages.push(this.voltageAfterFault(rowVoltage));
+        });
+        return voltages;
+    }
+
+    currentAfterFault(rowCurrent: any[]): CorrenteFalta {
+        const current = new CorrenteFalta();
+        current.de = this.getBarraByID(rowCurrent[0]);
+        current.para = this.getBarraByID(rowCurrent[1]);
+        current.if_m = rowCurrent[2];
+        return current;
+    }
+
+    currentsAfterFault(tableCurrents: any[]) {
+
+        const currents: Array<CorrenteFalta> = new Array();
+        tableCurrents.forEach(rowCurrent => {
+            currents.push(this.currentAfterFault(rowCurrent));
+        });
+        return currents;
     }
 
     CriarMatrizSusceptancia(susceptancias: any[], linhas: any[], colunas: any[]) {
