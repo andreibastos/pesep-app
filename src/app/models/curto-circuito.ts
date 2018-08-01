@@ -108,7 +108,7 @@ export class CorrenteFalta {
 
     // correntes de falta
     if_m: number;
-    if_f = 0;
+    if_f = 90;
 
     toArray(): any[] {
         const array = [];

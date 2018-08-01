@@ -165,7 +165,7 @@ export class Sistema {
         this.curtoCircuito = new CurtoCircuito();
         this.curtoCircuito.local = files['entrada_falta.txt'][0];
         this.curtoCircuito.if_m = files['corrente_falta.txt'][0];
-        this.curtoCircuito.if_f = [0, 0, 0];
+        this.curtoCircuito.if_f = [90, 90, 90];
         this.curtoCircuito.tensoes = this.voltagesAfterFault(files['tensao_pos_falta.txt']);
         this.curtoCircuito.correntes = this.currentsAfterFault(files['corrente_linha_falta.txt']);
         // this.curto = files['log_CC.txt'];
@@ -177,14 +177,14 @@ export class Sistema {
         // const id_barra = rowVoltage[0];
         const id_barra = rowVoltage[0].split(',')[0];  // remover isso quando luiz colocar separação por virgulas
         voltage.barra = this.getBarraByID(id_barra);
-        // if (rowVoltage.length === 6) { // maior que 6 parâmetros (trifásico módulo e angulo (3*2))
-        voltage.va_f = rowVoltage[1];
-        voltage.va_m = rowVoltage[2];
-        voltage.vb_m = rowVoltage[3];
-        voltage.vb_f = rowVoltage[4];
-        voltage.vc_f = rowVoltage[5];
-        voltage.vc_m = rowVoltage[6];
-        // }
+        if (rowVoltage.length === 7) { // maior que 6 parâmetros (trifásico módulo e angulo (3*2))
+            voltage.va_m = rowVoltage[1];
+            voltage.va_f = rowVoltage[2];
+            voltage.vb_m = rowVoltage[3];
+            voltage.vb_f = rowVoltage[4];
+            voltage.vc_m = rowVoltage[5];
+            voltage.vc_f = rowVoltage[6];
+        }
         return voltage;
     }
 
