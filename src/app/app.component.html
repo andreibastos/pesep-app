@@ -2,9 +2,15 @@
 <nav class="navbar fixed-top navbar-dark bg-blue navbar-expand-lg">
   <a class="navbar-brand font-weight-bold" routerLinkActive="active" [routerLink]="''">
     <i class="fas fa-bolt"></i> {{title}}</a>
-  <ul class="navbar-nav" *ngFor="let nav_item of nav_items">
-    <li class="nav-item">
+  <ul class="navbar-nav" >
+    <li class="nav-item" *ngFor="let nav_item of nav_items">
       <a class="nav-link" routerLinkActive="active" routerLink="{{nav_item['routerLink']}}">{{nav_item.name}}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScQetfTjGztH-yKn1lNAc0icpW1Vk4Rqk9kcOT_S2cyONwSkg/viewform">Questionário</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSc1GWpv9UpwFR-ApdYDFDmd2BxTxDWcVGgZlUsUNVuorJUQoQ/viewform">Reportar Erros</a>
     </li>
   </ul>
 </nav>
