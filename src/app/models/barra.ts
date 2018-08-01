@@ -16,7 +16,7 @@ export class Barra {
         'Potência Ativa Gerada Mínima (pu)',
         'Potência Ativa Gerada Máxima (pu)',
         'Potência Reativa Shunt (pu)',
-        'Reatância Interna (x)'
+        'Susceptância Gerador (b)'
     ];
 
     id_barra = 'nova_barra';
