@@ -168,8 +168,8 @@ export class Sistema {
         this.curtoCircuito.if_f = [90, 90, 90];
         this.curtoCircuito.tensoes = this.voltagesAfterFault(files['tensao_pos_falta.txt']);
         this.curtoCircuito.correntes = this.currentsAfterFault(files['corrente_linha_falta.txt']);
-        // this.curto = files['log_CC.txt'];
-        // this.calculandoCurto.emit(this.curtoCircuito);
+        this.calculandoCurto.emit(this.curtoCircuito);
+        console.log(this.curtoCircuito);
     }
 
     voltageAfterFault(rowVoltage: any[]): TensaoPosFalta {
