@@ -35,7 +35,6 @@ export class BarraFormComponent implements OnInit {
     const novaBarra: Barra = new Barra(barra.tipo);
     Object.keys(this.formulario.controls).forEach(campo => {
       novaBarra[campo] = this.formulario.get(campo).value;
-      console.log(campo, novaBarra[campo]);
     });
     return novaBarra;
   }

@@ -1,4 +1,5 @@
 <form [formGroup]="formulario" (ngSubmit)="onSubmit('update')">
+  <p class="m-0">Informações de Linha</p>
   <!-- Linha 1 -->
   <div class="row">
     <div class="col-1" [ngClass]="AplicaCSSError('id_linha')">
@@ -9,7 +10,6 @@
       <label>r</label>
       <input type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="R">
     </div>
-
 
     <div class="col-1" [ngClass]="AplicaCSSError('TAP')">
       <label>Tap</label>
@@ -25,13 +25,6 @@
       <label>Resistência de Sequência Zero</label>
       <input type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="resistencia_zero">
     </div>
-
-    <div class="col">
-      <button (click)="onSubmit('update')" type="submit" class="btn btn-primary mb-2">Atualizar</button>
-      <button (click)="onSubmit('delete')" type="submit" class="btn btn-danger mb-2">Excluir</button>
-      <button (click)="onSubmit('cancel')" type="submit" class="btn btn-info mb-2">Cancelar</button>
-    </div>
-
   </div>
   <!-- /Linha 1 -->
   <!-- Linha 2 -->
@@ -57,8 +50,18 @@
         <option value="1">Estrela Estrela</option>
       </select>
     </div>
+    <div class="col d-flex  justify-content-end">
+      <div class="btn-group">
 
+        <button (click)="onSubmit('update')" type="submit" class="btn btn-primary mb-2">Atualizar</button>
+        <button (click)="onSubmit('delete')" type="submit" class="btn btn-danger mb-2">Excluir</button>
+        <button (click)="onSubmit('cancel')" type="submit" class="btn btn-info mb-2">Cancelar</button>
+      </div>
+    </div>
   </div>
   <!-- /Linha 2 -->
+
+
+  <div class="border-bottom m-2"></div>
 
 </form>

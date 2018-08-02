@@ -1,6 +1,7 @@
 <form [formGroup]="formulario" (ngSubmit)="onSubmit('update')">
+  <p class="m-0">Informações de Barra</p>
   <!-- Linha 1 -->
-  <div class="row">
+  <div class="row ">
     <div class="col-1" [ngClass]="AplicaCSSError('id_barra')">
       <label>ID</label>
       <input type="text" class="form-control form-control-sm" placeholder="barra_1" formControlName="id_barra">
@@ -21,23 +22,17 @@
       <label>P Carga</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="pCarga">
     </div>
-    <div class="col-2" [ngClass]="AplicaCSSError('pGeradaMax')">
+    <div class="col-1" [ngClass]="AplicaCSSError('pGeradaMax')">
       <label>P Gerada Max</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="pGeradaMax">
     </div>
-    <div class="col-2" [ngClass]="AplicaCSSError('qGeradaMax')">
+    <div class="col-1" [ngClass]="AplicaCSSError('qGeradaMax')">
       <label>Q Gerada Max</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="qGeradaMax">
     </div>
     <div class="col-1" [ngClass]="AplicaCSSError('qShunt')">
       <label>Q Shunt</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="qShunt">
-    </div>
-
-    <div class="col">
-      <button (click)="onSubmit('update')" type="submit" class="btn btn-primary mb-2">Atualizar</button>
-      <button (click)="onSubmit('delete')" type="submit" class="btn btn-danger mb-2">Excluir</button>
-      <button (click)="onSubmit('cancel')" type="submit" class="btn btn-info mb-2">Cancelar</button>
     </div>
   </div>
   <!-- /Linha 1 -->
@@ -59,21 +54,28 @@
       <label>Q Carga</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="qCarga">
     </div>
-    <div class="col-2" [ngClass]="AplicaCSSError('pGeradaMin')">
+    <div class="col-1" [ngClass]="AplicaCSSError('pGeradaMin')">
       <label>P Gerada Min</label>
-      <input  type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="pGeradaMin">
+      <input type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="pGeradaMin">
     </div>
-    <div class="col-2" [ngClass]="AplicaCSSError('qGeradaMin')">
+    <div class="col-1" [ngClass]="AplicaCSSError('qGeradaMin')">
       <label>Q Gerada Min</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="qGeradaMin">
     </div>
-    <div class="col-2" [ngClass]="AplicaCSSError('X')">
-      <label>Susceptância Gerador</label>
+    <div class="col-1" [ngClass]="AplicaCSSError('X')">
+      <label>Susceptância</label>
       <input min="0.0001" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="X">
     </div>
 
+    <div class="col d-flex justify-content-end">
+      <div class="btn-group">
+        <button (click)="onSubmit('update')" type="submit" class="btn btn-primary mb-2">Atualizar</button>
+        <button (click)="onSubmit('delete')" type="submit" class="btn btn-danger mb-2">Excluir</button>
+        <button (click)="onSubmit('cancel')" type="submit" class="btn btn-info mb-2">Cancelar</button>
+      </div>
+    </div>
 
   </div>
   <!-- /Linha 2 -->
-
+  <div class="border-bottom  m-2"></div>
 </form>

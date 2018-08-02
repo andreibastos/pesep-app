@@ -14,7 +14,7 @@ export class Sistema {
     curtoCircuito: CurtoCircuito;
     curto;
 
-    falta: Falta = new Falta();
+    falta: Falta = null;
 
     @Output()
     calculandoFluxo: EventEmitter<Array<Fluxo>> = new EventEmitter();

@@ -6,6 +6,7 @@ import { LinhaFormComponent } from './linha-form/linha-form.component';
 import { ResultadosComponent } from './resultados/resultados.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { FaltaFormComponent } from './falta-form/falta-form.component';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { SharedModule } from '../shared/shared.module';
     BarraFormComponent,
     LinhaFormComponent,
     ResultadosComponent,
+    FaltaFormComponent,
   ],
   imports: [
     CommonModule,

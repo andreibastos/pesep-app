@@ -21,7 +21,7 @@ export class LinhaFormComponent implements OnInit {
     this.CriarFormulario(this.linhaRecebida);
   }
 
-  AtualizarLinhaComFormulario(linha: Linha): Linha {
+  AtualizarLinhaComFormulario(): Linha {
     const novaLinha: Linha = new Linha();
     Object.keys(this.formulario.controls).forEach(campo => {
       if ((campo !== 'de') && (campo !== 'para')) {
@@ -33,7 +33,7 @@ export class LinhaFormComponent implements OnInit {
 
   onSubmit(command) {
     if (this.formulario.valid) {
-      this.linhaAtualizada = this.AtualizarLinhaComFormulario(this.linhaRecebida);
+      this.linhaAtualizada = this.AtualizarLinhaComFormulario();
       const response = { 'command': command, 'data': this.linhaAtualizada };
       this.linhaEnviada.emit(response);
     }
