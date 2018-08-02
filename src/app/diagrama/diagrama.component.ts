@@ -62,7 +62,7 @@ export class DiagramaComponent implements OnInit {
 
   // Propriedades do Diagrama
   propriedades_diagrama = { visualizar_grade: true, agarrar_grade: false }; // Propriedades do diagrama
-  alturaPropriedades = 180;
+  alturaPropriedades = 200;
 
   constructor(private route: ActivatedRoute, private mathPowerService: MathPowerService) {
     this.qtdBarrasTipo[EnumBarraTipo.PV] = 1;
@@ -1237,7 +1237,7 @@ export class DiagramaComponent implements OnInit {
     } else {
       hasFalta = 0;
     }
-    this.alturaPropriedades = hasBarra * 180 + hasLinha * 180 + hasFalta * 120;
+    this.alturaPropriedades = hasBarra * 220 + hasLinha * 220 + hasFalta * 120;
 
   }
 
