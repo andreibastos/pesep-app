@@ -87,7 +87,9 @@ export class Sistema {
             });
 
         } else if (field === 'falta') {
-            table.push(this.falta.toArray());
+            if (this.falta) {
+                table.push(this.falta.toArray());
+            }
         } else if (field === 'curto') {
             // array = this.curto;
             if (this.curtoCircuito) {
