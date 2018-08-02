@@ -164,10 +164,14 @@ export class Sistema {
 
     CriarCurtos(files: any[]) {
         console.log(files);
+        const corrente_falta = files['corrente_falta.txt'][0];
+
         this.curtoCircuito = new CurtoCircuito();
         this.curtoCircuito.local = files['entrada_falta.txt'][0];
-        this.curtoCircuito.if_m = files['corrente_falta.txt'][0];
-        this.curtoCircuito.if_f = [90, 90, 90];
+        this.curtoCircuito.if_m = [];
+        this.curtoCircuito.if_f = [];
+        [0, 2, 4].forEach(value => { this.curtoCircuito.if_m.push(corrente_falta[value]); });
+        [1, 3, 5].forEach(value => { this.curtoCircuito.if_f.push(corrente_falta[value]); });
         this.curtoCircuito.tensoes = this.voltagesAfterFault(files['tensao_pos_falta.txt']);
         this.curtoCircuito.correntes = this.currentsAfterFault(files['corrente_linha_falta.txt']);
         this.calculandoCurto.emit(this.curtoCircuito);
