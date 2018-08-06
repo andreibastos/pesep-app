@@ -20,6 +20,9 @@
         <li class="nav-item">
           <a (click)="TrocarNav('curto')" class="nav-link" [class.active]="nav_active=='curto'">Curto Circuito</a>
         </li>
+        <li class="nav-item">
+          <a (click)="TrocarNav('curto')" class="nav-link" [class.active]="nav_active=='matrizes'">Matrizes</a>
+        </li>
       </ul>
 
       <app-tabela [striped]="striped"  [(table)]="selecionado"></app-tabela>

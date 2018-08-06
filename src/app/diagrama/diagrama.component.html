@@ -2,7 +2,7 @@
   <div class="container-fluid noselect">
     <div class="row">
       <!-- Coluna 01 - Componentes -->
-      <div class="col-lg-1 pr-1">
+      <div class="col-1 pr-1">
         <div class="card simulador">
           <div class="card-body text-center">
             <img id="Slack" class="py-1 componente-lateral" src="../../assets/icons/componentes/1.png" style="width: 80%" title="Barra Slack"
@@ -80,7 +80,7 @@
             <!-- /Linha -->
 
             <!-- Falta -->
-            <app-falta-form *ngIf="hasFalta()" (faltaEnviada)="AtualizarFalta($event)" [faltaRecebida]="sistema.falta">
+            <app-falta-form *ngIf="sistema.hasFalta()" (faltaEnviada)="AtualizarFalta($event)" [faltaRecebida]="sistema.falta">
               </app-falta-form>
               <!-- /Falta -->
           </div>
