@@ -82,15 +82,7 @@ export class Sistema {
                 table.push(header);
             }
             this[field].forEach(row => {
-                if (this.falta) {
-                    if (this.falta.enumFaltaLocal === EnumFaltaLocal.Linha) {
-                        if (row.id_linha === this.falta.linha.id_linha) {
-                            table.push(row.toArray(this.falta.porcentagem));
-                        }
-                    }
-                } else {
-                    table.push(row.toArray());
-                }
+                table.push(row.toArray(this.falta.porcentagem));
             });
 
         } else if (field === 'barras') {

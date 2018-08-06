@@ -154,11 +154,16 @@ export class DiagramaComponent implements OnInit {
     // peda para calcular o fluxo
     this.AtualizarSistema();
 
-    // peda para calcular o fluxo
-    this.sistema.CalcularCurto();
+    if (!this.sistema.hasFalta()) {
+      this.criarAlerta('Sistema', `Você deve inserir a falta`, 'perigo');
+    } else {
 
-    // se inscreve no fluxo
-    this.sistema.calculandoCurto.subscribe(curto => this.chegouCurto());
+      // peda para calcular o fluxo
+      this.sistema.CalcularCurto();
+
+      // se inscreve no fluxo
+      this.sistema.calculandoCurto.subscribe(curto => this.chegouCurto());
+    }
   }
 
 
@@ -172,7 +177,7 @@ export class DiagramaComponent implements OnInit {
   }
 
   errorServidor(mensagem) {
-    this.criarAlerta('Fluxo de Potência', 'Não possível conectar ao servidor', 'perigo');
+    this.criarAlerta('Servidor', 'Revise seus valores', 'perigo');
   }
 
   DesenharExemplo() {
@@ -281,6 +286,11 @@ export class DiagramaComponent implements OnInit {
   RedesenharBarra(barra: Barra) {
     const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
     this.AtualizaGrupoBarra(grupoBarra);
+    if (this.sistema.hasFalta()) {
+      if (this.sistema.falta.barra.id === barra.id) {
+        this.AdicionarFaltaBarra(barra);
+      }
+    }
   }
 
   AtualizarBarras(barrasInfo) {
@@ -1148,7 +1158,7 @@ export class DiagramaComponent implements OnInit {
             const novoGrupoBarra = self.mapaGruposSVG.get(novaBarra.id_barra);
             self.AdicionarBarraSelecionada(novoGrupoBarra);
           } else {
-            self.criarAlerta('Sistema', `Só pode ter uma ${barraCopiada.tipo}`, 'perigo');
+            self.criarAlerta('Sistema', `Só pode ter uma ${barraCopiada.tipo}`, 'atencao');
           }
         });
       } else if (this.barrasRecortadasSVG.length() > 0) {
@@ -1585,7 +1595,7 @@ export class DiagramaComponent implements OnInit {
           event.target.id = barra.id_barra;
           dragstart(event);
         } else {
-          self.criarAlerta('Sistema', `Só pode ter uma ${tipo}`, 'perigo');
+          self.criarAlerta('Sistema', `Só pode ter uma ${tipo}`, 'atencao');
         }
       })
       .on('dragmove', dragmove)

@@ -37,21 +37,24 @@ export class Linha {
         return this.id_linha.split('_')[1];
     }
 
-    toArray(): any[] {
+    toArray(percent = 1): any[] {
+        console.log('toArray');
+
         const array = [];
         array.push(this.id);
         array.push(this.de.id);
         array.push(this.para.id);
-        array.push(this.R);
-        array.push(this.X);
+        array.push(this.R * percent);
+        array.push(this.X * percent);
         array.push(this.TAP);
         array.push(this.A);
         array.push(this.tipo_trafo);
         array.push(this.resistencia_zero);
         array.push(this.reatancia_trafo);
+        console.log(array);
         return array;
     }
-
+    
     arrayToLinha(array: any[]) {
         array.forEach(col => {
             console.log(col);

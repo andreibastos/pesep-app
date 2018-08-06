@@ -49,8 +49,7 @@ export class FaltaFormComponent implements OnInit {
       x0: [falta.x0, [
         Validators.min(0)
       ]],
-      enumFaltaTipo: [falta.enumFaltaTipo],
-      enumFaltaLocal: [falta.enumFaltaLocal],
+      enumFaltaTipo: [falta.enumFaltaTipo]
     });
   }
 
