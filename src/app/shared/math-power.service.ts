@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response, RequestMethod } from '@angular/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MathPowerService {
 
-  private url = 'https://35.237.112.162:5000/calcule/';
+  private url = environment.apiUrl ;
   private body: any[];
 
   constructor(private http: Http) { }
