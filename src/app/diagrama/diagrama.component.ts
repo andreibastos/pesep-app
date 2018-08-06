@@ -260,7 +260,6 @@ export class DiagramaComponent implements OnInit {
       this.AdicionarLinha(barra3, barra4);
       this.AdicionarLinha(barra4, barra5);
       this.AdicionarLinha(barra5, barra3);
-
     }
 
 
@@ -282,9 +281,6 @@ export class DiagramaComponent implements OnInit {
   RedesenharBarra(barra: Barra) {
     const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
     this.AtualizaGrupoBarra(grupoBarra);
-    if (this.sistema.falta.id_componente === barra.id) {
-      this.AdicionarFaltaBarra(barra);
-    }
   }
 
   AtualizarBarras(barrasInfo) {
@@ -428,8 +424,8 @@ export class DiagramaComponent implements OnInit {
   // excluindo barra na tela e no mapa de barras
   ExcluirBarra(barra: Barra) {
     if (this.mapaGruposSVG.get(barra.id_barra)) {
-      if (this.hasFalta()) {
-        if (this.sistema.falta.enumFaltaLocal === EnumFaltaLocal.Barra && this.sistema.falta.id_componente === barra.id) {
+      if (this.sistema.hasFalta()) {
+        if (this.sistema.falta.enumFaltaLocal === EnumFaltaLocal.Barra && this.sistema.falta.barra.id === barra.id) {
           this.ExcluirFalta();
         }
       }
@@ -535,12 +531,12 @@ export class DiagramaComponent implements OnInit {
   ExcluirFalta() {
     if (this.sistema.falta) {
       if (this.sistema.falta.enumFaltaLocal === EnumFaltaLocal.Barra) {
-        const barraFalta = this.getBarra('barra_' + this.sistema.falta.id_componente);
+        const barraFalta = this.sistema.falta.barra;
         const grupoBarra = this.mapaGruposSVG.get(barraFalta.id_barra);
         this.RemoverFaltaCurto(grupoBarra);
       }
     }
-    this.sistema.falta = null;
+    this.sistema.ExcluirFalta();
 
   }
 
@@ -767,21 +763,15 @@ export class DiagramaComponent implements OnInit {
   AdicionarFaltaBarra(barra: Barra) {
     const self = this;
     const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
-
-    if (!this.sistema.falta) {
-      this.sistema.falta = new Falta();
-      this.sistema.falta.enumFaltaLocal = EnumFaltaLocal.Barra;
-    }
-    if (this.sistema.falta.enumFaltaLocal === EnumFaltaLocal.Barra) {
-      const barraAnterior = this.getBarra(`barra_${this.sistema.falta.id_componente}`);
+    if (this.sistema.hasFalta() && this.sistema.falta.enumFaltaLocal === EnumFaltaLocal.Barra) {
+      const barraAnterior = this.sistema.falta.barra;
       if (barraAnterior) {
         const grupoBarraAnterior = this.mapaGruposSVG.get(barraAnterior.id_barra);
         this.RemoverFaltaCurto(grupoBarraAnterior);
       }
     }
-
+    this.sistema.falta = new Falta(barra);
     this.AjustaAlturaPropriedades();
-    this.sistema.falta.id_componente = barra.id;
     this.RemoverFaltaCurto(grupoBarra);
     grupoBarra.select('#barramento').each(function () {
       const grupoCurto = self.criarFaltaCurto();
@@ -1110,10 +1100,6 @@ export class DiagramaComponent implements OnInit {
     return this.linhaSelecionada !== null;
   }
 
-  hasFalta(): boolean {
-    return this.sistema.falta !== null;
-  }
-
   // "copiar" barras seleciondas
   CopiarBarrasSelecionadas() {
     const self = this;
@@ -1232,7 +1218,7 @@ export class DiagramaComponent implements OnInit {
     } else {
       hasLinha = 0;
     }
-    if (this.hasFalta()) {
+    if (this.sistema.hasFalta()) {
       hasFalta = 1;
     } else {
       hasFalta = 0;

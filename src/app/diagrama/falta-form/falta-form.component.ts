@@ -32,7 +32,7 @@ export class FaltaFormComponent implements OnInit {
   }
 
   AtualizarFaltaComFormulario(): Falta {
-    const novaFalta: Falta = new Falta();
+    const novaFalta: Falta = new Falta(this.faltaRecebida.barra);
     Object.keys(this.formulario.controls).forEach(campo => {
       // if ((campo !== 'de') && (campo !== 'para')) {
         novaFalta[campo] = this.formulario.get(campo).value;
@@ -43,7 +43,6 @@ export class FaltaFormComponent implements OnInit {
 
   CriarFormulario(falta: Falta) {
     this.formulario = this.formBuild.group({
-      id_componente: falta.id_componente,
       xg: [falta.xg, [
         Validators.min(0)
       ]],
@@ -53,7 +52,6 @@ export class FaltaFormComponent implements OnInit {
       enumFaltaTipo: [falta.enumFaltaTipo],
       enumFaltaLocal: [falta.enumFaltaLocal],
     });
-    this.formulario.controls['id_componente'].disable();
   }
 
   onSubmit(command) {

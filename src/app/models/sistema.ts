@@ -1,4 +1,4 @@
-import { element } from 'protractor';
+import { EnumFaltaLocal } from './enumeradores';
 import { Linha } from './linha';
 import { Barra } from './barra';
 import { MathPowerService, MathPowerMethod } from '../shared/math-power.service';
@@ -24,6 +24,14 @@ export class Sistema {
     errorHandler: EventEmitter<string> = new EventEmitter();
 
     constructor(public linhas: Array<Linha>, public barras: Array<Barra>, private mathPowerService?: MathPowerService) {
+    }
+
+    ExcluirFalta() {
+        this.falta = null;
+    }
+
+    hasFalta() {
+        return this.falta !== null;
     }
 
     getBarraByID(id_barra: number): Barra {
@@ -74,7 +82,15 @@ export class Sistema {
                 table.push(header);
             }
             this[field].forEach(row => {
-                table.push(row.toArray());
+                if (this.falta) {
+                    if (this.falta.enumFaltaLocal === EnumFaltaLocal.Linha) {
+                        if (row.id_linha === this.falta.linha.id_linha) {
+                            table.push(row.toArray(this.falta.porcentagem));
+                        }
+                    }
+                } else {
+                    table.push(row.toArray());
+                }
             });
 
         } else if (field === 'barras') {
@@ -96,7 +112,9 @@ export class Sistema {
                 table = this.curtoCircuito.toTable();
             }
             console.log(table);
+        } else if (field === 'matrizes') {
         }
+
         return table;
     }
 
