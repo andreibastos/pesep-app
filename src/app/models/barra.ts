@@ -72,7 +72,7 @@ export class Barra {
 
     toArray(): any[] {
         const array = [];
-        array.push(this.id_barra.split('_')[1]);
+        array.push(this.id);
         array.push(this.tipoNumerico());
         array.push(this.nome || this.id_barra);
         array.push(this.tensao_0);
@@ -83,8 +83,13 @@ export class Barra {
         array.push(this.qGeradaMax);
         array.push(this.pCarga);
         array.push(this.qCarga);
-        array.push(this.pGeradaMin);
-        array.push(this.pGeradaMax);
+        if (this.tipo === EnumBarraTipo.PV) {
+            array.push(this.pGerada);
+            array.push(this.pGerada);
+        } else {
+            array.push(this.pGeradaMin);
+            array.push(this.pGeradaMax);
+        }
         array.push(this.qShunt);
         array.push(this.X);
         return array;
