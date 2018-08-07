@@ -62,7 +62,8 @@ export class DiagramaComponent implements OnInit {
 
   // Propriedades do Diagrama
   propriedades_diagrama = { visualizar_grade: true, agarrar_grade: false }; // Propriedades do diagrama
-  alturaPropriedades = 200;
+  alturaPropriedades = 0;
+  HEIGHT_PROPERTY = 180;
 
   constructor(private route: ActivatedRoute, private mathPowerService: MathPowerService) {
     this.qtdBarrasTipo[EnumBarraTipo.PV] = 1;
@@ -75,6 +76,7 @@ export class DiagramaComponent implements OnInit {
     // criação dos elementos na tela
     // divNome = 'draw_inside';
     this.CriarDocumentoSVG('svg_principal');
+    this.AtualizarDocumentoSVG();
 
     // interações com interact.js
     this.HabilitarInteractSelecao();
@@ -279,8 +281,22 @@ export class DiagramaComponent implements OnInit {
         return true;
       }
     }
-
     return false;
+  }
+
+  PodeMostrarFormFalta(): boolean {
+    if (this.sistema.hasFalta() && this.PodeMostrarFormBarra()) {
+      return this.BarrasSelecionadas()[0].id === this.sistema.falta.barra.id;
+    }
+    return false;
+  }
+
+  PodeMostrarFormBarra(): boolean {
+    return this.BarrasSelecionadas().length === 1;
+  }
+
+  PodeMostrarFormLinha(): boolean {
+    return this.linhaSelecionada !== null;
   }
 
   RedesenharBarra(barra: Barra) {
@@ -364,7 +380,8 @@ export class DiagramaComponent implements OnInit {
     const height = divDesenho.clientHeight;
     const width = divDesenho.clientWidth;
     this.SVGPrincipal.size(width, height);
-
+    this.HEIGHT_PROPERTY = window.innerHeight / 4;
+    console.log(window.innerHeight);
   }
 
   CriarCurtoCircuito(): SVG.G {
@@ -647,7 +664,6 @@ export class DiagramaComponent implements OnInit {
     rect.rotate(angulo, rect.cx(), rect.cy());
     impedancia.move(delta_x / 2 - rect.width() / 2, delta_y / 2 - rect.height() / 2);
 
-
     // adiciona trafo
     const diametro = 25;
     trafo.circle(diametro).fill({ 'color': 'white' }).dx(diametro / 2);
@@ -658,7 +674,6 @@ export class DiagramaComponent implements OnInit {
 
 
     trafo.each(function () {
-      // this.dx(-hipotenusa * 0.2);
       if (hipotenusa > diametro * 6) {
         this.dx(-diametro * 3);
       }
@@ -1107,10 +1122,6 @@ export class DiagramaComponent implements OnInit {
     return barrasSelecionadas;
   }
 
-  LinhaSelecionada(): boolean {
-    return this.linhaSelecionada !== null;
-  }
-
   // "copiar" barras seleciondas
   CopiarBarrasSelecionadas() {
     const self = this;
@@ -1219,22 +1230,22 @@ export class DiagramaComponent implements OnInit {
   AjustaAlturaPropriedades() {
     let hasBarra = 0, hasLinha = 0, hasFalta = 0;
     this.alturaPropriedades = 0;
-    if (this.BarrasSelecionadas().length === 1) {
+    if (this.PodeMostrarFormBarra()) {
       hasBarra = 1;
     } else {
       hasBarra = 0;
     }
-    if (this.linhaSelecionada) {
+    if (this.PodeMostrarFormLinha()) {
       hasLinha = 1;
     } else {
       hasLinha = 0;
     }
-    if (this.sistema.hasFalta()) {
+    if (this.PodeMostrarFormFalta()) {
       hasFalta = 1;
     } else {
       hasFalta = 0;
     }
-    this.alturaPropriedades = hasBarra * 220 + hasLinha * 220 + hasFalta * 120;
+    this.alturaPropriedades = hasBarra * this.HEIGHT_PROPERTY + hasLinha * this.HEIGHT_PROPERTY + hasFalta * this.HEIGHT_PROPERTY / 2;
 
   }
 

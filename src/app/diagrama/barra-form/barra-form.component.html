@@ -14,68 +14,72 @@
       <label>Tensão</label>
       <input step="0.01" min="0.9" max="1.1" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="tensao_0">
     </div>
-    <div [hidden]="formulario.controls['pGerada'].disabled" class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('pGerada')">
+    <div class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('pGerada')">
       <label>P Gerada</label>
       <input type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="pGerada">
     </div>
-    <div [hidden]="formulario.controls['pCarga'].disabled" class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('pCarga')">
+    <div class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('pCarga')">
       <label>P Carga</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="pCarga">
     </div>
-    <div [hidden]="formulario.controls['pGeradaMax'].disabled" class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('pGeradaMax')">
+    <div class="col-sm-1 col-md-1 col-lg-2 col-xl-2" [ngClass]="AplicaCSSError('pGeradaMax')">
       <label>P Gerada Max</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="pGeradaMax">
     </div>
-    <div [hidden]="formulario.controls['qGeradaMax'].disabled" class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('qGeradaMax')">
+    <div class="col-sm-1 col-md-1 col-lg-2 col-xl-2" [ngClass]="AplicaCSSError('qGeradaMax')">
       <label>Q Gerada Max</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="qGeradaMax">
     </div>
-    <div [hidden]="formulario.controls['qShunt'].disabled" class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('qShunt')">
+    <div class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('qShunt')">
       <label>Q Shunt</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="1.0" formControlName="qShunt">
     </div>
   </div>
+
   <!-- /Linha 1 -->
   <!-- Linha 2 -->
   <div class="row">
+
     <div class="col-2 col-sm-2 col-md-2" [ngClass]="AplicaCSSError('nome')">
       <label>Nome</label>
       <input type="text" class="form-control form-control-sm" placeholder="Barra" formControlName="nome">
     </div>
-    <div  class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('angulo_0')">
+    <div class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('angulo_0')">
       <label>Ângulo</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="angulo_0">
     </div>
-    <div  class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('qGerada')">
+    <div class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('qGerada')">
       <label>Q Gerada</label>
       <input type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="qGerada">
     </div>
-    <div [hidden]="formulario.controls['qCarga'].disabled" class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('qCarga')">
+    <div class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('qCarga')">
       <label>Q Carga</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="qCarga">
     </div>
-    <div [hidden]="formulario.controls['pGeradaMin'].disabled" class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('pGeradaMin')">
+    <div class="col-sm-1 col-md-1 col-lg-2 col-xl-2" [ngClass]="AplicaCSSError('pGeradaMin')">
       <label>P Gerada Min</label>
       <input type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="pGeradaMin">
     </div>
-    <div [hidden]="formulario.controls['qGeradaMin'].disabled" class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('qGeradaMin')">
+    <div class="col-sm-1 col-md-1 col-lg-2 col-xl-2" [ngClass]="AplicaCSSError('qGeradaMin')">
       <label>Q Gerada Min</label>
       <input min="0" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="qGeradaMin">
     </div>
-    <div [hidden]="formulario.controls['X'].disabled" class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('X')">
+    <div class="col-1 col-sm-1 col-md-1" [ngClass]="AplicaCSSError('X')">
       <label>Susceptância</label>
       <input min="0.0001" type="number" class="form-control form-control-sm" placeholder="0.0" formControlName="X">
     </div>
+  </div>
+  <!-- /Linha 2 -->
 
-    <div class="col d-flex justify-content-end">
+  <div class="row">
+    <div class="col-2 mt-2 d-flex flex-column justify-content-end">
       <div class="btn-group">
         <button (click)="onSubmit('update')" type="submit" class="btn btn-primary mb-2">Atualizar</button>
         <button (click)="onSubmit('delete')" type="submit" class="btn btn-danger mb-2">Excluir</button>
         <button (click)="onSubmit('cancel')" type="submit" class="btn btn-info mb-2">Cancelar</button>
       </div>
     </div>
-
   </div>
-  <!-- /Linha 2 -->
+
   <div class="border-bottom  m-2"></div>
 </form>

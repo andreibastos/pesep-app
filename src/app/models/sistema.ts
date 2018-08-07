@@ -34,14 +34,14 @@ export class Sistema {
         return this.falta !== null;
     }
 
-    getBarraByID(id_barra: number): Barra {
-        const id_barra_str = `barra_${id_barra}`;
-        return this.barras.find(function (barra) { return barra.id_barra === id_barra_str; });
+    getBarraByID(id: number): Barra {
+        const id_barra = `barra_${id}`;
+        return this.barras.find(function (barra) { return barra.id_barra === id_barra; });
     }
 
-    getLinhaByID(id_linha: number): Linha {
-        const id_linha_str = `linha_${id_linha}`;
-        const linha_find = this.linhas.find(function (linha) { return linha.id_linha === id_linha_str; });
+    getLinhaByID(id: number): Linha {
+        const id_linha = `linha_${id}`;
+        const linha_find = this.linhas.find(function (linha) { return linha.id_linha === id_linha; });
         return linha_find;
     }
 
@@ -109,11 +109,17 @@ export class Sistema {
             }
             console.log(table);
         } else if (field === 'matrizes') {
+            table = this.matrizesTable();
         }
 
         return table;
     }
 
+    matrizesTable(): any[] {
+        let table = [];
+
+        return table;
+    }
 
     fluxosToTable() {
         const dataTable = {};
