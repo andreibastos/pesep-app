@@ -2,7 +2,7 @@ import { Barra } from './barra';
 import { EnumTransformadorTipo } from './enumeradores';
 
 export class Linha {
-    static header = ['ID', 'De', 'Para', 'r', 'x', 'Tap', 'Ângulo', 'Tipo de Trafo', 'Reatância Zero', 'Reatância do Trafo'];
+    static header = ['ID', 'De', 'Para', 'r', 'x', 'Tap', 'Ângulo', 'Reatância do Trafo', 'Reatância Zero', 'Tipo de Trafo'];
 
     _id_linha: string;
 
@@ -38,7 +38,6 @@ export class Linha {
     }
 
     toArray(percent = 1): any[] {
-
         const array = [];
         array.push(this.id);
         array.push(this.de.id);
@@ -47,9 +46,9 @@ export class Linha {
         array.push(this.X * percent);
         array.push(this.TAP);
         array.push(this.A);
-        array.push(this.tipo_trafo);
-        array.push(this.resistencia_zero);
         array.push(this.reatancia_trafo);
+        array.push(this.resistencia_zero);
+        array.push(this.tipo_trafo);
         return array;
     }
 

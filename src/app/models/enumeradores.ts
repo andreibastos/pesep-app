@@ -25,6 +25,6 @@ export enum EnumFaltaTipo {
 
 
 export enum EnumTransformadorTipo {
-    'Delta Estrela' = '0',
-    'Estrela Estrela' = '1'
+    'Delta Estrela' = '1',
+    'Estrela Estrela' = '2'
 }
