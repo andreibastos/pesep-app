@@ -109,15 +109,27 @@ export class Sistema {
             }
             console.log(table);
         } else if (field === 'matrizes') {
-            table = this.matrizesTable();
+            table = this.matrizesToTable();
         }
 
         return table;
     }
 
-    matrizesTable(): any[] {
-        let table = [];
-
+    matrizesToTable(): any[] {
+        const table = [];
+        if (this.curtoCircuito) {
+            table.push(['']);
+            table.push(['Matriz de Impedância']);
+            table.push(...this.curtoCircuito.matriz_impedancia);
+            table.push(['Matriz de Susceptância']);
+            table.push(...this.curtoCircuito.matriz_susceptancia);
+            table.push(['Matriz de Sequência Positiva']);
+            table.push(...this.curtoCircuito.matriz_impedancia_seq_positiva);
+            table.push(['Matriz de Sequência Negativa']);
+            table.push(...this.curtoCircuito.matriz_impedancia_seq_negativa);
+            table.push(['Matriz de Sequência Zero']);
+            table.push(...this.curtoCircuito.matriz_impedancia_seq_zero);
+        }
         return table;
     }
 
@@ -195,6 +207,11 @@ export class Sistema {
         this.curtoCircuito.tensoes = this.voltagesAfterFault(files['tensao_pos_falta.txt']);
         this.curtoCircuito.correntes = this.currentsAfterFault(files['corrente_linha_falta.txt']);
         this.calculandoCurto.emit(this.curtoCircuito);
+
+        this.curtoCircuito.matriz_impedancia = files['matriz_imp.txt'];
+        this.curtoCircuito.matriz_impedancia_seq_zero = files['matriz_imp_zero.txt'];
+        this.curtoCircuito.matriz_susceptancia = files['matriz_sus.txt'];
+
         console.log(this.curtoCircuito);
     }
 

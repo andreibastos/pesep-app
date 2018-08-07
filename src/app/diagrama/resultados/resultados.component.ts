@@ -26,7 +26,7 @@ export class ResultadosComponent implements OnInit {
   TrocarNav(campo: string) {
     this.nav_active = campo;
     this.selecionado = this.sistema.toTable(campo);
-    this.striped = 'fluxos' !== campo && 'curto' !== campo;
+    this.striped = 'fluxos' !== campo && 'curto' !== campo && 'matrizes' !== campo;
   }
 
   Exportar() {

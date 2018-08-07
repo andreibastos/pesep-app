@@ -9,6 +9,12 @@ export class CurtoCircuito {
     if_f: any[];
     _local: any;
 
+    matriz_impedancia = [];
+    matriz_impedancia_seq_zero = [];
+    matriz_impedancia_seq_positiva = [];
+    matriz_impedancia_seq_negativa = [];
+    matriz_susceptancia = [];
+
 
     tensoes: Array<TensaoPosFalta>;
     correntes: Array<CorrenteFalta>;
@@ -92,10 +98,12 @@ export class TensaoPosFalta {
 
     toArray(): any[] {
         const array = [];
-        array.push(this.barra.id);
-        array.push(`${this.va_m}∠${this.va_f}`);
-        array.push(`${this.vb_m}∠${this.vb_f}`);
-        array.push(`${this.vc_m}∠${this.vc_f}`);
+        if (this.barra) {
+            array.push(this.barra.id);
+            array.push(`${this.va_m}∠${this.va_f}`);
+            array.push(`${this.vb_m}∠${this.vb_f}`);
+            array.push(`${this.vc_m}∠${this.vc_f}`);
+        }
         return array;
     }
 }
