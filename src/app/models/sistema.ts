@@ -82,11 +82,13 @@ export class Sistema {
                 table.push(header);
             }
             this[field].forEach(row => {
-                if (this.hasFalta()) {
-                    table.push(row.toArray(this.falta.porcentagem));
-                } else {
-                    table.push(row.toArray());
+                let porcentagem = 1;
+                if (this.hasFalta() && this.falta.linha) {
+                    if (this.falta.linha.id_linha === row.id_linha) {
+                        porcentagem = this.falta.porcentagem;
+                    }
                 }
+                table.push(row.toArray(porcentagem));
             });
 
         } else if (field === 'barras') {
