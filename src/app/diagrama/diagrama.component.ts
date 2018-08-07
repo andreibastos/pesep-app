@@ -650,8 +650,9 @@ export class DiagramaComponent implements OnInit {
 
     // adiciona trafo
     const diametro = 25;
+    trafo.circle(diametro).fill({ 'color': 'white' }).dx(diametro / 2);
+    trafo.circle(diametro).fill({ 'color': 'white' });
     trafo.circle(diametro).fill({ 'color': 'transparent' }).dx(diametro / 2);
-    trafo.circle(diametro).fill({ 'color': 'transparent' });
     trafo.center(poliLinha.cx(), poliLinha.cy());
     trafo.rotate(angulo);
 
