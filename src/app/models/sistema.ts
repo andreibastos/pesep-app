@@ -119,12 +119,12 @@ export class Sistema {
         const table = [];
         if (this.curtoCircuito) {
             table.push(['']);
+            table.push(['Matriz de Susceptância']);
+            table.push(...this.curtoCircuito.matriz_susceptancia);
             table.push(['Matriz de Impedância de Sequência Positiva/Negativa']);
             table.push(...this.curtoCircuito.matriz_impedancia);
             table.push(['Matriz de Sequência Zero']);
             table.push(...this.curtoCircuito.matriz_impedancia_seq_zero);
-            table.push(['Matriz de Susceptância']);
-            table.push(...this.curtoCircuito.matriz_susceptancia);
         }
         return table;
     }
