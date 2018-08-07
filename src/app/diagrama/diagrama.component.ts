@@ -380,29 +380,38 @@ export class DiagramaComponent implements OnInit {
     console.log(window.innerHeight);
   }
 
-  CriarCurtoCircuito(): SVG.G {
+  grupoFaltaMovimento() {
+    const grupoFalta = this.SVGPrincipal.group();
+    grupoFalta.addClass('curtoCircuito');
+    grupoFalta.path('m56.636225,27.16946l-30.65729,19.439426l30.278294,\
+    6.678365l-27.985964,20.869897l-11.299061,-3.524199l8.014028,20.116285l31.848526,\
+    -8.776613l-13.446959,-3.668583l36.514403,-29.975919l-33.378287,-5.43293l32.232136,\
+    -20.256188l-18.385823,-3.041361l20.024916,-12.873866l-7.356304,-0.185016l-31.074706,\
+    17.661561l14.672086,2.969147l0.000003,-0.000006z');
+    grupoFalta.fill('red');
+    grupoFalta.stroke({ width: 0.5, color: 'black' });
+    // grupoFalta.scale(0.5, 0.5);
+    grupoFalta.id('curtoPrincipal');
 
+    return grupoFalta;
+  }
 
-    const grupoCurto = this.SVGPrincipal.group();
-    const grupoCurtoPrincipal = this.mapaGruposSVG.get('curtoPrincipal');
-    // if (grupoCurtoPrincipal) {
-    //   return grupoCurtoPrincipal;
-    // }
-
+  GrupoFalta(): SVG.G {
+    const grupoFalta = this.SVGPrincipal.group();
     const largura = 50;
-    grupoCurto.addClass('curtoCircuito');
-    grupoCurto.line(0, 0, largura, largura);
-    grupoCurto.line(0, largura, largura, 0);
-    grupoCurto.circle(10).cx(largura / 2).cy(largura / 2);
+    grupoFalta.addClass('curtoCircuito');
+    grupoFalta.line(0, 0, largura, largura);
+    grupoFalta.line(0, largura, largura, 0);
+    grupoFalta.circle(10).cx(largura / 2).cy(largura / 2);
 
-    grupoCurto.id('curtoPrincipal');
-    grupoCurto.click(
+    grupoFalta.id('curtoPrincipal');
+    grupoFalta.click(
       function () {
         // console.log(this);
       }
     );
 
-    return grupoCurto;
+    return grupoFalta;
   }
 
   /*
@@ -707,8 +716,8 @@ export class DiagramaComponent implements OnInit {
     if (this.sistema.hasFalta() && this.sistema.falta.linha) {
       if (this.sistema.falta.linha.id_linha === linha.id_linha) {
         const grupoCurto: SVG.Element = self.criarFaltaCurto()
-        // grupoCurto.dy(grupoCurto.height())
-        // grupoCurto.dx(grupoCurto.width())
+          // grupoCurto.dy(grupoCurto.height())
+          // grupoCurto.dx(grupoCurto.width())
           .center(poliLinha.cx(), poliLinha.cy());
         grupoCurto.rotate(angulo);
         if (hipotenusa > diametro * 6) {
@@ -1650,8 +1659,8 @@ export class DiagramaComponent implements OnInit {
     interact('.curtoCircuito').draggable({
       inertia: true
     }).on('dragstart', function (event) {
-      grupoCurto = self.CriarCurtoCircuito();
-      grupoCurto.x(-175);
+      grupoCurto = self.grupoFaltaMovimento();
+      grupoCurto.x(-150);
       grupoCurto.y(event.y0 - 130);
     })
       .on('dragmove', function (event) {
