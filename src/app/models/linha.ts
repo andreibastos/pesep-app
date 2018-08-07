@@ -38,7 +38,6 @@ export class Linha {
     }
 
     toArray(percent = 1): any[] {
-        console.log('toArray');
 
         const array = [];
         array.push(this.id);
@@ -51,13 +50,12 @@ export class Linha {
         array.push(this.tipo_trafo);
         array.push(this.resistencia_zero);
         array.push(this.reatancia_trafo);
-        console.log(array);
         return array;
     }
     
     arrayToLinha(array: any[]) {
         array.forEach(col => {
-            console.log(col);
+            // console.log(col);
         });
     }
 

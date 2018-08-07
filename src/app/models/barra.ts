@@ -97,7 +97,7 @@ export class Barra {
 
     arrayToBarra(array: any[]) {
         array.forEach(col => {
-            console.log(col);
+            // console.log(col);
         });
     }
 

@@ -50,7 +50,6 @@ export class BarraFormComponent implements OnInit {
 
     } else if (this.formulario.valid && btn === 'update') {
       const barra = this.AtualizarBarraComFormulario(this.barrasRecebidas[0]);
-      console.log(barra);
       this.barrasAtualizadas.push(barra);
       this.barrasEnviadas.emit({ 'update': this.barrasAtualizadas });
     }

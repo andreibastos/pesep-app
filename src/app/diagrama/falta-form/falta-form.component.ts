@@ -16,7 +16,6 @@ export class FaltaFormComponent implements OnInit {
 
   constructor(private formBuild: FormBuilder) { }
   ngOnInit() {
-    console.log(this.faltaRecebida);
     this.CriarFormulario(this.faltaRecebida);
   }
 

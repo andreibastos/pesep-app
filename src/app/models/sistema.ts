@@ -212,7 +212,7 @@ export class Sistema {
         this.curtoCircuito.matriz_impedancia_seq_zero = files['matriz_imp_zero.txt'];
         this.curtoCircuito.matriz_susceptancia = files['matriz_sus.txt'];
 
-        console.log(this.curtoCircuito);
+        // console.log(this.curtoCircuito);
     }
 
     voltageAfterFault(rowVoltage: any[]): TensaoPosFalta {

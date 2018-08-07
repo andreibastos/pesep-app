@@ -402,7 +402,7 @@ export class DiagramaComponent implements OnInit {
     grupoCurto.id('curtoPrincipal');
     grupoCurto.click(
       function () {
-        console.log(this);
+        // console.log(this);
       }
     );
 
@@ -549,7 +549,7 @@ export class DiagramaComponent implements OnInit {
     });
   }
   ExcluirLinha(linha: Linha) {
-    console.log(linha);
+    // console.log(linha);
     this.mapaLinhas.delete(linha.id_linha);
     this.mapaGruposSVG.get(linha.id_linha).remove();
     this.mapaGruposSVG.delete(linha.id_linha);
