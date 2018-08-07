@@ -83,15 +83,14 @@ export class DiagramaComponent implements OnInit {
     this.HabilitarInteractRotacao();
     this.HabilitaInteractMovimento();
     this.HabilitarInteractCriarLinha();
-    this.HabilitarInteractCriarCurto();
+    this.HabilitarInteractCriarFalta();
 
     // configuração dos atalhos do teclado
     this.ConfigurarAtalhosTeclado();
 
-    this.DesenharExemplo();
-
     this.sistema = new Sistema(this.getLinhas(), this.getBarras(), this.mathPowerService);
 
+    this.DesenharExemplo();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -285,8 +284,12 @@ export class DiagramaComponent implements OnInit {
   }
 
   PodeMostrarFormFalta(): boolean {
-    if (this.sistema.hasFalta() && this.PodeMostrarFormBarra()) {
-      return this.BarrasSelecionadas()[0].id === this.sistema.falta.barra.id;
+    if (this.sistema.hasFalta()) {
+      if (this.sistema.falta.barra && this.PodeMostrarFormBarra()) {
+        return this.BarrasSelecionadas()[0].id === this.sistema.falta.barra.id;
+      } else if (this.sistema.falta.linha && this.PodeMostrarFormLinha()) {
+        return this.linhaSelecionada.id === this.sistema.falta.linha.id;
+      }
     }
     return false;
   }
@@ -300,13 +303,10 @@ export class DiagramaComponent implements OnInit {
   }
 
   RedesenharBarra(barra: Barra) {
+    const self = this;
     const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
     this.AtualizaGrupoBarra(grupoBarra);
-    if (this.sistema.hasFalta()) {
-      if (this.sistema.falta.barra.id === barra.id) {
-        this.AdicionarFaltaBarra(barra);
-      }
-    }
+
   }
 
   AtualizarBarras(barrasInfo) {
@@ -342,12 +342,8 @@ export class DiagramaComponent implements OnInit {
   AtualizarFalta(faltaInfo) {
     const faltaAtualizada = faltaInfo['data'];
     if (faltaInfo['command'] === 'update') {
+      console.log(faltaAtualizada);
       this.sistema.falta = faltaAtualizada;
-      // linhaAtualizada.de = this.linhaSelecionada.de;
-      // linhaAtualizada.para = this.linhaSelecionada.para;
-      // this.mapaLinhas.set(linhaAtualizada.id_linha, linhaAtualizada);
-      // this.linhaSelecionada = null;
-      // this.DesenhaLinha(linhaAtualizada);
     } else if (faltaInfo['command'] === 'delete') {
       this.ExcluirFalta();
     }
@@ -622,8 +618,6 @@ export class DiagramaComponent implements OnInit {
 
     // verificar se existe curto nessa linha
 
-
-
     const poliLinha: SVG.G = grupoLinha.group().addClass('polilinha');
     const impedancia: SVG.G = grupoLinha.group();
     const trafo: SVG.G = grupoLinha.group().addClass('trafo');
@@ -679,9 +673,6 @@ export class DiagramaComponent implements OnInit {
       }
     });
 
-
-
-
     const texto = impedancia.group()
       .text(linha.nome)
       .dy(rect.height() / 2 + 5);
@@ -712,6 +703,22 @@ export class DiagramaComponent implements OnInit {
       return angle * Math.PI / 180;
     }
 
+
+    if (this.sistema.hasFalta() && this.sistema.falta.linha) {
+      if (this.sistema.falta.linha.id_linha === linha.id_linha) {
+        const grupoCurto: SVG.Element = self.criarFaltaCurto()
+        // grupoCurto.dy(grupoCurto.height())
+        // grupoCurto.dx(grupoCurto.width())
+          .center(poliLinha.cx(), poliLinha.cy());
+        grupoCurto.rotate(angulo);
+        if (hipotenusa > diametro * 6) {
+          grupoCurto.dx(diametro * 3);
+        }
+        grupoLinha.add(grupoCurto);
+        // grupoCurto.dx(10);
+        // grupoCurto.dy(10);
+      }
+    }
 
     // adiciona as respectivas classes
     poliLinha.addClass('linha');
@@ -786,34 +793,42 @@ export class DiagramaComponent implements OnInit {
     return grupoBarra;
   }
 
-  AdicionarFaltaBarra(barra: Barra) {
-    const self = this;
-    const grupoBarra = this.mapaGruposSVG.get(barra.id_barra);
-    if (this.sistema.hasFalta() && this.sistema.falta.enumFaltaLocal === EnumFaltaLocal.Barra) {
-      const barraAnterior = this.sistema.falta.barra;
-      if (barraAnterior) {
-        const grupoBarraAnterior = this.mapaGruposSVG.get(barraAnterior.id_barra);
-        this.RemoverFaltaCurto(grupoBarraAnterior);
-      }
+  AdicionarFalta(id_elemento: string) {
+    if (id_elemento.startsWith('barra')) {
+      const barra = this.getBarra(id_elemento);
+      this.AdicionarFaltaBarra(barra);
+    } else if (id_elemento.startsWith('linha')) {
+      const linha = this.getLinha(id_elemento);
+      this.AdicionarFaltaLinha(linha);
     }
-    this.sistema.falta = new Falta(barra);
-    this.AjustaAlturaPropriedades();
-    this.RemoverFaltaCurto(grupoBarra);
-    grupoBarra.select('#barramento').each(function () {
-      const grupoCurto = self.criarFaltaCurto();
-      this.add(
-        grupoCurto
-          .cx(this.cx())
-          .cy(this.cy())
-      );
+  }
+
+  AdicionarFaltaLinha(linha: Linha) {
+    this.ExcluirFalta();
+    this.sistema.falta = new Falta(linha);
+    this.RedesenhaInterface();
+  }
+
+  RedesenhaInterface() {
+    this.AtualizarSistema();
+    this.sistema.barras.forEach(barra => {
+      this.RedesenharBarra(barra);
     });
+    this.sistema.linhas.forEach(linha => {
+      this.DesenhaLinha(linha);
+    });
+  }
+
+  AdicionarFaltaBarra(barra: Barra) {
+    this.ExcluirFalta();
+    this.sistema.falta = new Falta(barra);
+    this.RedesenhaInterface();
   }
 
   RemoverFaltaCurto(grupoBarra: SVG.G) {
     grupoBarra.select('#barramento').each(function () {
       this.select('.curto').each(function () { this.remove(); });
     });
-
     this.AjustaAlturaPropriedades();
   }
 
@@ -838,23 +853,7 @@ export class DiagramaComponent implements OnInit {
       this.dy(25);
     });
 
-    // .polyline(
-    //   [
-    //     [0, 0],
-    //     [diagonal, diagonal],
-    //     [diagonal / 2, diagonal / 2],
-    //     [diagonal, 0],
-    //     [diagonal / 2, diagonal / 2],
-    //     [0, diagonal],
-    //     [dist / 2, dist * 1.1],
-    //     [0, dist * 1.5]
-
-    //   ]
-    // )
-    // tslint:disable-next-line:max-line-length
-    // .path('m0,12.009504l-12.909047,11.080477l12.749461,3.806669l-11.784216,11.895846l-4.757763,-2.008794l3.374514,11.466287l13.410648,-5.002671l-5.662191,-2.091093l15.375336,-17.08628l-14.054793,-3.096771l13.572177,-11.546031l-7.741827,-1.733576l8.43201,-7.338106l-3.097563,-0.105459l-13.08481,10.067093l6.178062,1.692414l0.000001,-0.000003z')
     return grupoCurto;
-
   }
 
   // atualização do tooltip da barra
@@ -871,10 +870,16 @@ export class DiagramaComponent implements OnInit {
     return barra;
   }
 
+  getLinha(id_linha: string): Linha {
+    const linha: Linha = this.mapaLinhas.get(id_linha);
+    return linha;
+  }
+
   // Atualizações
 
   // grupo de desenho (circulos, setas, triangulos)
   AtualizaGrupoBarraDesenho(grupoBarra: SVG.G) {
+    const self = this;
     const barra: Barra = this.getBarra(grupoBarra.id());
 
     // remover desenho existente com o mesmo identificador
@@ -958,6 +963,19 @@ export class DiagramaComponent implements OnInit {
     const angulo = grupoBarra.data('angulo');
     grupoBarraDesenho.rotate(angulo);
 
+
+    if (this.sistema.hasFalta() && this.sistema.falta.barra) {
+      if (this.sistema.falta.barra.id === barra.id) {
+
+        const grupoCurto = self.criarFaltaCurto();
+        barramento.add(
+          grupoCurto
+            .cx(barramento.cx())
+            .cy(barramento.cy())
+        );
+      }
+    }
+
   }
 
   // grupo de Seleção
@@ -1021,6 +1039,8 @@ export class DiagramaComponent implements OnInit {
   }
 
   AtualizaGrupoBarra(grupoBarra: SVG.G) {
+    this.AtualizarSistema();
+
     // Grupo do desenhos (circulos, linha, etc)
     this.AtualizaGrupoBarraDesenho(grupoBarra);
 
@@ -1643,10 +1663,10 @@ export class DiagramaComponent implements OnInit {
       });
   }
 
-  HabilitarInteractCriarCurto() {
+  HabilitarInteractCriarFalta() {
     const self = this;
 
-    interact('.transmissao, .retanguloSelecao').dropzone({
+    interact('.retanguloSelecao, .impedancia').dropzone({
       accept: '.curtoCircuito',
       ondragenter: function (event) {
         event.target.classList.add('enter');
@@ -1660,10 +1680,9 @@ export class DiagramaComponent implements OnInit {
         event.target.classList.remove('enter');
         event.target.classList.remove('active');
         const id_elemento: string = event.target.parentNode.parentNode.id;
-        const barra = self.getBarra(id_elemento);
-        self.AdicionarFaltaBarra(barra);
-        // self.curto.linha = self.mapaLinhas.get(id_elemento);
-        // self.AdicionarCurto();
+        console.log(id_elemento);
+        self.AdicionarFalta(id_elemento);
+
       },
       ondropactivate: function (event) {
         event.target.classList.add('active');

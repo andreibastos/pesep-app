@@ -51,10 +51,10 @@ export class Falta {
         const array = [];
         if (this._enumFaltaLocal === EnumFaltaLocal.Barra) {
             // tslint:disable-next-line:max-line-length
-            array.push(`${this._barra.id} ${this.porcentagem} ${this.enumFaltaTipo} ${this.xg} ${this.x0}`);
+            array.push(`${this.barra.id} ${this.porcentagem} ${this.enumFaltaTipo} ${this.xg} ${this.x0}`);
         } else {
             // tslint:disable-next-line:max-line-length
-            // array.push(`${this.enumFaltaLocal.toString()} ${this.id_componente} 0 0 ${this.porcentagem} ${this.enumFaltaTipo} ${this.xg} ${this.x0}`);
+            array.push(`${this.linha.para.id} ${this.porcentagem} ${this.enumFaltaTipo} ${this.xg} ${this.x0}`);
         }
         return array;
     }

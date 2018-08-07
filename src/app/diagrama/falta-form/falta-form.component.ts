@@ -31,10 +31,10 @@ export class FaltaFormComponent implements OnInit {
   }
 
   AtualizarFaltaComFormulario(): Falta {
-    const novaFalta: Falta = new Falta(this.faltaRecebida.barra);
+    const novaFalta: Falta = new Falta(this.faltaRecebida.barra || this.faltaRecebida.linha);
     Object.keys(this.formulario.controls).forEach(campo => {
       // if ((campo !== 'de') && (campo !== 'para')) {
-        novaFalta[campo] = this.formulario.get(campo).value;
+      novaFalta[campo] = this.formulario.get(campo).value;
       // }
     });
     return novaFalta;
@@ -48,6 +48,10 @@ export class FaltaFormComponent implements OnInit {
       x0: [falta.x0, [
         Validators.min(0)
       ]],
+      porcentagem: [falta.porcentagem, [
+        Validators.min(0),
+        Validators.max(1)
+      ]],
       enumFaltaTipo: [falta.enumFaltaTipo]
     });
   }
@@ -57,6 +61,7 @@ export class FaltaFormComponent implements OnInit {
       this._faltaAtualizada = this.AtualizarFaltaComFormulario();
       const response = { 'command': command, 'data': this._faltaAtualizada };
       this.faltaEnviada.emit(response);
+      console.log(this.faltaEnviada);
     }
   }
 

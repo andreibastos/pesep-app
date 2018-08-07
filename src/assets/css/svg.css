@@ -13,20 +13,23 @@
     stroke-opacity: 1;
 }
 
-.retanguloSelecao.active {
-    fill: green !important;
-    stroke: green;
-    stroke-width: 1;
-    stroke-opacity: 0.5;
-}
 
 .retanguloSelecao:hover {
     fill-opacity: 0.5;
     transition-duration: 500ms;
 }
 
-.retanguloSelecao.enter {
+.retanguloSelecao.active, .impedancia.active {
     fill: green !important;
+    fill-opacity: 0.3;
+    stroke: green;
+    stroke-width: 1;
+    stroke-opacity: 0.5;
+}
+
+.retanguloSelecao.enter, .impedancia.enter {
+    fill: green !important;
+    fill-opacity: 0.7;
     stroke: green;
     stroke-width: 1;
     stroke-opacity: 1;
@@ -171,10 +174,6 @@
     stroke-width: 2;
 }
 
-.impedancia:hover {
-    fill: black;
-    transition-duration: 500ms;
-}
 
 .grupoSelecionado {
     fill: none;

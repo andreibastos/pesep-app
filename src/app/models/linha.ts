@@ -52,7 +52,7 @@ export class Linha {
         array.push(this.reatancia_trafo);
         return array;
     }
-    
+
     arrayToLinha(array: any[]) {
         array.forEach(col => {
             // console.log(col);
