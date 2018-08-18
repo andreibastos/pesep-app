@@ -12,7 +12,7 @@ export class Linha {
     TAP = 1;
     A = 0;
     _tipo_trafo = EnumTransformadorTipo['Estrela Estrela'];
-    resistencia_zero = 0;
+    resistencia_zero = 0.5;
     reatancia_trafo = 0;
 
     constructor(public de?: Barra, public para?: Barra) {

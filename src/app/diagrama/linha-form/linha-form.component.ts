@@ -65,7 +65,7 @@ export class LinhaFormComponent implements OnInit {
       ],
       resistencia_zero: [linha.resistencia_zero, [
         Validators.max(5),
-        Validators.min(0)
+        Validators.min(0.001)
       ]
       ],
       reatancia_trafo: [linha.reatancia_trafo, [
