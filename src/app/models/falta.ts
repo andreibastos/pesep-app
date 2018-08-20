@@ -2,13 +2,25 @@ import { Barra } from './barra';
 import { Linha } from './linha';
 import { EnumFaltaLocal, EnumFaltaTipo, EnumBarraTipo } from './enumeradores';
 export class Falta {
-    private _barra: Barra;
-    private _linha: Linha;
+    private _barra: Barra = null;
+    private _linha: Linha = null;
+    private _enumFaltaLocal: EnumFaltaLocal = EnumFaltaLocal.Barra;
     xg = 1;
     x0 = 1;
     porcentagem = 1;
-    private _enumFaltaLocal: EnumFaltaLocal = EnumFaltaLocal.Barra;
     enumFaltaTipo: EnumFaltaTipo = EnumFaltaTipo.Trifasica;
+
+
+    static fromDict(dict, linha_or_barra: Linha | Barra): Falta {
+        const barra = dict['barra'];
+        const linha = dict['linha'];
+        let falta: Falta;
+        falta = new Falta(linha_or_barra);
+        falta.x0 = dict['x0'];
+        falta.xg = dict['xg'];
+        return falta;
+    }
+
     constructor(obj: Linha | Barra) {
         this.changeLocal(obj);
     }
@@ -58,4 +70,20 @@ export class Falta {
         }
         return array;
     }
+
+    toDict() {
+        const dict = {};
+        if (this.barra) {
+            dict['barra_id'] = this.barra.id;
+        }
+        if (this.linha) {
+            dict['linha_id'] = this.linha.id;
+        }
+        dict['porcentagem'] = this.porcentagem;
+        dict['xg'] = this.xg;
+        dict['x0'] = this.x0;
+        return dict;
+    }
+
+
 }

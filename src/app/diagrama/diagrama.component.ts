@@ -17,6 +17,7 @@ import { Linha } from '../models/linha';
 import { Fluxo } from '../models/fluxo';
 import { Sistema } from '../models/sistema';
 import { Falta } from '../models/falta';
+import { ExportDownload } from '../shared/utils/export';
 
 @Component({
   selector: 'app-diagrama',
@@ -207,13 +208,13 @@ export class DiagramaComponent implements OnInit {
       this.AdicionarBarra(barra4, width * 0.2, height * 0.8, -90);
       this.AdicionarBarra(barra3, width * 0.8, height * 0.8, -90);
 
-      this.AdicionarLinha(barra1, barra2);
-      this.AdicionarLinha(barra1, barra3);
-      this.AdicionarLinha(barra1, barra4);
+      this.AdicionarLinha(this.criarLinha(barra1, barra2));
+      this.AdicionarLinha(this.criarLinha(barra1, barra3));
+      this.AdicionarLinha(this.criarLinha(barra1, barra4));
 
-      this.AdicionarLinha(barra2, barra3);
+      this.AdicionarLinha(this.criarLinha(barra2, barra3));
 
-      this.AdicionarLinha(barra3, barra4);
+      this.AdicionarLinha(this.criarLinha(barra3, barra4));
 
 
 
@@ -227,8 +228,8 @@ export class DiagramaComponent implements OnInit {
       this.AdicionarBarra(barra2, width * 0.5, height * 0.3, 180);
       this.AdicionarBarra(barra3, width * 0.8, height * 0.3, 180);
 
-      this.AdicionarLinha(barra1, barra2);
-      this.AdicionarLinha(barra2, barra3);
+      this.AdicionarLinha(this.criarLinha(barra1, barra2));
+      this.AdicionarLinha(this.criarLinha(barra2, barra3));
 
     } else if (exemplo === 3) {
       const barra1 = this.CriarBarra(EnumBarraTipo.Slack);
@@ -242,10 +243,10 @@ export class DiagramaComponent implements OnInit {
       this.AdicionarBarra(barra3, width * 0.7, width * 0.05, 90);
       this.AdicionarBarra(barra4, width * 0.7, height * 0.8, -90);
 
-      this.AdicionarLinha(barra1, barra2);
-      this.AdicionarLinha(barra1, barra3);
-      this.AdicionarLinha(barra2, barra4);
-      this.AdicionarLinha(barra3, barra4);
+      this.AdicionarLinha(this.criarLinha(barra1, barra2));
+      this.AdicionarLinha(this.criarLinha(barra1, barra3));
+      this.AdicionarLinha(this.criarLinha(barra2, barra4));
+      this.AdicionarLinha(this.criarLinha(barra3, barra4));
     } else if (exemplo === 4) {
       const barra1 = this.CriarBarra(EnumBarraTipo.Slack, 'Birch');
       const barra2 = this.CriarBarra(EnumBarraTipo.PQ, 'Elm');
@@ -260,12 +261,12 @@ export class DiagramaComponent implements OnInit {
       this.AdicionarBarra(barra4, width * 0.2, height * 0.8, -90);
       this.AdicionarBarra(barra5, width * 0.2, height * 0.4, -90);
 
-      this.AdicionarLinha(barra1, barra2);
-      this.AdicionarLinha(barra1, barra5);
-      this.AdicionarLinha(barra2, barra3);
-      this.AdicionarLinha(barra3, barra4);
-      this.AdicionarLinha(barra4, barra5);
-      this.AdicionarLinha(barra5, barra3);
+      this.AdicionarLinha(this.criarLinha(barra1, barra2));
+      this.AdicionarLinha(this.criarLinha(barra1, barra5));
+      this.AdicionarLinha(this.criarLinha(barra2, barra3));
+      this.AdicionarLinha(this.criarLinha(barra3, barra4));
+      this.AdicionarLinha(this.criarLinha(barra4, barra5));
+      this.AdicionarLinha(this.criarLinha(barra5, barra3));
     }
 
 
@@ -380,6 +381,116 @@ export class DiagramaComponent implements OnInit {
     console.log(window.innerHeight);
   }
 
+  ExportarDiagrama() {
+    const sistema = {};
+    const linhas = [], barras = [], posicoes = {};
+    // linhas
+    this.getLinhas().forEach(linha => {
+      linhas.push(linha.toDict());
+    });
+    // barras
+    this.getBarras().forEach(barra => {
+      barras.push(barra.toDict());
+    });
+
+    // posições do svg
+    this.mapaGruposSVG.forEach((svg, key) => {
+      if (key.indexOf('barra') !== -1) {
+        const posicao = {
+          x: svg.x() / this.SVGPrincipal.width(),
+          y: svg.y() / this.SVGPrincipal.height(),
+          angulo: svg.data('angulo')
+        };
+        posicoes[key] = posicao;
+      }
+    });
+
+    // criando o dicionário
+    sistema['linhas'] = linhas;
+    sistema['barras'] = barras;
+    sistema['posicoes'] = posicoes;
+    sistema['falta'] = null;
+    if (this.sistema.falta) { sistema['falta'] = this.sistema.falta.toDict(); }
+
+    const sistema_json = JSON.stringify(sistema);
+    ExportDownload.export(sistema_json, 'sistema', 'json');
+    return sistema_json;
+  }
+
+  ImportarDiagrama(diagrama_json) {
+    const diagrama = JSON.parse(diagrama_json);
+    const barras = [];
+    const linhas = [];
+    let falta;
+
+    diagrama['barras'].forEach(barra_dict => {
+      const barra = Barra.fromDict(barra_dict);
+      barras.push(barra);
+    });
+
+    diagrama['linhas'].forEach(linha_dict => {
+      const linha = Linha.fromDict(linha_dict);
+      linha.de = barras.find(function (barra) { return barra.id === linha_dict['de']; });
+      linha.para = barras.find(function (barra) { return barra.id === linha_dict['para']; });
+      linhas.push(linha);
+    });
+
+
+    const falta_dict = diagrama['falta'];
+    if (falta_dict) {
+      let linha_or_barra;
+      // colocar apenas os id da barra ou da linha
+      const barra_id = falta_dict['barra_id'];
+      if (barra_id) {
+        linha_or_barra = barras.find(function (barra) { return barra.id === barra_id; });
+      } else {
+        const linha_id = falta_dict['linha_id'];
+        linha_or_barra = linhas.find(function (linha) { return linha.id === linha_id; });
+      }
+      falta = Falta.fromDict(falta_dict, linha_or_barra);
+      console.log(falta);
+    }
+    const desenho = {
+      barras: barras,
+      linhas: linhas,
+      posicoes: diagrama['posicoes'],
+      falta: falta
+    };
+    this.desenharDiagrama(desenho);
+  }
+
+
+  desenharDiagrama(desenho) {
+    this.mapaBarras.forEach(barra => {
+      this.ExcluirBarra(barra);
+    });
+
+    const barras: Array<Barra> = desenho['barras'];
+    const linhas: Array<Linha> = desenho['linhas'];
+    const posicoes = desenho['posicoes'];
+
+    const width = this.SVGPrincipal.width();
+    const height = this.SVGPrincipal.height();
+
+    barras.forEach(barra => {
+      const x = posicoes[barra.id_barra]['x'] * width;
+      const y = posicoes[barra.id_barra]['y'] * height;
+      const angulo = posicoes[barra.id_barra]['angulo'];
+      this.mapaBarras.set(barra.id_barra, barra);
+      this.AdicionarBarra(barra, x, y, angulo);
+    });
+
+    linhas.forEach(linha => {
+      this.mapaLinhas.set(linha.id_linha, linha);
+      this.AdicionarLinha(linha);
+    });
+
+    const falta: Falta = desenho['falta'];
+    if (falta) {
+      this.AtualizaFalta(falta);
+    }
+  }
+
   grupoFaltaMovimento() {
     const grupoFalta = this.SVGPrincipal.group();
     grupoFalta.addClass('curtoCircuito');
@@ -390,9 +501,7 @@ export class DiagramaComponent implements OnInit {
     17.661561l14.672086,2.969147l0.000003,-0.000006z');
     grupoFalta.fill('red');
     grupoFalta.stroke({ width: 0.5, color: 'black' });
-    // grupoFalta.scale(0.5, 0.5);
     grupoFalta.id('curtoPrincipal');
-
     return grupoFalta;
   }
 
@@ -540,12 +649,15 @@ export class DiagramaComponent implements OnInit {
   */
 
   // adicionando linhas na tela
-  AdicionarLinha(de: Barra, para: Barra, enumLinhaEstilo?: EnumLinhaEstilo) {
-    const linha: Linha = new Linha(de, para);
-    linha.id_linha = this.qtdLinhasTotal.toString();
+  AdicionarLinha(linha, enumLinhaEstilo?: EnumLinhaEstilo) {
     this.mapaLinhas.set(linha.id_linha, linha);
     this.DesenhaLinha(linha, enumLinhaEstilo);
     this.qtdLinhasTotal++;
+  }
+  criarLinha(de: Barra, para: Barra): Linha {
+    const linha: Linha = new Linha(de, para);
+    linha.id_linha = this.qtdLinhasTotal.toString();
+    return linha;
   }
 
   ExcluirLinhas(paraRemover: Array<Linha>) {
@@ -802,19 +914,23 @@ export class DiagramaComponent implements OnInit {
     return grupoBarra;
   }
 
-  AdicionarFalta(id_elemento: string) {
+  CriarFalta(id_elemento: string) {
+    let falta: Falta;
     if (id_elemento.startsWith('barra')) {
       const barra = this.getBarra(id_elemento);
+      falta = new Falta(barra);
+
       this.AdicionarFaltaBarra(barra);
     } else if (id_elemento.startsWith('linha')) {
       const linha = this.getLinha(id_elemento);
-      this.AdicionarFaltaLinha(linha);
+      falta = new Falta(linha);
     }
+    return falta;
   }
 
-  AdicionarFaltaLinha(linha: Linha) {
+  AtualizaFalta(falta: Falta) {
     this.ExcluirFalta();
-    this.sistema.falta = new Falta(linha);
+    this.sistema.falta = falta;
     this.RedesenhaInterface();
   }
 
@@ -1479,7 +1595,8 @@ export class DiagramaComponent implements OnInit {
           if (deBarra.id() !== paraBarra.id()) {
             const de = self.getBarra(deBarra.id());
             const para = self.getBarra(paraBarra.id());
-            self.AdicionarLinha(de, para, EnumLinhaEstilo.reta);
+            const linha = self.criarLinha(de, para);
+            self.AdicionarLinha(linha, EnumLinhaEstilo.reta);
           }
           event.target.classList.remove('active');
           event.target.classList.remove('enter');
@@ -1690,8 +1807,8 @@ export class DiagramaComponent implements OnInit {
         event.target.classList.remove('active');
         const id_elemento: string = event.target.parentNode.parentNode.id;
         console.log(id_elemento);
-        self.AdicionarFalta(id_elemento);
-
+        const falta: Falta = self.CriarFalta(id_elemento);
+        self.AtualizaFalta(falta);
       },
       ondropactivate: function (event) {
         event.target.classList.add('active');

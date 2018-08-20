@@ -19,7 +19,7 @@ export class Barra {
         'Susceptância Gerador (b)'
     ];
 
-    id_barra = 'nova_barra';
+    _id_barra = 'nova_barra';
     tipo: EnumBarraTipo;
     nome = '';
     tensao_0 = 1.0;
@@ -34,6 +34,38 @@ export class Barra {
     qGeradaMax = 0;
     qShunt = 0;
     X = 1;
+
+    static fromDict(dict): Barra {
+        const tipo: EnumBarraTipo = this.fromTipoNumerico(dict['tipo']);
+        const barra: Barra = new Barra(tipo);
+        barra.id_barra = dict['id'];
+        barra.nome = dict['nome'];
+        barra.tensao_0 = dict['tensao_0'];
+        barra.angulo_0 = dict['angulo_0'];
+        barra.pGerada = dict['pGerada'];
+        barra.qGerada = dict['qGerada'];
+        barra.qGeradaMin = dict['qGeradaMin'];
+        barra.qGeradaMax = dict['qGeradaMax'];
+        barra.pCarga = dict['pCarga'];
+        barra.qCarga = dict['qCarga'];
+        barra.pGerada = dict['pGerada'];
+        barra.pGerada = dict['pGerada'];
+        barra.pGeradaMin = dict['pGeradaMin'];
+        barra.pGeradaMax = dict['pGeradaMax'];
+        barra.qShunt = dict['qShunt'];
+        barra.X = dict['X'];
+        return barra;
+    }
+
+    static fromTipoNumerico(tipo): EnumBarraTipo {
+        if (tipo === 0) {
+            return EnumBarraTipo.PQ;
+        } else if (tipo === 2) {
+            return EnumBarraTipo.PV;
+        } else if (tipo === 3) {
+            return EnumBarraTipo.Slack;
+        }
+    }
 
     constructor(tipo: EnumBarraTipo) {
 
@@ -61,6 +93,7 @@ export class Barra {
         }
         return numero;
     }
+
 
     isEmpty() {
         return (this.pCarga === 0 && this.qCarga === 0);
@@ -95,10 +128,44 @@ export class Barra {
         return array;
     }
 
+    toDict(): any {
+        const dict = {};
+        dict['id'] = this.id;
+        dict['tipo'] = this.tipoNumerico();
+        dict['nome'] = this.nome;
+        dict['tensao_0'] = this.tensao_0;
+        dict['angulo_0'] = this.angulo_0;
+        dict['pGerada'] = this.pGerada;
+        dict['qGerada'] = this.qGerada;
+        dict['qGeradaMin'] = this.qGeradaMin;
+        dict['qGeradaMax'] = this.qGeradaMax;
+        dict['pCarga'] = this.pCarga;
+        dict['qCarga'] = this.qCarga;
+        dict['pGerada'] = this.pGerada;
+        dict['pGerada'] = this.pGerada;
+        dict['pGeradaMin'] = this.pGeradaMin;
+        dict['pGeradaMax'] = this.pGeradaMax;
+        dict['qShunt'] = this.qShunt;
+        dict['X'] = this.X;
+        return dict;
+    }
+
     arrayToBarra(array: any[]) {
         array.forEach(col => {
             // console.log(col);
         });
+    }
+
+    set id_barra(id) {
+        if (id.indexOf('_') === -1) {
+            this._id_barra = `barra_${id}`;
+        } else {
+            this._id_barra = id;
+        }
+    }
+
+    get id_barra(): string {
+        return this._id_barra;
     }
 
     get id(): string {

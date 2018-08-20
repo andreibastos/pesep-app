@@ -1,7 +1,6 @@
 export class ExportDownload {
 
-    static export(table, filename, format = 'csv') {
-        const text = this.arrayToTxt(table);
+    static export(text, filename, format = 'csv') {
         const a = document.createElement('a');
         a.setAttribute('style', 'display:none;');
         document.body.appendChild(a);
@@ -14,7 +13,7 @@ export class ExportDownload {
         return 'success';
     }
 
-    private static arrayToTxt(array) {
+   static arrayToTxt(array) {
         let str = '';
         array.forEach(row => {
           row.forEach(column => {

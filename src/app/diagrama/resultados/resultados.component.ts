@@ -30,6 +30,7 @@ export class ResultadosComponent implements OnInit {
   }
 
   Exportar() {
-    ExportDownload.export(this.selecionado, this.nav_active);
+    const text = ExportDownload.arrayToTxt(this.selecionado);
+    ExportDownload.export(text, this.nav_active);
   }
 }

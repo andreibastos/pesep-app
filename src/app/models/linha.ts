@@ -15,6 +15,22 @@ export class Linha {
     resistencia_zero = 0.5;
     reatancia_trafo = 0;
 
+
+    static fromDict(dict): Linha {
+        const linha: Linha = new Linha();
+        linha.id_linha = dict['id'];
+        // linha.de = Barra.fromDict(dict['de']);
+        // linha.para = Barra.fromDict(dict['para']);
+        linha.R = dict['R'];
+        linha.X = dict['X'];
+        linha.TAP = dict['TAP'];
+        linha.A = dict['A'];
+        linha.reatancia_trafo = dict['reatancia_trafo'];
+        linha.resistencia_zero = dict['resistencia_zero'];
+        linha.tipo_trafo = dict['tipo_trafo'];
+        return linha;
+    }
+
     constructor(public de?: Barra, public para?: Barra) {
         if (de && para) {
             this.nome += ` ${de.id},${para.id}`;
@@ -51,6 +67,22 @@ export class Linha {
         array.push(this.tipo_trafo);
         return array;
     }
+
+    toDict(): any {
+        const dict = {};
+        dict['id'] = this.id;
+        dict['de'] = this.de.id;
+        dict['para'] = this.para.id;
+        dict['R'] = this.R;
+        dict['X'] = this.X;
+        dict['TAP'] = this.TAP;
+        dict['A'] = this.A;
+        dict['reatancia_trafo'] = this.reatancia_trafo;
+        dict['resistencia_zero'] = this.resistencia_zero;
+        dict['tipo_trafo'] = this.tipo_trafo;
+        return dict;
+    }
+
 
     arrayToLinha(array: any[]) {
         array.forEach(col => {
