@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://35.237.112.162:5000/calcule/'
+  apiUrl: 'http://www.api.kvaflow.com:5000/calcule/'
 };
