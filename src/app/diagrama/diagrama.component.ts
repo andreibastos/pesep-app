@@ -510,6 +510,9 @@ export class DiagramaComponent implements OnInit {
       const angulo = posicoes[barra.id_barra]['angulo'];
       this.mapaBarras.set(barra.id_barra, barra);
       this.AdicionarBarra(barra, x, y, angulo);
+      if (barra.tipo === EnumBarraTipo.Slack) {
+        this.slack = barra;
+      }
       if (parseInt(barra.id, 10) > this.qtdBarrasTotal) {
         this.qtdBarrasTotal = parseInt(barra.id, 10);
         this.IncrementaBarra(barra.tipo);
