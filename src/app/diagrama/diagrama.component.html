@@ -45,7 +45,8 @@
               title="Calcular Fluxo de Potência">
               <i class="fas fa-arrows-alt-h fa-lg"></i>
             </button>
-            <button (click)="CalcularCurto()" [disabled]="!PodeRealizarCalculo()" type="button"  class="btn btn-outline-dark btn-blue mx-1" title="Calcular Curto Circuito">
+            <button (click)="CalcularCurto()" [disabled]="!PodeRealizarCalculo()" type="button" class="btn btn-outline-dark btn-blue mx-1"
+              title="Calcular Curto Circuito">
               <i class="fas fa-bolt fa-lg"></i>
             </button>
             <label class="separator">&nbsp;</label>
@@ -53,13 +54,13 @@
               title="Informações do Sistema">
               <i class="far fa-file-alt fa-lg"></i>
             </button>
-
-            <button (click)="ImportarDiagrama(ExportarDiagrama())" type="button" class="btn btn-outline-dark btn-blue mx-1"
-              title="Importar Diagrama">
-              <i class="fas fa-upload fa-lg"></i>
-            </button>
-            <button (click)="ExportarDiagrama()" type="button" class="btn btn-outline-dark btn-blue mx-1"
-              title="Exportar Diagrama">
+            <div  class="btn btn-outline-dark mx-1"  style="height: 38px;  max-width: 48px;" >
+              <input id="import_file" style="width: 0px; height: 0px;" type="file" class="custom-file-input m-0" (change)="ReadFile($event)" accept=".json">
+              <label for="import_file" class="m-0">
+                <i class="fas fa-upload fa-lg"></i>
+              </label>
+            </div>
+            <button (click)="ExportarDiagrama()" type="button" class="btn btn-outline-dark btn-blue mx-1" title="Exportar Diagrama">
               <i class="fas fa-download fa-lg"></i>
             </button>
           </div>
@@ -78,8 +79,7 @@
         <div class="card card-properties mb-1" style="height: 100%">
           <div class="card-body text-white pt-0 px-3">
             <!-- Barras -->
-            <app-barra-form *ngIf="PodeMostrarFormBarra()" (barrasEnviadas)="AtualizarBarras($event)"
-              [barrasRecebidas]="BarrasSelecionadas()">
+            <app-barra-form *ngIf="PodeMostrarFormBarra()" (barrasEnviadas)="AtualizarBarras($event)" [barrasRecebidas]="BarrasSelecionadas()">
             </app-barra-form>
             <!-- /Barras -->
 
@@ -90,8 +90,8 @@
 
             <!-- Falta -->
             <app-falta-form *ngIf="PodeMostrarFormFalta()" (faltaEnviada)="AtualizarFalta($event)" [faltaRecebida]="sistema.falta">
-              </app-falta-form>
-              <!-- /Falta -->
+            </app-falta-form>
+            <!-- /Falta -->
           </div>
         </div>
       </div>

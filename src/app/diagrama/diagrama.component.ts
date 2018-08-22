@@ -1,3 +1,4 @@
+import { DataUpload } from './../shared/utils/data-upload';
 import { MathPowerService } from '../shared/math-power.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, HostListener } from '@angular/core';
@@ -417,46 +418,77 @@ export class DiagramaComponent implements OnInit {
     return sistema_json;
   }
 
-  ImportarDiagrama(diagrama_json) {
-    const diagrama = JSON.parse(diagrama_json);
-    const barras = [];
-    const linhas = [];
-    let falta;
+  ReadFile(event) {
+    const self = this;
 
-    diagrama['barras'].forEach(barra_dict => {
-      const barra = Barra.fromDict(barra_dict);
-      barras.push(barra);
-    });
-
-    diagrama['linhas'].forEach(linha_dict => {
-      const linha = Linha.fromDict(linha_dict);
-      linha.de = barras.find(function (barra) { return barra.id === linha_dict['de']; });
-      linha.para = barras.find(function (barra) { return barra.id === linha_dict['para']; });
-      linhas.push(linha);
-    });
-
-
-    const falta_dict = diagrama['falta'];
-    if (falta_dict) {
-      let linha_or_barra;
-      // colocar apenas os id da barra ou da linha
-      const barra_id = falta_dict['barra_id'];
-      if (barra_id) {
-        linha_or_barra = barras.find(function (barra) { return barra.id === barra_id; });
-      } else {
-        const linha_id = falta_dict['linha_id'];
-        linha_or_barra = linhas.find(function (linha) { return linha.id === linha_id; });
-      }
-      falta = Falta.fromDict(falta_dict, linha_or_barra);
-      console.log(falta);
+    const id = event.target.id;
+    // https://www.w3.org/TR/FileAPI/#ref-for-dfn-filefileReader-1
+    const files = (<HTMLInputElement>document.getElementById(id)).files;
+    if (files.length > 0) {
+      const file = files[0];
+      let fileReader: FileReader;
+      fileReader = new FileReader();
+      // Read file into memory as UTF-8
+      fileReader.readAsText(file, 'UTF-8');
+      fileReader.onload = function (evt) {
+        const diagrama_json = evt['target']['result'];
+        self.ImportarDiagrama(diagrama_json);
+      };
     }
-    const desenho = {
-      barras: barras,
-      linhas: linhas,
-      posicoes: diagrama['posicoes'],
-      falta: falta
-    };
-    this.desenharDiagrama(desenho);
+  }
+
+  ImportarDiagrama(diagrama_json) {
+    try {
+      const diagrama = JSON.parse(diagrama_json);
+      const barras = [];
+      const linhas = [];
+      let falta;
+
+      diagrama['barras'].forEach(barra_dict => {
+        const barra = Barra.fromDict(barra_dict);
+        barras.push(barra);
+      });
+
+      diagrama['linhas'].forEach(linha_dict => {
+        const linha = Linha.fromDict(linha_dict);
+        linha.de = barras.find(function (barra) { return barra.id === linha_dict['de']; });
+        linha.para = barras.find(function (barra) { return barra.id === linha_dict['para']; });
+        linhas.push(linha);
+      });
+
+
+      const falta_dict = diagrama['falta'];
+      if (falta_dict) {
+        let linha_or_barra;
+        // colocar apenas os id da barra ou da linha
+        const barra_id = falta_dict['barra_id'];
+        if (barra_id) {
+          linha_or_barra = barras.find(function (barra) { return barra.id === barra_id; });
+        } else {
+          const linha_id = falta_dict['linha_id'];
+          linha_or_barra = linhas.find(function (linha) { return linha.id === linha_id; });
+        }
+        falta = Falta.fromDict(falta_dict, linha_or_barra);
+        console.log(falta);
+      }
+      const desenho = {
+        barras: barras,
+        linhas: linhas,
+        posicoes: diagrama['posicoes'],
+        falta: falta
+      };
+
+      if (barras.length > 0) {
+        const confirma = confirm('Tem certeza que deseja importar: ' + `${barras.length} barras, ${linhas.length} linhas?`);
+        this.desenharDiagrama(desenho);
+        this.criarAlerta('Importar Diagrama', 'Carregado com sucesso.', 'sucesso');
+      } else {
+        this.criarAlerta('Importar Diagrama', 'Não há barras no sistema', 'atencao');
+      }
+    } catch (error) {
+      this.criarAlerta('Importar Diagrama', 'Não foi possível carregar o diagrama enviado.', 'perigo');
+    }
+
   }
 
 
@@ -478,6 +510,10 @@ export class DiagramaComponent implements OnInit {
       const angulo = posicoes[barra.id_barra]['angulo'];
       this.mapaBarras.set(barra.id_barra, barra);
       this.AdicionarBarra(barra, x, y, angulo);
+      if (parseInt(barra.id, 10) > this.qtdBarrasTotal) {
+        this.qtdBarrasTotal = parseInt(barra.id, 10);
+        this.IncrementaBarra(barra.tipo);
+      }
     });
 
     linhas.forEach(linha => {
@@ -489,6 +525,7 @@ export class DiagramaComponent implements OnInit {
     if (falta) {
       this.AtualizaFalta(falta);
     }
+    this.AtualizarSistema();
   }
 
   grupoFaltaMovimento() {
