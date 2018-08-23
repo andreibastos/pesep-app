@@ -83,7 +83,7 @@ export class DiagramaComponent implements OnInit {
     // interações com interact.js
     this.HabilitarInteractSelecao();
     this.HabilitarInteractRotacao();
-    this.HabilitaInteractMovimento();
+    this.HabilitaInteractBarra();
     this.HabilitarInteractCriarLinha();
     this.HabilitarInteractCriarFalta();
 
@@ -1703,9 +1703,10 @@ export class DiagramaComponent implements OnInit {
   }
 
   // movimentos de arrastar e soltar barras e linhas
-  HabilitaInteractMovimento() {
+  HabilitaInteractBarra() {
     let grupoBarras: SVG.Set, linhas: Array<Linha> = new Array();
     let tipo;
+    let nova_barra: Barra;
 
     const self = this;
     let boxSelecionados: SVG.Element = self.SVGPrincipal.rect()
@@ -1729,13 +1730,18 @@ export class DiagramaComponent implements OnInit {
     function clique(e) {
       self.AdicionarBarraSelecionada(self.mapaGruposSVG.get(e.currentTarget.id));
     }
-    function dragstart(event) {
+    function dragstart(event, barra: Barra = null) {
       boxSelecionados = self.SVGPrincipal.rect()
         .addClass('grupoSelecionado');
       linhas = new Array();
 
       grupoBarras = self.SVGPrincipal.set();
-      let grupoBarra = self.mapaGruposSVG.get(event.target.id);
+      let grupoBarra;
+      if (!barra) {
+        grupoBarra = self.mapaGruposSVG.get(event.target.id);
+      } else {
+        grupoBarra = self.mapaGruposSVG.get(barra.id_barra);
+      }
 
 
       if (self.barrasSelecionadasSVG.length() > 0) {
@@ -1757,8 +1763,8 @@ export class DiagramaComponent implements OnInit {
       grupoBarras.each(function (c) {
         grupoBarra = this as SVG.G;
         if (grupoBarra) {
-          const barra = self.getBarra(grupoBarra.id());
-          self.LinhasConectadasBarra(barra).forEach(linha => {
+          const barraTemp = self.getBarra(grupoBarra.id());
+          self.LinhasConectadasBarra(barraTemp).forEach(linha => {
             if (linhas.indexOf(linha) === -1) {
               linhas.push(linha);
             }
@@ -1769,7 +1775,9 @@ export class DiagramaComponent implements OnInit {
 
     function dragmove(event) {
       grupoBarras.each(function () {
-        this.dx(event.dx).dy(event.dy);
+        if (this) {
+          this.dx(event.dx).dy(event.dy);
+        }
       });
       if (boxSelecionados) {
         boxSelecionados.dx(event.dx)
@@ -1779,7 +1787,6 @@ export class DiagramaComponent implements OnInit {
     }
 
     interact('.componente-lateral').draggable({
-
       inertia: true, // enable inertial throwing
       restrict: {
         endOnly: true,
@@ -1789,28 +1796,29 @@ export class DiagramaComponent implements OnInit {
       .on('dragstart', function (event) {
         grupoBarras = self.SVGPrincipal.set();
         tipo = event.target.id;
-        const barra: Barra = self.CriarBarra(tipo);
-        if (barra) {
-          self.AdicionarBarra(barra, -100, event.y0 - 180);
-          event.target.id = barra.id_barra;
-          dragstart(event);
+        nova_barra = self.CriarBarra(tipo);
+        if (nova_barra) {
+          self.AdicionarBarra(nova_barra, -100, event.y0 - 180);
+          dragstart(event, nova_barra);
         } else {
           self.criarAlerta('Sistema', `Só pode ter uma ${tipo}`, 'atencao');
         }
       })
       .on('dragmove', dragmove)
       .on('dragend', function (event) {
-        const barraGrupo = self.mapaGruposSVG.get(event.target.id);
-        if (barraGrupo) {
-          if (barraGrupo.x() < 0) {
-            barraGrupo.x(10);
+        if (nova_barra) {
+          const barraGrupo = self.mapaGruposSVG.get(nova_barra.id_barra);
+          if (barraGrupo) {
+            if (barraGrupo.x() < 0) {
+              barraGrupo.x(10);
+            }
+            if (barraGrupo.y() < 0) {
+              barraGrupo.y(80);
+            }
           }
-          if (barraGrupo.y() < 0) {
-            barraGrupo.y(80);
-          }
+          // event.target.id = tipo;
+          boxSelecionados.remove();
         }
-        event.target.id = tipo;
-        boxSelecionados.remove();
       });
 
 
