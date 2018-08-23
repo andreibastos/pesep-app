@@ -480,8 +480,10 @@ export class DiagramaComponent implements OnInit {
 
       if (barras.length > 0) {
         const confirma = confirm('Tem certeza que deseja importar: ' + `${barras.length} barras, ${linhas.length} linhas?`);
-        this.desenharDiagrama(desenho);
-        this.criarAlerta('Importar Diagrama', 'Carregado com sucesso.', 'sucesso');
+        if (confirma) {
+          this.desenharDiagrama(desenho);
+          this.criarAlerta('Importar Diagrama', 'Carregado com sucesso.', 'sucesso');
+        }
       } else {
         this.criarAlerta('Importar Diagrama', 'Não há barras no sistema', 'atencao');
       }
