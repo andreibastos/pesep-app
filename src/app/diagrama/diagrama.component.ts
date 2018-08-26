@@ -2,6 +2,7 @@ import { DataUpload } from './../shared/utils/data-upload';
 import { MathPowerService } from '../shared/math-power.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, HostListener } from '@angular/core';
+import { Http } from '@angular/http';
 
 // Bibliotecas externas
 // import * as $ from 'jquery';
@@ -67,7 +68,7 @@ export class DiagramaComponent implements OnInit {
   alturaPropriedades = 0;
   HEIGHT_PROPERTY = 180;
 
-  constructor(private route: ActivatedRoute, private mathPowerService: MathPowerService) {
+  constructor(private route: ActivatedRoute, private mathPowerService: MathPowerService, private http: Http) {
     this.qtdBarrasTipo[EnumBarraTipo.PV] = 1;
     this.qtdBarrasTipo[EnumBarraTipo.PQ] = 1;
     this.qtdBarrasTipo[EnumBarraTipo.Slack] = 1;
@@ -184,93 +185,23 @@ export class DiagramaComponent implements OnInit {
   }
 
   DesenharExemplo() {
-    let exemplo;
+    let example_name;
     this.route.queryParams.subscribe(
       (queryParams: any) => {
         try {
-          exemplo = parseInt(queryParams['exemplo'], 10);
+          example_name = queryParams['example_name'];
+          if (example_name) {
+            const url = '../../assets/download/' + example_name;
+            this.http.get(url).subscribe(data => {
+              const desenho = this.toDiagrama(data.json());
+              this.desenharDiagrama(desenho);
+            });
+          }
         } catch (e) {
-          exemplo = undefined;
+          example_name = undefined;
         }
       }
     );
-
-    const height = this.SVGPrincipal.height();
-    const width = this.SVGPrincipal.width();
-
-    if (exemplo === 1) {
-      const barra1 = this.CriarBarra(EnumBarraTipo.PV);
-      const barra2 = this.CriarBarra(EnumBarraTipo.PQ);
-      const barra3 = this.CriarBarra(EnumBarraTipo.PQ);
-      const barra4 = this.CriarBarra(EnumBarraTipo.Slack);
-
-      this.AdicionarBarra(barra1, width * 0.2, height * 0.1, 90);
-      this.AdicionarBarra(barra2, width * 0.8, height * 0.1, 90);
-      this.AdicionarBarra(barra4, width * 0.2, height * 0.8, -90);
-      this.AdicionarBarra(barra3, width * 0.8, height * 0.8, -90);
-
-      this.AdicionarLinha(this.criarLinha(barra1, barra2));
-      this.AdicionarLinha(this.criarLinha(barra1, barra3));
-      this.AdicionarLinha(this.criarLinha(barra1, barra4));
-
-      this.AdicionarLinha(this.criarLinha(barra2, barra3));
-
-      this.AdicionarLinha(this.criarLinha(barra3, barra4));
-
-
-
-    } else if (exemplo === 2) {
-
-      const barra1 = this.CriarBarra(EnumBarraTipo.Slack);
-      const barra2 = this.CriarBarra(EnumBarraTipo.PQ);
-      const barra3 = this.CriarBarra(EnumBarraTipo.PQ);
-
-      this.AdicionarBarra(barra1, width * 0.2, height * 0.3);
-      this.AdicionarBarra(barra2, width * 0.5, height * 0.3, 180);
-      this.AdicionarBarra(barra3, width * 0.8, height * 0.3, 180);
-
-      this.AdicionarLinha(this.criarLinha(barra1, barra2));
-      this.AdicionarLinha(this.criarLinha(barra2, barra3));
-
-    } else if (exemplo === 3) {
-      const barra1 = this.CriarBarra(EnumBarraTipo.Slack);
-      const barra2 = this.CriarBarra(EnumBarraTipo.PQ);
-      const barra3 = this.CriarBarra(EnumBarraTipo.PQ);
-      const barra4 = this.CriarBarra(EnumBarraTipo.PV);
-
-
-      this.AdicionarBarra(barra1, width * 0.3, width * 0.05, 90);
-      this.AdicionarBarra(barra2, width * 0.3, height * 0.8, -90);
-      this.AdicionarBarra(barra3, width * 0.7, width * 0.05, 90);
-      this.AdicionarBarra(barra4, width * 0.7, height * 0.8, -90);
-
-      this.AdicionarLinha(this.criarLinha(barra1, barra2));
-      this.AdicionarLinha(this.criarLinha(barra1, barra3));
-      this.AdicionarLinha(this.criarLinha(barra2, barra4));
-      this.AdicionarLinha(this.criarLinha(barra3, barra4));
-    } else if (exemplo === 4) {
-      const barra1 = this.CriarBarra(EnumBarraTipo.Slack, 'Birch');
-      const barra2 = this.CriarBarra(EnumBarraTipo.PQ, 'Elm');
-      const barra3 = this.CriarBarra(EnumBarraTipo.PV, 'Mapie');
-      const barra4 = this.CriarBarra(EnumBarraTipo.PQ, 'Oak');
-      const barra5 = this.CriarBarra(EnumBarraTipo.PQ, 'Pine');
-
-
-      this.AdicionarBarra(barra1, width * 0.2, height * 0.01, 90);
-      this.AdicionarBarra(barra2, width * 0.8, height * 0.01, 90);
-      this.AdicionarBarra(barra3, width * 0.8, height * 0.4, -90);
-      this.AdicionarBarra(barra4, width * 0.2, height * 0.8, -90);
-      this.AdicionarBarra(barra5, width * 0.2, height * 0.4, -90);
-
-      this.AdicionarLinha(this.criarLinha(barra1, barra2));
-      this.AdicionarLinha(this.criarLinha(barra1, barra5));
-      this.AdicionarLinha(this.criarLinha(barra2, barra3));
-      this.AdicionarLinha(this.criarLinha(barra3, barra4));
-      this.AdicionarLinha(this.criarLinha(barra4, barra5));
-      this.AdicionarLinha(this.criarLinha(barra5, barra3));
-    }
-
-
   }
 
   PodeRealizarCalculo(): boolean {
@@ -437,9 +368,8 @@ export class DiagramaComponent implements OnInit {
     }
   }
 
-  ImportarDiagrama(diagrama_json) {
+  toDiagrama(diagrama) {
     try {
-      const diagrama = JSON.parse(diagrama_json);
       const barras = [];
       const linhas = [];
       let falta;
@@ -469,7 +399,6 @@ export class DiagramaComponent implements OnInit {
           linha_or_barra = linhas.find(function (linha) { return linha.id === linha_id; });
         }
         falta = Falta.fromDict(falta_dict, linha_or_barra);
-        console.log(falta);
       }
       const desenho = {
         barras: barras,
@@ -477,9 +406,20 @@ export class DiagramaComponent implements OnInit {
         posicoes: diagrama['posicoes'],
         falta: falta
       };
+      return desenho;
+    } catch (error) {
+      return null;
+    }
+  }
 
-      if (barras.length > 0) {
-        const confirma = confirm('Tem certeza que deseja importar: ' + `${barras.length} barras, ${linhas.length} linhas?`);
+  ImportarDiagrama(diagrama_json) {
+
+    try {
+      const diagrama = JSON.parse(diagrama_json);
+      const desenho = this.toDiagrama(diagrama);
+
+      if (desenho.barras.length > 0) {
+        const confirma = confirm('Tem certeza que deseja importar: ' + `${desenho.barras.length} barras, ${desenho.linhas.length} linhas?`);
         if (confirma) {
           this.desenharDiagrama(desenho);
           this.criarAlerta('Importar Diagrama', 'Carregado com sucesso.', 'sucesso');
@@ -490,7 +430,6 @@ export class DiagramaComponent implements OnInit {
     } catch (error) {
       this.criarAlerta('Importar Diagrama', 'Não foi possível carregar o diagrama enviado.', 'perigo');
     }
-
   }
 
 
@@ -507,6 +446,7 @@ export class DiagramaComponent implements OnInit {
     const height = this.SVGPrincipal.height();
 
     barras.forEach(barra => {
+      console.log(posicoes);
       const x = posicoes[barra.id_barra]['x'] * width;
       const y = posicoes[barra.id_barra]['y'] * height;
       const angulo = posicoes[barra.id_barra]['angulo'];
