@@ -16,6 +16,7 @@ export class Falta {
         const linha = dict['linha'];
         let falta: Falta;
         falta = new Falta(linha_or_barra);
+        falta.enumFaltaTipo = dict['tipo'] || EnumFaltaTipo.Trifasica;
         falta.x0 = dict['x0'];
         falta.xg = dict['xg'];
         return falta;
@@ -79,6 +80,7 @@ export class Falta {
         if (this.linha) {
             dict['linha_id'] = this.linha.id;
         }
+        dict['tipo'] = this.enumFaltaTipo;
         dict['porcentagem'] = this.porcentagem;
         dict['xg'] = this.xg;
         dict['x0'] = this.x0;

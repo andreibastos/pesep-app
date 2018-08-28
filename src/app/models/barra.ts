@@ -29,9 +29,9 @@ export class Barra {
     pCarga = 0;
     qCarga = 0;
     pGeradaMin = 0;
-    pGeradaMax = 0;
+    pGeradaMax = 10;
     qGeradaMin = 0;
-    qGeradaMax = 0;
+    qGeradaMax = 10;
     qShunt = 0;
     X = 1;
 
