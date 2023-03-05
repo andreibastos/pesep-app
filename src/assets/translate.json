@@ -1,0 +1,299 @@
+{
+  "br": {
+    "main": {
+      "authors": "Autores",
+      "tests": "Testes",
+      "examples": "Exemplos",
+      "quiz": "Questionário",
+      "errorReport": "Reportar Erros",
+      "referenceBus": "Barra de Referência",
+      "generationBus": "Barra de Gerção",
+      "loadBus": "Barra de Carga",
+      "neutralBus": "Barra neutra",
+      "shortCircuit": "Curto circuito",
+      "copy": "Copiar",
+      "cut": "Recortar",
+      "paste": "Colar",
+      "delete": "Apagar",
+      "calculatePowerFlow": "Calcular Fluxo de Potência",
+      "calculateShortCircuit": "Calcular Curto Circuito",
+      "systemOutput": "Relatório de saída",
+      "importDiagram": "Importar Diagrama",
+      "exportDiagram": "Exportar Diagrama"
+    },
+    "authors": [
+      {
+        "name": "Andrei Bastos",
+        "description": "Coordenador de Projetos de Software na Atman Systems"
+      },
+      {
+        "name": "Luiz Tonini",
+        "description": "Aluno de doutorado em engenharia elétrica da UFES"
+      },
+      {
+        "name": "Oureste Elias Bastisa",
+        "description": "Professor da pós graduação em engenharia elétrica da UFES"
+      },
+      {
+        "name": "Augusto César Rueda Medina",
+        "description": "Professor da pós graduação em engenharia elétrica da UFES"
+      }
+    ],
+    "tests": {
+      "line": "Inserir arquivo de linha",
+      "bus": "Inserir arquivo de barra",
+      "fault": "Inserir arquivo de falta",
+      "calculePowerFlow": "Calcular Fluxo de Potência",
+      "calculeShortCircuit": "Calcular Curto Circuito"
+    },
+    "examples": [
+      {
+        "id": 2,
+        "title": "Exemplo 1",
+        "text": "Livro: Fundamentos de Sistemas Elétricos de Potência - Zanetta - 2006, Exemplo: 6"
+      },
+      {
+        "title": "Exemplo 2",
+        "text": "Livro: Fluxo de carga em redes de energia elétrica - Monticelli - 1983, Exemplo: 7"
+      },
+      {
+        "id": 4,
+        "title": "Exemplo 3",
+        "text": "Livro: Elementos de Análise de Sistemas Elétricos de Potência - Steverson - 1982, Exemplo: 8.1"
+      },
+      {
+        "id": 5,
+        "title": "Exemplo 4",
+        "text": "Livro: Power System Analysis - Grainer e Steverson - 1994, Exemplo: 9.1"
+      },
+      {
+        "id": 6,
+        "title": "Exemplo 5",
+        "text": "Livro: Elementos de Análise de Sistemas Elétricos de Potência - Steverson - 1982, Exemplo 10.12."
+      },
+      {
+        "id": 7,
+        "title": "Exemplo 6",
+        "text": "Livro: Elementos de Análise de Sistemas Elétricos de Potência - Steverson - 1982, Exemplo 10.14."
+      },
+      {
+        "id": 8,
+        "title": "Exemplo 7",
+        "text": "Livro: Power System Analysis - Grainer e Steverson - 1994, Exemplo 12.1"
+      },
+      {
+        "id": 9,
+        "title": "Exemplo 8",
+        "text": "Livro: Power System Analysis - Grainer e Steverson - 1994, Exemplo 12.2"
+      },
+      {
+        "id": 10,
+        "title": "Exemplo 9",
+        "text": "Livro: Power System Analysis - Grainer e Steverson - 1994, Exemplo 12.3"
+      },
+      {
+        "id": 11,
+        "title": "Exemplo 10",
+        "text": "Livro: Power System Analysis - Grainer e Steverson - 1994, Exemplos 12.4 e 12.5 "
+      }
+    ]
+  },
+  "us": {
+    "main": {
+      "authors": "Authors",
+      "tests": "Tests",
+      "examples": "Examples",
+      "quiz": "Quiz",
+      "errorReport": "Error Report ",
+      "referenceBus": "Reference Bus",
+      "generationBus": "Generation Bus",
+      "loadBus": "Load Bus",
+      "neutralBus": "Neutral bus",
+      "shortCircuit": "Short circuit",
+      "copy": "Copy",
+      "cut": "Cut",
+      "paste": "Paste",
+      "delete": "Delete",
+      "calculatePowerFlow": "Calculate Power Flow",
+      "calculateShortCircuit": "Calculate Short Circuit",
+      "systemOutput": "System output",
+      "importDiagram": "Import Diagram",
+      "exportDiagram": "Export Diagram"
+    },
+    "authors": [
+      {
+        "name": "Andrei Bastos",
+        "description": "Software Project Coordinator at Atman Systems"
+      },
+      {
+        "name": "Luiz Tonini",
+        "description": "PhD student in electrical engineering at UFES"
+      },
+      {
+        "name": "Oureste Elias Bastisa",
+        "description": "Professor of electrical engineering at UFES"
+      },
+      {
+        "name": "Augusto César Rueda Medina",
+        "description": " Professor of electrical engineering at UFES"
+      }
+    ],
+    "tests": {
+      "line": "Insert line file",
+      "bus": "Insert bus file",
+      "fault": "Insert fault file",
+      "calculePowerFlow": "Calculate Power Flow",
+      "calculeShortCircuit": "Calculate Short Circuit"
+    },
+    "examples": [
+      {
+        "id": 2,
+        "title": "Example 1",
+        "text": "TextBook: Fundamentos de Sistemas Elétricos de Potência - Zanetta - 2006, Example: 6"
+      },
+      {
+        "title": "Example 2",
+        "text": "TextBook: Fluxo de carga em redes de energia elétrica - Monticelli - 1983, Example: 7"
+      },
+      {
+        "id": 4,
+        "title": "Example 3",
+        "text": "TextBook: Elementos de Análise de Sistemas Elétricos de Potência - Steverson - 1982, Example: 8.1"
+      },
+      {
+        "id": 5,
+        "title": "Example 4",
+        "text": "TextBook: Power System Analysis - Grainer e Steverson - 1994, Example: 9.1"
+      },
+      {
+        "id": 6,
+        "title": "Example 5",
+        "text": "TextBook: Elementos de Análise de Sistemas Elétricos de Potência - Steverson - 1982, Example 10.12."
+      },
+      {
+        "id": 7,
+        "title": "Example 6",
+        "text": "TextBook: Elementos de Análise de Sistemas Elétricos de Potência - Steverson - 1982, Example 10.14."
+      },
+      {
+        "id": 8,
+        "title": "Example 7",
+        "text": "TextBook: Power System Analysis - Grainer e Steverson - 1994, Example 12.1"
+      },
+      {
+        "id": 9,
+        "title": "Example 8",
+        "text": "TextBook: Power System Analysis - Grainer e Steverson - 1994, Example 12.2"
+      },
+      {
+        "id": 10,
+        "title": "Example 9",
+        "text": "TextBook: Power System Analysis - Grainer e Steverson - 1994, Example 12.3"
+      },
+      {
+        "id": 11,
+        "title": "Example 10",
+        "text": "TextBook: Power System Analysis - Grainer e Steverson - 1994, Examples 12.4 e 12.5 "
+      }
+    ]
+  },
+  "es": {
+    "main": {
+      "authors": "Autores",
+      "tests": "Pruebas",
+      "examples": "Ejemplos",
+      "quiz": "Cuestionario",
+      "errorReport": "Informar errores",
+      "referenceBus": "Barra de referencia",
+      "generationBus": "Barra de generación",
+      "loadBus": "Barra de carga",
+      "neutralBus": "Barra neutral",
+      "shortCircuit": "Corto circuito",
+      "copy": "Copia",
+      "cut": "Recortar",
+      "paste": "Collar",
+      "delete": "Eliminar",
+      "calculatePowerFlow": "Calcular el flujo de potencia",
+      "calculateShortCircuit": "Calcular cortocircuito",
+      "systemOutput": "Informe de salida",
+      "importDiagram": " Importación de diagrama",
+      "exportDiagram": "Exportación de diagrama"
+    },
+    "authors": [
+      {
+        "name": "Andrei Bastos",
+        "description": "Coordinador de proyectos de software en Atman Systems"
+      },
+      {
+        "name": "Luiz Tonini",
+        "description": "Estudiante de doctorado en ingeniería eléctrica en la UFES"
+      },
+      {
+        "name": "Oureste Elias Bastisa",
+        "description": "Profesor de Ingeniería Eléctrica en UFES"
+      },
+      {
+        "name": "Augusto César Rueda Medina",
+        "description": "Profesor de Ingeniería Eléctrica en UFES"
+      }
+    ],
+    "tests": {
+      "line": "Insertar archivo de línea",
+      "bus": "Insertar archivo de barra",
+      "fault": "Insertar archivo de falta",
+      "calculePowerFlow": "Calcular el flujo de potencia",
+      "calculeShortCircuit": "Calcular cortocircuito"
+    },
+    "examples": [
+      {
+        "id": 2,
+        "title": "Ejemplo 1",
+        "text": "Livro de Texto: Fundamentos de Sistemas Elétricos de Potência - Zanetta - 2006, Ejemplo: 6"
+      },
+      {
+        "title": "Ejemplo 2",
+        "text": "Livro de Texto: Fluxo de carga em redes de energia elétrica - Monticelli - 1983, Ejemplo: 7"
+      },
+      {
+        "id": 4,
+        "title": "Ejemplo 3",
+        "text": "Livro de Texto: Elementos de Análise de Sistemas Elétricos de Potência - Steverson - 1982, Ejemplo: 8.1"
+      },
+      {
+        "id": 5,
+        "title": "Ejemplo 4",
+        "text": "Livro de Texto: Power System Analysis - Grainer e Steverson - 1994, Ejemplo: 9.1"
+      },
+      {
+        "id": 6,
+        "title": "Ejemplo 5",
+        "text": "Livro de Texto: Elementos de Análise de Sistemas Elétricos de Potência - Steverson - 1982, Ejemplo 10.12."
+      },
+      {
+        "id": 7,
+        "title": "Ejemplo 6",
+        "text": "Livro de Texto: Elementos de Análise de Sistemas Elétricos de Potência - Steverson - 1982, Ejemplo 10.14."
+      },
+      {
+        "id": 8,
+        "title": "Ejemplo 7",
+        "text": "Livro de Texto: Power System Analysis - Grainer e Steverson - 1994, Ejemplo 12.1"
+      },
+      {
+        "id": 9,
+        "title": "Ejemplo 8",
+        "text": "Livro de Texto: Power System Analysis - Grainer e Steverson - 1994, Ejemplo 12.2"
+      },
+      {
+        "id": 10,
+        "title": "Ejemplo 9",
+        "text": "Livro de Texto: Power System Analysis - Grainer e Steverson - 1994, Ejemplo 12.3"
+      },
+      {
+        "id": 11,
+        "title": "Ejemplo 10",
+        "text": "Livro de Texto: Power System Analysis - Grainer e Steverson - 1994, Ejemplos 12.4 e 12.5 "
+      }
+    ]
+  }
+}

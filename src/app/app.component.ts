@@ -7,11 +7,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'KVA';
+  language = 'br';
 
   nav_items = [
-    {routerLink : 'quem-somos', name: 'Autores'},
-    {routerLink : 'testar', name: 'Testes'},
-    {routerLink : 'exemplos', name: 'Exemplos'},
+    { routerLink: 'authors', name: 'Autores' },
+    { routerLink: 'tests', name: 'Testes' },
+    { routerLink: 'examples', name: 'Exemplos' },
   ];
 
 }

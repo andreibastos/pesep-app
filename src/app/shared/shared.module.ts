@@ -1,7 +1,7 @@
 import { HttpModule } from '@angular/http';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TabelaComponent } from './tabela/tabela.component';
+import { TableComponent } from './table/table.component';
 
 @NgModule({
   imports: [
@@ -9,7 +9,7 @@ import { TabelaComponent } from './tabela/tabela.component';
     HttpModule,
 
   ],
-  declarations: [TabelaComponent],
-  exports: [TabelaComponent]
+  declarations: [TableComponent],
+  exports: [TableComponent]
 })
 export class SharedModule { }

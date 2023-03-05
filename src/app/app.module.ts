@@ -4,22 +4,22 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { QuemSomosComponent } from './quem-somos/quem-somos.component';
-import { DiagramaModule } from './diagrama/diagrama.module';
-import { ExemplosComponent } from './exemplos/exemplos.component';
-import { TestesModule } from './testes/testes.module';
+import { AuthorsComponent } from './authors/authors.component';
+import { DiagramModule } from './diagram/diagram.module';
+import { ExamplesComponent } from './examples/examples.component';
+import { TestsModule } from './tests/tests.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    QuemSomosComponent,
-    ExemplosComponent,
+    AuthorsComponent,
+    ExamplesComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    TestesModule,
-    DiagramaModule
+    TestsModule,
+    DiagramModule
   ],
   providers: [SharedModule],
   bootstrap: [AppComponent]
