@@ -7,11 +7,11 @@ import { ExamplesComponent } from './examples/examples.component';
 import { TestsComponent } from './tests/tests.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'digram', pathMatch: 'full' },
+  { path: '', redirectTo: 'diagram', pathMatch: 'full' },
   { path: 'authors', component: AuthorsComponent },
   { path: 'examples', component: ExamplesComponent },
   { path: 'tests', component: TestsComponent },
-  { path: 'digram', component: DiagramComponent },
+  { path: 'diagram', component: DiagramComponent },
 ];
 
 @NgModule({
